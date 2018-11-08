@@ -78,8 +78,10 @@
         $('input:radio[name=ppl]').click(function() {
           $('#feeInfo').html('사용 요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:checkbox[name=discount]:checked').length ? $('input:checkbox[name=discount]:checked').length : $('input:radio[name=ppl]:checked').val())) + '원');
           if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
-            $('#discountWrap').css('display', 'inline');
-            $('#discountWrap').html("<label for='discount'><input type='checkbox' id='discount' name='discount' value='discount'/>할인</input></label>");
+            machine = $('input:radio[name=machine]:checked').attr('id');
+            if(machine == 'cubicon' || machine == 'sindo' || machine == 'onyx' || machine == 'freeform') {
+              $('#discountWrap').css('display', 'inline');
+            }
           }
           else $('#discountWrap').css('display', 'none');
         });
@@ -90,6 +92,8 @@
           $('#industrialWrapper').css('display', 'none');
           $('#feeInfo').html('');
           $('#discountWrap').css('display', 'none');
+          $('#submitWrapper').css('display', 'none');
+          $('input:radio[name=machine]:checked').prop('checked', false);
         });
         $('#industrial').click(function() {
           $('#machineDetail').html('');
@@ -98,11 +102,16 @@
           $('#industrialWrapper').css('display', 'block');
           $('#feeInfo').html('');
           $('#discountWrap').css('display', 'none');
+          $('#submitWrapper').css('display', 'none');
+          $('input:radio[name=machine]:checked').prop('checked', false);
         });
         payment_time_str = '사용 시간 : <input placeholder="시간" id="usehour" name="cost" type="number" required style="width:40" min="0"/> : <input placeholder="분" id="usemin" name="cost" type="number" required style="width:30" min="0" max="59"/><br>';
         payment_area_str = '인쇄 면적 : <input placeholder="가로(mm)" id="xaxis" name="cost" type="area" required style="width:65"/> * <input placeholder="세로(mm)" id="yaxis" name="cost" type="area" required style="width:65"/><br>';
         $('#cubicon').click(function() {
           clickReset();
+          if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
+            $('#discountWrap').css('display', 'inline');
+          }
           cubicon_str = "장비 번호<br><span style='line-height:10%'><br></span>" +
           "<label for='C1'><input type='radio' id='C1' name='machineNum' value='C1' required>1</input></label>&nbsp;&nbsp;" +
           "<label for='C2'><input type='radio' id='C2' name='machineNum' value='C2'>2</input></label><br>" +
@@ -118,6 +127,9 @@
         });
         $('#sindo').click(function() {
           clickReset();
+          if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
+            $('#discountWrap').css('display', 'inline');
+          }
           sindo_str = "장비 번호<br><span style='line-height:10%'><br></span>" +
           "<label for='S1'><input type='radio' id='S1' name='machineNum' value='S1' required>1</input></label>&nbsp;&nbsp;" +
           "<label for='S2'><input type='radio' id='S2' name='machineNum' value='S2'>2</input></label><br>" +
@@ -130,6 +142,9 @@
         });
         $('#onyx').click(function() {
           clickReset();
+          if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
+            $('#discountWrap').css('display', 'inline');
+          }
           onyx_str = "장비 번호<br><span style='line-height:10%'><br></span>" +
           "<label for='O1'><input type='radio' id='O1' name='machineNum' value='O1' required>1</input></label>&nbsp;&nbsp;" +
           "<label for='O2'><input type='radio' id='O2' name='machineNum' value='O2'>2</input></label><br>" +
@@ -142,6 +157,9 @@
         });
         $('#freeform').click(function() {
           clickReset();
+          if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
+            $('#discountWrap').css('display', 'inline');
+          }
           freeform_str = "장비 번호<br><span style='line-height:10%'><br></span>" +
           "<label for='F1'><input type='radio' id='F1' name='machineNum' value='F1' required>1</input></label>&nbsp;&nbsp;" +
           "<label for='F2'><input type='radio' id='F2' name='machineNum' value='F2'>2</input></label><br>";
@@ -214,6 +232,7 @@
       });
       $("#DATA").submit(function(event) {
         $('input').attr('disabled', true);
+        $('input').attr('value', '');
         $('#status').css('color', '#ffbf00');
         $('#status').text('Transmitting Data...');
         var serializedData = '날짜=' + new Date().format('yyyy. mm. dd') +
@@ -225,7 +244,7 @@
                               '&사용 장비=' + $('input:radio[name=machine]:checked').val() + machineNumReturn() +
                               '&사용량=' + machineUse($('input:radio[name=machine]:checked').attr('id')) +
                               '&구분=' + $('input:radio[name=ppl]:checked').val() +
-                              '&요금=￦' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), Number($('input:checkbox[name=discount]:checked').length) ? $('input:checkbox[name=discount]:checked').length : $('input:radio[name=ppl]:checked').val())) +
+                              '&요금=￦' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) +
                               '&결제=' + $('input:radio[name=pay]:checked').val();
         console.log(serializedData);
         request = $.ajax({
@@ -246,69 +265,77 @@
         request.always(function() { $('input').attr('disabled', false); });
         event.preventDefault();
       });
-      function feeCalc(machine, type) {
-        console.log(type);
-        if(type == '수동 입력') {
+      function feeCalc(machine, type, discount) {
+        if(type == '수동 입력'){
           return $('#manualCost').val().replace(/[^\d]+/g, '');
         }
         if(machine == 'cubicon' || machine == 'sindo') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(isNum(type) ? Number(type) : false) return calc(1500, 6, hour, min);
+          if(type == '교내구성원') {
+            if(discount) return calc(1500, 6, hour, min);
+            else return calc(1500, 0, hour, min);
+          }
           else return calc(2000, 0, hour, min);
         }
         else if(machine == 'onyx') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(isNum(type) ? Number(type) : false) return calc(2000, 2, hour, min);
+          if(type == '교내구성원') {
+            if(discount) return calc(2000, 2, hour, min);
+            else return calc(2000, 0, hour, min);
+          }
           else return calc(4000, 0, hour, min);
         }
         else if(machine == 'freeform') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(isNum(type) ? Number(type) : false) return calc(4000, 1, hour, min);
+          if(type == '교내구성원') {
+            if(discount) return calc(4000, 1, hour, min);
+            else return calc(4000, 0, hour, min);
+          }
           else return calc(6000, 0, hour, min);
         }
         else if(machine == 'laser') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(isNum(type) ? Number(type) : false) return calc(1500, 0, hour, min);
+          if(type == '교내구성원') return calc(1500, 0, hour, min);
           else return calc(2500, 0, hour, min);
         }
         else if(machine == 'plotter') {
           var area = $('#xaxis').val() * $('#yaxis').val();
           fee = area / 100;
-          if(isNum(type) ? Number(type) : false) return Math.round(fee / 200) * 100;
+          if(type == '교내구성원') return Math.round(fee / 200) * 100;
           else return Math.round(fee / 100) * 100;
         }
         else if(machine == 'cutter') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(isNum(type) ? Number(type) : false) return calc(1500, 0, hour, min);
+          if(type == '교내구성원') return calc(1500, 0, hour, min);
           else return calc(2500, 0, hour, min);
         }
         else if(machine == 'uv') {
           var area = $('#xaxis').val() * $('#yaxis').val();
           fee = area / 10;
-          if(isNum(type) ? Number(type) : false) return Math.round(fee / 200) * 100;
+          if(type == '교내구성원') return Math.round(fee / 200) * 100;
           else return Math.round(fee / 100) * 100;
         }
         else if(machine == 'x7') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(isNum(type) ? Number(type) : false) return calc(3500, 0, hour, min) + Number($('#mainMaterial').val()) * 5000;
+          if(type == '교내구성원') return calc(3500, 0, hour, min) + Number($('#mainMaterial').val()) * 5000;
           else return calc(6500, 0, hour, min) + Number($('#mainMaterial').val()) * 9000;
         }
         else if(machine == 'objet350') {
-          if(isNum(type) ? Number(type) : false) return $('#mainMaterial').val() * 400 + $('#subMaterial').val() * 150;
+          if(type == '교내구성원') return $('#mainMaterial').val() * 400 + $('#subMaterial').val() * 150;
           else return $('#mainMaterial').val() * 700 + $('#subMaterial').val() * 250;
         }
         else if(machine == 'f370') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(isNum(type) ? Number(type) : false) return calc(14000, 0, hour, min);
+          if(type == '교내구성원') return calc(14000, 0, hour, min);
           else return calc(20000, 0, hour, min);
         }
         else if(machine == 'xfab') {
-          if(isNum(type) ? Number(type) : false) return $('#mainMaterial').val() * 400;
+          if(type == '교내구성원') return $('#mainMaterial').val() * 400;
           else return $('#mainMaterial').val() * 600;
         }
         else if(machine == '3d') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(isNum(type) ? Number(type) : false) return calc(6000, 0, hour, min);
+          if(type == '교내구성원') return calc(6000, 0, hour, min);
           else return calc(12000, 0, hour, min);
         }
       }
@@ -341,10 +368,7 @@
         $('#machineDetail').html('');
         $('#payment').html('');
         $('#feeInfo').html('사용 요금 : 0원');
-        if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
-          $('#discountWrap').css('display', 'inline');
-          $('#discountWrap').html("<label for='discount'><input type='checkbox' id='discount' name='discount' value='discount'/>할인</input></label>");
-        }
+        $('#discountWrap').css('display', 'none');
       }
       function keyupReset() {
         $('#submitWrapper').css('display', 'block');
@@ -358,11 +382,11 @@
         });
         $('input[name=cost]').keyup(function() {
           if(!$('#manualActivate').attr('checked')) {
-            $('#feeInfo').html('사용 요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:checkbox[name=discount]:checked').length ? $('input:checkbox[name=discount]:checked').length : $('input:radio[name=ppl]:checked').val())) + '원');
+            $('#feeInfo').html('사용 요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) + '원');
           }
         });
         $('#discountWrap').click(function() {
-          $('#feeInfo').html('사용 요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:checkbox[name=discount]:checked').length ? $('input:checkbox[name=discount]:checked').length : $('input:radio[name=ppl]:checked').val())) + '원');
+          $('#feeInfo').html('사용 요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) + '원');
         });
       }
       function autoLimit(str, num) {
