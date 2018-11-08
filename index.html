@@ -231,6 +231,16 @@
         });
       });
       $("#DATA").submit(function(event) {
+        var isVerified = false, staff, staffList = [['강문석', 5582], ['김현기', 0796], ['양승창', 0270], ['오병준', 3691], ['최은정', 3690], ['신은영', 7257]];
+        if(!isVerified) {
+          setTimeout(function verify() {
+            var pwPosition = datum.length - 1, pwInput = prompt("Verification Required", "");
+            for (i in staffList) {
+              if(pwInput == i[1]) { staff = i[0]; isVerified = true; return; }
+            }
+            verify();
+          }, 50);
+        }
         $('input').attr('disabled', true);
         $('#status').css('color', '#ffbf00');
         $('#status').text('Transmitting Data...');
@@ -244,7 +254,8 @@
                               '&사용량=' + machineUse($('input:radio[name=machine]:checked').attr('id')) +
                               '&구분=' + $('input:radio[name=ppl]:checked').val() +
                               '&요금=￦' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) +
-                              '&결제=' + $('input:radio[name=pay]:checked').val();
+                              '&결제=' + $('input:radio[name=pay]:checked').val() +
+                              '&담당자=' + staff;
         console.log(serializedData);
         request = $.ajax({
             type: 'POST',
