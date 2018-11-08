@@ -234,7 +234,7 @@
         var isVerified = false, staff, staffList = [['강문석', 5582], ['김현기', 0796], ['양승창', 0270], ['오병준', 3691], ['최은정', 3690], ['신은영', 7257]];
         if(!isVerified) {
           setTimeout(function verify() {
-            var pwPosition = datum.length - 1, pwInput = prompt("Verification Required", "");
+            var pwInput = prompt("Verification Required", "");
             for (i in staffList) {
               if(pwInput == i[1]) { staff = i[0]; isVerified = true; return; }
             }
@@ -428,6 +428,8 @@
             d = date[_ + "Date"](),
             m = date[_ + "Month"](),
             y = date[_ + "FullYear"](),
+            H = date[_ + "Hours"](),
+            M = date[_ + "Minutes"](),
             flags = {
               dd:   pad(d),
               mm:   pad(m + 1),
