@@ -56,7 +56,7 @@
           <span id='feeInfo' style="display:none">사용 요금 : 0원</span>&nbsp;
           <span id='discountWrap' style="display:none">
             <label for='discount'><input type='checkbox' id='discount' name='discount' value='discount'/>할인</input></label>
-          </span><span style="line-height:25%"><br></span>
+          </span><br><span style="line-height:25%"><br></span>
           <div id='machineDetail'></div>
         </div><br><br>
         <div id='submitWrapper' style="display:none; margin:0 0 0 5; text-align:left"><input type="submit" style='padding: 0.3rem 1.3rem;'/></div>
@@ -106,7 +106,7 @@
           $('input:radio[name=machine]:checked').prop('checked', false);
         });
         payment_time_str = '사용 시간 : <input placeholder="시간" id="usehour" name="cost" type="number" required style="width:40" min="0"/> : <input placeholder="분" id="usemin" name="cost" type="number" required style="width:30" min="0" max="59"/><br>';
-        payment_area_str = '인쇄 면적 : <input placeholder="가로(mm)" id="xaxis" name="cost" type="area" required style="width:65"/> * <input placeholder="세로(mm)" id="yaxis" name="cost" type="area" required style="width:65"/><br>';
+        payment_area_str = '인쇄 면적 : <input placeholder="가로(mm)" id="xaxis" name="cost" type="number" required style="width:65"/> * <input placeholder="세로(mm)" id="yaxis" name="cost" type="number" required style="width:65"/><br>';
         $('#cubicon').click(function() {
           clickReset();
           if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
@@ -193,12 +193,12 @@
         });
         $('#x7').click(function() {
           clickReset();
-          $('#payment').html(payment_time_str + '강화 재료 : <input placeholder="카본(cc)" id="mainMaterial" name="cost" type="material" required style="width:60"/>');
+          $('#payment').html(payment_time_str + '강화 재료 : <input placeholder="카본(cc)" id="mainMaterial" name="cost" type="number" required style="width:60"/>');
           keyupReset();
         });
         $('#objet350').click(function() {
           clickReset();
-          payment_str = '사용 재료<br><input placeholder="메인(g)" id="mainMaterial" name="cost" type="material" required style="width:60"/>, <input placeholder="보조(g)" id="subMaterial" name="cost" type="material" required style="width:60"/><br>';
+          payment_str = '사용 재료<br><input placeholder="메인(g)" id="mainMaterial" name="cost" type="number" required style="width:60"/>, <input placeholder="보조(g)" id="subMaterial" name="cost" type="number" required style="width:60"/><br>';
           $('#payment').html(payment_str);
           keyupReset();
         });
@@ -209,7 +209,7 @@
         });
         $('#xfab').click(function() {
           clickReset();
-          payment_str = '사용 재료 : <input placeholder="메인(g)" id="mainMaterial" name="cost" type="material" required style="width:60"/>';
+          payment_str = '사용 재료 : <input placeholder="메인(g)" id="mainMaterial" name="cost" type="number" required style="width:60"/>';
           $('#payment').html(payment_str);
           keyupReset();
         });
