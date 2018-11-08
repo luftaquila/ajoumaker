@@ -232,7 +232,6 @@
       });
       $("#DATA").submit(function(event) {
         $('input').attr('disabled', true);
-        $('input').attr('value', '');
         $('#status').css('color', '#ffbf00');
         $('#status').text('Transmitting Data...');
         var serializedData = '날짜=' + new Date().format('yyyy. mm. dd') +
