@@ -21,7 +21,7 @@
       <div id='basicInfo' style='float:left'>
         <input placeholder="이름 입력" id="name" type="text" style='width:150' autofocus required/><br><span style="line-height:25%"><br></span>
         <input placeholder="소속 입력" id="belonging" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
-        <input placeholder="연락처 입력" id="contact" type="text" maxlength="13" style='width:150' required/><br><span style="line-height:25%"><br></span>
+        <input placeholder="연락처 입력" id="contact" type="tel" maxlength="13" style='width:150' required/><br><span style="line-height:25%"><br></span>
         <input placeholder="파일명 입력" id="filename" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
         <input placeholder="사용 목적 입력" id="purpose" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
         <label for='prepay'><input type='radio' id='prepay' name='pay' value="선불" checked required>선불</input></label>&nbsp;
@@ -234,7 +234,7 @@
         $('input').attr('disabled', true);
         $('#status').css('color', '#ffbf00');
         $('#status').text('Transmitting Data...');
-        var serializedData = '날짜=' + new Date().format('yyyy. mm. dd') +
+        var serializedData = '날짜=' + new Date().format('yyyy. mm. dd HH:MM') +
                               '&이름=' + $.trim($('#name').val()) +
                               '&소속=' + $('#belonging').val() +
                               '&연락처=' + $('#contact').val() +
@@ -421,6 +421,8 @@
               dd:   pad(d),
               mm:   pad(m + 1),
               yyyy: y,
+              HH:   pad(H),
+              MM:   pad(M),
             };
           return mask.replace(token, function ($0) {
             return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
