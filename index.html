@@ -236,12 +236,13 @@
         });
       });
       $("#DATA").submit(function(event) {
-        var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3690'], ['신은영', '7257']];
+        var staffList = [['강문석', 5582], ['김현기', 0796], ['양승창', 0270], ['오병준', 3691], ['최은정', 3690], ['신은영', 7257]];
         event.preventDefault();
-        alertify.prompt('Verification Required', function(e, str) {
+        alertify.prompt('Verification Required', function(e) {
+          var str = $('#alertify-text').val();
           if(e) {
             for (i in staffList) {
-              if(staffList[i][1] == $.trim(str)) {
+              if(staffList[i][1] == str) {
                 $('input').attr('disabled', true);
                 alertify.log('Transmitting Data...');
                 var serializedData = '날짜=' + new Date().format('yyyy. mm. dd / HH:MM') +
