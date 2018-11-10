@@ -238,8 +238,9 @@
       $("#DATA").submit(function(event) {
         var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3690'], ['신은영', '7257']];
         event.preventDefault();
-        alertify.prompt('Verification Required', function(e, str) {
-          $('#alertify-text').replaceWith('<input type="number" id="alertify-text" class="alertify-text"/>');
+        alertify.prompt('Verification Required',
+        $('#alertify-text').replaceWith('<input type="number" id="alertify-text" class="alertify-text"/>');
+        function(e, str) {
           if(e) {
             for (i in staffList) {
               if(staffList[i][1] == $.trim(str)) {
