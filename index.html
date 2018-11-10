@@ -6,6 +6,9 @@
     <meta property="og:url" content="https://luftaquila.github.io/ajouMaker/"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html">
+
+  	<link rel="stylesheet" href="alertify.core.css" />
+  	<link rel="stylesheet" href="alertify.default.css" id="toggleCSS" />
   </head>
   <body>
     <style>
@@ -64,6 +67,7 @@
     </form>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script src='file:///C:/Users/LUFT-AQUILA/Documents/Atom/ajoumaker/alertify.min.js'></script>
     <script>
       $(function() {
         $('#status').click(function() {
@@ -231,49 +235,45 @@
         });
       });
       $("#DATA").submit(function(event) {
-        var isVerified = false, staff, staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3690'], ['신은영', '7257']];
-        if(!isVerified) {
-          setTimeout(function verify() {
-            var pwInput = prompt("Verification Required", "");
-            for (i in staffList) {
-              if(pwInput == i[1]) { staff = i[0]; isVerified = true; return; }
-            }
-            verify();
-          }, 50);
-        }
-        $('input').attr('disabled', true);
-        $('#status').css('color', '#ffbf00');
-        $('#status').text('Transmitting Data...');
-        var serializedData = '날짜=' + new Date().format('yyyy. mm. dd HH:MM') +
-                              '&이름=' + $.trim($('#name').val()) +
-                              '&소속=' + $('#belonging').val() +
-                              '&연락처=' + $('#contact').val() +
-                              '&파일명=' + $('#filename').val() +
-                              '&사용 목적=' + $('#purpose').val() +
-                              '&사용 장비=' + $('input:radio[name=machine]:checked').val() + machineNumReturn() +
-                              '&사용량=' + machineUse($('input:radio[name=machine]:checked').attr('id')) +
-                              '&구분=' + $('input:radio[name=ppl]:checked').val() +
-                              '&요금=￦' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) +
-                              '&결제=' + $('input:radio[name=pay]:checked').val() +
-                              '&담당자=' + staff;
-        console.log(serializedData);
-        request = $.ajax({
-            type: 'POST',
-            url: 'https://script.google.com/macros/s/AKfycbyi2sn97OkkOFIfVt3BVH3ToEPBFvx4G_dQ_oS_jYxqcZNuB_c/exec',
-            data: encodeURI(serializedData)
-        });
-        request.done(function() {
-          $('#status').css('color', '#15be00');
-          $('#status').text('201 Transmitted. Ready.');
-          alert('201 Transmitted');
-          location.reload();
-        });
-        request.fail(function(jqXHR, textStatus, errorThrown) {
-          $('#status').css('color', '#da0000');
-          $('#status').text('Error - ' + textStatus + errorThrown);
-        });
-        request.always(function() { $('input').attr('disabled', false); });
+        var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3690'], ['신은영', '7257']];
         event.preventDefault();
+        alertify.prompt('Verification Required', function(e, str) {
+          if(e) {
+            for (i in staffList) {
+              if(staffList[i][1] == $.trim(str)) {
+                $('input').attr('disabled', true);
+                $('#status').css('color', '#ffbf00');
+                $('#status').text('Transmitting Data...');
+                var serializedData = '날짜=' + new Date().format('yyyy. mm. dd / HH:MM') +
+                                      '&이름=' + $.trim($('#name').val()) +
+                                      '&소속=' + $('#belonging').val() +
+                                      '&연락처=' + $('#contact').val() +
+                                      '&파일명=' + $('#filename').val() +
+                                      '&사용 목적=' + $('#purpose').val() +
+                                      '&사용 장비=' + $('input:radio[name=machine]:checked').val() + machineNumReturn() +
+                                      '&사용량=' + machineUse($('input:radio[name=machine]:checked').attr('id')) +
+                                      '&구분=' + $('input:radio[name=ppl]:checked').val() +
+                                      '&요금=￦' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) +
+                                      '&결제=' + $('input:radio[name=pay]:checked').val() +
+                                      '&담당자=' + staffList[i][0];
+                console.log(serializedData);
+                request = $.ajax({
+                    type: 'POST',
+                    url: 'https://script.google.com/macros/s/AKfycbyi2sn97OkkOFIfVt3BVH3ToEPBFvx4G_dQ_oS_jYxqcZNuB_c/exec',
+                    data: encodeURI(serializedData)
+                });
+                request.done(function() {
+                  alertify.success('201 Transmitted');
+                });
+                request.fail(function(jqXHR, textStatus, errorThrown) { alertify.error('Error : ' + textStatus + errorThrown); });
+                request.always(function() { $('input').attr('disabled', false); });
+                event.preventDefault();
+                return;
+              }
+            }
+          }
+          alertify.error('Verification Failure');
+        });
       });
       function feeCalc(machine, type, discount) {
         if(type == '수동 입력'){
