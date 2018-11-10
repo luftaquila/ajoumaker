@@ -19,7 +19,6 @@
       }
     </style>
     <form id="DATA">
-      Status : <span id="status" style="color:#15be00">200 Ready.</span><br><span style="line-height:25%"><br></span>
       <div style='width:1%; float:left'>&nbsp;</div>
       <div id='basicInfo' style='float:left'>
         <input placeholder="이름 입력" id="name" type="text" style='width:150' autofocus required/><br><span style="line-height:25%"><br></span>
@@ -29,14 +28,14 @@
         <input placeholder="사용 목적 입력" id="purpose" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
         <label for='prepay'><input type='radio' id='prepay' name='pay' value="선불" checked required>선불</input></label>&nbsp;
         <label for='afterpay'><input type='radio' id='afterpay' name='pay' value="후불">후불</input></label><br><span style="line-height:25%"><br></span>
-        사용자 구분<br><span style="line-height:10%"><br></span>
+        <span id='manualFee'>사용자 구분</span><br><span style="line-height:10%"><br></span>
         <label for='internal'><input type='radio' id='internal' name='ppl' value="교내구성원" required>교내구성원</input></label><br>
         <label for='standard'><input type='radio' id='standard' name='ppl' value="일반인">일반인</input></label><br><span style="line-height:25%"><br></span>
         사용 장비<br><span style="line-height:10%"><br></span>
         <label for='normal'><input type='radio' id='normal' name='machineType' value="normal" required>일반 장비</input></label><br>
         <label for='industrial'><input type='radio' id='industrial' name='machineType' value="industrial">산업용 장비</input></label><br><br>
       </div><div style='width:80; float:left'>&nbsp;</div>
-      <div id='machineSelect' style='float:left; text-align:center;'>
+      <div id='machineSelect' style='float:left; text-align:center; display:none'>
         <div id='machineContainer' style='text-align:left; width:auto; margin:auto; display:inline-block'>
           <div id='normalWrapper' style="display: none">
             <label for='cubicon'><input type='radio' id='cubicon' name='machine' value="큐비콘" required>큐비콘</input></label><br>
@@ -56,7 +55,7 @@
             <label for='3d'><input type='radio' id='3d' name='machine' value="3D 스캐너">3D 스캐너</input></label><br>
           </div><span style="line-height:35%"><br></span>
           <div id='payment'></div><span style="line-height:25%"><br></span>
-          <span id='feeInfo' style="display:none">사용 요금 : 0원</span>&nbsp;
+          <span id='feeInfo' style="display:none">요금 : 0원</span>&nbsp;
           <span id='discountWrap' style="display:none">
             <label for='discount'><input type='checkbox' id='discount' name='discount' value='discount'/>할인</input></label>
           </span><br><span style="line-height:25%"><br></span>
@@ -70,17 +69,17 @@
     <script src='alertify.min.js'></script>
     <script>
       $(function() {
-        $('#status').click(function() {
+        $('#manualFee').click(function() {
           $('input:checkbox[name=discount]').attr('checked', false);
           $('#discountWrap').css('display', 'none');
-          $('#feeInfo').html('<input type="radio" id="manualActivate" name="ppl" value="수동 입력" checked>수동 입력 활성화</input><br>사용 요금 : <input type="text" id="manualCost" style="width:70"/>원');
+          $('#feeInfo').html('<input type="radio" id="manualActivate" name="ppl" value="수동 입력" checked>수동 입력 활성화</input><br>요금 : <input type="text" id="manualCost" style="width:70"/>원');
           $('#manualCost').keyup(function(event) {
             event = event || window.event;
             this.value = addComma(this.value.replace(/[^\d]+/g, ''));
           });
         });
         $('input:radio[name=ppl]').click(function() {
-          $('#feeInfo').html('사용 요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:checkbox[name=discount]:checked').length ? $('input:checkbox[name=discount]:checked').length : $('input:radio[name=ppl]:checked').val())) + '원');
+          $('#feeInfo').html('요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:checkbox[name=discount]:checked').length ? $('input:checkbox[name=discount]:checked').length : $('input:radio[name=ppl]:checked').val())) + '원');
           if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
             machine = $('input:radio[name=machine]:checked').attr('id');
             if(machine == 'cubicon' || machine == 'sindo' || machine == 'onyx' || machine == 'freeform') {
@@ -92,6 +91,7 @@
         $('#normal').click(function() {
           $('#machineDetail').html('');
           $('#payment').html('');
+          $('#machineSelect').css('display', 'block');
           $('#normalWrapper').css('display', 'block');
           $('#industrialWrapper').css('display', 'none');
           $('#feeInfo').html('');
@@ -102,6 +102,7 @@
         $('#industrial').click(function() {
           $('#machineDetail').html('');
           $('#payment').html('');
+          $('#machineSelect').css('display', 'block');
           $('#normalWrapper').css('display', 'none');
           $('#industrialWrapper').css('display', 'block');
           $('#feeInfo').html('');
@@ -242,8 +243,7 @@
             for (i in staffList) {
               if(staffList[i][1] == $.trim(str)) {
                 $('input').attr('disabled', true);
-                $('#status').css('color', '#ffbf00');
-                $('#status').text('Transmitting Data...');
+                alertify.log('Transmitting Data...');
                 var serializedData = '날짜=' + new Date().format('yyyy. mm. dd / HH:MM') +
                                       '&이름=' + $.trim($('#name').val()) +
                                       '&소속=' + $('#belonging').val() +
@@ -264,6 +264,8 @@
                 });
                 request.done(function() {
                   alertify.success('201 Transmitted');
+                  $('#DATA')[0].reset();
+                  $('#machineSelect').css('display', 'none');
                 });
                 request.fail(function(jqXHR, textStatus, errorThrown) { alertify.error('Error : ' + textStatus + errorThrown); });
                 request.always(function() { $('input').attr('disabled', false); });
@@ -377,7 +379,7 @@
         $('#feeInfo').css('display', 'inline');
         $('#machineDetail').html('');
         $('#payment').html('');
-        $('#feeInfo').html('사용 요금 : 0원');
+        $('#feeInfo').html('요금 : 0원');
         $('#discountWrap').css('display', 'none');
       }
       function keyupReset() {
@@ -392,11 +394,11 @@
         });
         $('input[name=cost]').keyup(function() {
           if(!$('#manualActivate').attr('checked')) {
-            $('#feeInfo').html('사용 요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) + '원');
+            $('#feeInfo').html('요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) + '원');
           }
         });
         $('#discountWrap').click(function() {
-          $('#feeInfo').html('사용 요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) + '원');
+          $('#feeInfo').html('요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) + '원');
         });
       }
       function autoLimit(str, num) {
