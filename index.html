@@ -13,7 +13,6 @@
     <meta property="og:url" content="https://luftaquila.github.io/ajouMaker/"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html">
-
   	<link rel="stylesheet" href="alertify.core.css" />
   	<link rel="stylesheet" href="alertify.default.css" id="toggleCSS" />
   </head>
@@ -42,7 +41,7 @@
         사용 장비<br><span style="line-height:10%"><br></span>
         <label for='normal'><input type='radio' id='normal' name='machineType' value="normal" required>일반 장비</input></label><br>
         <label for='industrial'><input type='radio' id='industrial' name='machineType' value="industrial">산업용 장비</input></label><br><br>
-      </div><div style='width:80; float:left'>&nbsp;</div>
+      </div><div style='width:50; float:left'>&nbsp;</div>
       <div id='machineSelect' style='float:left; text-align:center; display:none'>
         <div id='machineContainer' style='text-align:left; width:auto; margin:auto; display:inline-block'>
           <div id='normalWrapper' style="display: none">
@@ -119,7 +118,7 @@
           $('input:radio[name=machine]:checked').prop('checked', false);
         });
         payment_time_str = '사용 시간 : <input placeholder="시간" id="usehour" name="cost" type="number" required style="width:40" min="0"/> : <input placeholder="분" id="usemin" name="cost" type="number" required style="width:30" min="0" max="59"/><br>';
-        payment_area_str = '인쇄 면적 : <input placeholder="가로(mm)" id="xaxis" name="cost" type="number" required style="width:65"/> * <input placeholder="세로(mm)" id="yaxis" name="cost" type="number" required style="width:65"/><br>';
+        payment_area_str = '인쇄 면적 : <input placeholder="mm" id="xaxis" name="cost" type="number" required style="width:40"/> * <input placeholder="mm" id="yaxis" name="cost" type="number" required style="width:40"/><br>';
         $('#cubicon').click(function() {
           clickReset();
           if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
