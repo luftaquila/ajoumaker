@@ -25,7 +25,7 @@
       }
     </style>
     <form id="DATA">
-      아주대학교 메이커스페이스 장비 관리 시스템 <span style="font-size:0.75rem">v1.3.7 Stable</span><br><span style="line-height:25%"><br></span>
+      아주대학교 메이커스페이스 장비 관리 시스템 <span style="font-size:0.75rem">v1.3.8 Stable</span><br><span style="line-height:25%"><br></span>
       <div style='width:1%; float:left'>&nbsp;</div>
       <div id='basicInfo' style='float:left'>
         <input placeholder="이름 입력" id="name" type="text" style='width:150' autofocus required/><br><span style="line-height:25%"><br></span>
@@ -243,7 +243,7 @@
         });
       });
       $("#DATA").submit(function(event) {
-        var staffList = [['강문석', 5582], ['김현기', 0796], ['양승창', 0270], ['오병준', 3691], ['최은정', 3690], ['신은영', 7257]];
+        var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3690'], ['신은영', '7257'], ['배주근', '4910']];
         event.preventDefault();
         alertify.prompt('Verification Required', function(e) {
           var str = $('#alertify-text').val();
@@ -285,6 +285,10 @@
           alertify.error('Verification Failure');
         });
         $('#alertify-text').replaceWith('<input type="number" id="alertify-text" class="alertify-text"/>');
+        setTimeout(function() {
+          $('#alertify-text').focus();
+        }, 500);
+        $('#alertify-text').focus();
       });
       function feeCalc(machine, type, discount) {
         if(type == '수동 입력'){
@@ -372,7 +376,7 @@
           return $('#usehour').val() + '시간 ' + $('#usemin').val() + '분\n' + '강화재료 : ' + $('#mainMaterial').val() + 'cc';
         }
         else if(machine == 'objet350') {
-          return '메인 : ' + $('#mainMaterial').val() + 'g 서브 : ' + $('#subMaterial').val() + 'g';
+          return '메인 : ' + $('#mainMaterial').val() + 'g / 서브 : ' + $('#subMaterial').val() + 'g';
         }
         else if(machine == 'xfab') {
           return '메인 : ' + $('#mainMaterial').val() + 'g';
