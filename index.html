@@ -235,8 +235,8 @@
           this.value = autoHypen(this.value.trim());
           function autoHypen(str) {
             str = str.replace(/[^0-9]/g, '');
-            if( str.length < 3) { return str; }
-            else if(str.length < 7) { return str.substr(0, 3) + '-' + str.substr(3); }
+            if( str.length < 4) { return str; }
+            else if(str.length < 8) { return str.substr(0, 3) + '-' + str.substr(3); }
             else { return str.substr(0, 3) + '-' + str.substr(3, 4) + '-' + str.substr(7); }
             return str;
           }
