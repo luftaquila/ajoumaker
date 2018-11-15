@@ -25,7 +25,7 @@
       }
     </style>
     <form id="DATA">
-      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v1.3.11 Stable</span><br><span style="line-height:25%"><br></span>
+      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">vtest alpha</span><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem">작업물이 출력에 실패할 경우 재출력 요금은 50%만 받습니다.</div><span style="line-height:35%"><br></span>
       <div style='width:1%; float:left'>&nbsp;</div>
       <div id='basicInfo' style='float:left'>
@@ -289,7 +289,7 @@
                   fileRequest = $.ajax({
                     type: 'POST',
                     url: 'https://script.google.com/macros/s/AKfycby3rQ8hCBkHlI-D0VnYRnGQjm6_JlzCHFglaeBHwqyYmxUVW8Y/exec',
-                    data: $('#filedata').val()
+                    data: new Formdata($('#filedata')[0].files[0])
                   });
                   fileRequest.done(function() {
                     alertify.success('201 Transmitted');
