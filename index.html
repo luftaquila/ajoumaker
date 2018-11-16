@@ -25,8 +25,8 @@
       }
     </style>
     <form id="DATA">
-      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v1.3.12 Alpha</span><br><span style="line-height:25%"><br></span>
-      <div id='notice' style="font-size:1rem">작업물이 출력에 실패할 경우 재출력 요금은 50%만 받습니다.</div><span style="line-height:35%"><br></span>
+      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v1.4.0 Alpha</span><br><span style="line-height:25%"><br></span>
+      <div id='notice' style="font-size:1rem">출력이 실패할 경우 출력 요금의 50%가 마일리지로 제공됩니다.</div><span style="line-height:35%"><br></span>
       <div style='width:1%; float:left'>&nbsp;</div>
       <div id='basicInfo' style='float:left'>
         <input placeholder="이름 입력" id="name" type="text" style='width:150' autofocus required/><br><span style="line-height:25%"><br></span>
@@ -244,7 +244,7 @@
         });
       });
       $("#DATA").submit(function(event) {
-        var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3690'], ['신은영', '7257'], ['배주근', '4910']];
+        var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3960'], ['신은영', '7257'], ['배주근', '4910']];
         event.preventDefault();
         alertify.prompt('Verification Required', function(e) {
           var str = $('#alertify-text').val();
@@ -298,7 +298,7 @@
         if(machine == 'cubicon' || machine == 'sindo') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
           if(type == '교내구성원') {
-            if(discount) return calc(1500, 6, hour, min);
+            if(discount) return calc(1500, 6, hour == 7 && min != 0, min);
             else return calc(1500, 0, hour, min);
           }
           else return calc(2000, 0, hour, min);
@@ -365,16 +365,19 @@
           else return calc(12000, 0, hour, min);
         }
       }
-      function calc(fee, subtract, hour, min) { return (Math.round((Number(fee) * (hour - Number(subtract) + (min / 60))) / 100) * 100) < 0 ? 0 : Math.round((Number(fee) * (hour - Number(subtract) + (min / 60))) / 100) * 100; }
+      function calc(fee, subtract, hour, min) {
+        var price = Math.round((Number(fee) * (hour - Number(subtract) + (min / 60))) / 100) * 100;
+        return price < 0 ? 0 : price < Number(fee) ? Number(fee) : price;
+      }
       function machineUse(machine) {
         if(machine == 'cubicon' || machine == 'sindo' || machine == 'onyx' || machine == 'freeform' || machine == 'laser' || machine == 'cutter' || machine == 'f370' || machine == '3d') {
-          return $('#usehour').val() + '시간 ' + $('#usemin').val() + '분';
+          return Number($('#usehour').val()) + '시간 ' + Number($('#usemin').val()) + '분';
         }
         else if(machine == 'plotter' || machine == 'uv') {
           return $('#xaxis').val() + 'mm*' + $('#yaxis').val() + 'mm';
         }
         else if(machine == 'x7') {
-          return $('#usehour').val() + '시간 ' + $('#usemin').val() + '분\n' + '강화재료 : ' + $('#mainMaterial').val() + 'cc';
+          return Number($('#usehour').val()) + '시간 ' + Number($('#usemin').val()) + '분\n' + '강화재료 : ' + $('#mainMaterial').val() + 'cc';
         }
         else if(machine == 'objet350') {
           return '메인 : ' + $('#mainMaterial').val() + 'g / 서브 : ' + $('#subMaterial').val() + 'g';

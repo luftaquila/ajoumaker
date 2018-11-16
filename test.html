@@ -24,7 +24,7 @@
         margin: 0;
       }
     </style>
-    <form id="DATA" method='POST' action='https://script.google.com/macros/s/AKfycby3rQ8hCBkHlI-D0VnYRnGQjm6_JlzCHFglaeBHwqyYmxUVW8Y/exec'>
+    <form id="DATA">
       아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">vtest alpha</span><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem">작업물이 출력에 실패할 경우 재출력 요금은 50%만 받습니다.</div><span style="line-height:35%"><br></span>
       <div style='width:1%; float:left'>&nbsp;</div>
@@ -259,7 +259,7 @@
       });
       $("#DATA").submit(function(event) {
         var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3690'], ['신은영', '7257'], ['배주근', '4910']];
-        //event.preventDefault();
+        event.preventDefault();
         alertify.prompt('Verification Required', function(e) {
           var str = $('#alertify-text').val();
           if(e) {
@@ -285,6 +285,10 @@
                     data: encodeURI(serializedData)
                 });
                 request.done(function() {
+                  FileRequest = $.ajax({
+                    type: 'POST',
+                    url: ''
+                  });
                   alertify.success('201 Transmitted');
                   $('#DATA')[0].reset();
                   $('#machineSelect').css('display', 'none');
