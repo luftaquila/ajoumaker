@@ -13,7 +13,7 @@
     <meta property="og:url" content="https://luftaquila.github.io/ajouMaker/"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html">
-  	<link rel="stylesheet" href="/resources/alertify.core.css" />
+    <link rel="stylesheet" href="/resources/alertify.core.css" />
   	<link rel="stylesheet" href="/resources/alertify.default.css" id="toggleCSS" />
   </head>
   <body>
@@ -25,12 +25,15 @@
       }
     </style>
     <form id="DATA">
-      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">vTEST</span><br><span style="line-height:25%"><br></span>
-      <div id='notice' style="font-size:1rem">출력이 실패할 경우 출력 요금의 50%가 마일리지로 제공됩니다.</div><span style="line-height:35%"><br></span>
+      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v1.4.3 Alpha</span><br><span style="line-height:25%"><br></span>
+      <div id='notice' style="font-size:1rem;">
+        <span style="font-weight:bold">1시간 미만의 출력물은 1시간 출력으로 간주합니다.</span><br>
+        <span style="color:red; font-weight:bold">출력이 실패할 경우 출력 요금의 50%가 마일리지로 제공됩니다.</span>
+      </div><span style="line-height:35%"><br></span>
       <div style='width:1%; float:left'>&nbsp;</div>
       <div id='basicInfo' style='float:left'>
         <input placeholder="이름 입력" id="name" type="text" style='width:150' autofocus required/><br><span style="line-height:25%"><br></span>
-        <input placeholder="소속 입력" id="belonging" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
+        <input placeholder="소속 / 학과 입력" id="belonging" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
         <input placeholder="연락처 입력" id="contact" type="tel" maxlength="13" style='width:150' required/><br><span style="line-height:25%"><br></span>
         <input placeholder="사용 목적 입력" id="purpose" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
         <input id="filedata" type="file" name='file' required/><br><span style="line-height:25%"><br></span>
@@ -271,7 +274,7 @@
                                       '&이름=' + $.trim($('#name').val()) +
                                       '&소속=' + $('#belonging').val() +
                                       '&연락처=' + $('#contact').val() +
-                                      '&파일명=' + $('#filename').val() +
+                                      '&파일명=' + $('#filedata').val() +
                                       '&사용 목적=' + $('#purpose').val() +
                                       '&사용 장비=' + $('input:radio[name=machine]:checked').val() + machineNumReturn() +
                                       '&사용량=' + machineUse($('input:radio[name=machine]:checked').attr('id')) +
@@ -286,11 +289,23 @@
                     data: encodeURI(serializedData)
                 });
                 request.done(function() {
-                  alertify.success('201 Transmitted');
-                  $('#DATA')[0].reset();
-                  $('#machineSelect').css('display', 'none');
+                  fileRequest = $.ajax({
+                    type: 'POST',
+                    url: 'https://script.google.com/macros/s/AKfycby3rQ8hCBkHlI-D0VnYRnGQjm6_JlzCHFglaeBHwqyYmxUVW8Y/exec',
+                    data: {
+                      file: $('#filedata')[0].files[0]
+                    },
+                    processData: false,
+                    contentType: false
+                  });
+                  fileRequest.done(function() {
+                    alertify.success('201 Transmitted');
+                    $('#DATA')[0].reset();
+                    $('#machineSelect').css('display', 'none');
+                  })
+                  fileRequest.fail(function(jqXHR, textStatus, errorThrown) { alertify.error('UploadError : ' + textStatus + errorThrown); });
                 });
-                request.fail(function(jqXHR, textStatus, errorThrown) { alertify.error('Error : ' + textStatus + errorThrown); });
+                request.fail(function(jqXHR, textStatus, errorThrown) { alertify.error('TransmitError : ' + textStatus + errorThrown); });
                 request.always(function() { $('input').attr('disabled', false); });
                 event.preventDefault();
                 return;

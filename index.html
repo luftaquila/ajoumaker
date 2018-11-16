@@ -25,7 +25,7 @@
       }
     </style>
     <form id="DATA">
-      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v1.4.3 Alpha</span><br><span style="line-height:25%"><br></span>
+      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v1.4.4 Alpha</span><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem;">
         <span style="font-weight:bold">1시간 미만의 출력물은 1시간 출력으로 간주합니다.</span><br>
         <span style="color:red; font-weight:bold">출력이 실패할 경우 출력 요금의 50%가 마일리지로 제공됩니다.</span>
@@ -370,7 +370,6 @@
       }
       function calc(fee, sub, hour, min) {
         var price = Number(fee) * (hour - Number(sub) + (min / 60));
-        console.log(price);
         return price <= 0 ? 0 : price < Number(fee) ? Number(fee) : Math.round(price / 100) * 100;
       }
       function machineUse(machine) {
