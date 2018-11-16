@@ -25,7 +25,7 @@
       }
     </style>
     <form id="DATA">
-      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v1.4.0 Alpha</span><br><span style="line-height:25%"><br></span>
+      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v1.4.1 Alpha</span><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem">출력이 실패할 경우 출력 요금의 50%가 마일리지로 제공됩니다.</div><span style="line-height:35%"><br></span>
       <div style='width:1%; float:left'>&nbsp;</div>
       <div id='basicInfo' style='float:left'>
@@ -298,7 +298,7 @@
         if(machine == 'cubicon' || machine == 'sindo') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
           if(type == '교내구성원') {
-            if(discount) return calc(1500, 6, hour == 7 && min != 0, min);
+            if(discount) return calc(1500, 6, hour, min);
             else return calc(1500, 0, hour, min);
           }
           else return calc(2000, 0, hour, min);
