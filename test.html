@@ -13,8 +13,8 @@
     <meta property="og:url" content="https://luftaquila.github.io/ajouMaker/"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html">
-  	<link rel="stylesheet" href="alertify.core.css" />
-  	<link rel="stylesheet" href="alertify.default.css" id="toggleCSS" />
+  	<link rel="stylesheet" href="/resources/alertify.core.css" />
+  	<link rel="stylesheet" href="/resources/alertify.default.css" id="toggleCSS" />
   </head>
   <body>
     <style>
@@ -24,7 +24,7 @@
         margin: 0;
       }
     </style>
-    <form id="DATA">
+    <form id="DATA" method='POST' action='https://script.google.com/macros/s/AKfycby3rQ8hCBkHlI-D0VnYRnGQjm6_JlzCHFglaeBHwqyYmxUVW8Y/exec'>
       아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">vtest alpha</span><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem">작업물이 출력에 실패할 경우 재출력 요금은 50%만 받습니다.</div><span style="line-height:35%"><br></span>
       <div style='width:1%; float:left'>&nbsp;</div>
@@ -33,7 +33,7 @@
         <input placeholder="소속 입력" id="belonging" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
         <input placeholder="연락처 입력" id="contact" type="tel" maxlength="13" style='width:150' required/><br><span style="line-height:25%"><br></span>
         <input placeholder="사용 목적 입력" id="purpose" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
-        <input id="filedata" type="file" required/><br><span style="line-height:25%"><br></span>
+        <input id="filedata" type="file" name='file' required/><br><span style="line-height:25%"><br></span>
         <label for='prepay'><input type='radio' id='prepay' name='pay' value="선불" checked required>선불</input></label>&nbsp;
         <label for='afterpay'><input type='radio' id='afterpay' name='pay' value="후불">후불</input></label><br><span style="line-height:25%"><br></span>
         <span id='manualFee'>사용자 구분</span><br><span style="line-height:10%"><br></span>
@@ -71,11 +71,11 @@
         </div><br><br>
         <div id='submitWrapper' style="display:none; margin:0 0 0 5; text-align:left"><input type="submit" style='padding: 0.3rem 1.3rem;'/></div>
       </div>
-      <div id="data"></div>
+      <div id="filehtml"></div>
     </form>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-    <script src='alertify.min.js'></script>
+    <script src='/resources/alertify.min.js'></script>
     <script>
       $(function() {
         $('#manualFee').click(function() {
@@ -252,14 +252,14 @@
                 html = '<input type="hidden" name="data" value="' + e.target.result.replace(/^.*,/, '') + '" >';
                 html += '<input type="hidden" name="mimetype" value="' + e.target.result.match(/^.*(?=;)/)[0] + '" >';
                 html += '<input type="hidden" name="filename" value="' + e.target.fileName + '" >';
-                $("#data").empty().append(html);
+                $("#filehtml").empty().append(html);
             }
             fr.readAsDataURL(file);
         });
       });
       $("#DATA").submit(function(event) {
         var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3690'], ['신은영', '7257'], ['배주근', '4910']];
-        event.preventDefault();
+        //event.preventDefault();
         alertify.prompt('Verification Required', function(e) {
           var str = $('#alertify-text').val();
           if(e) {
@@ -279,27 +279,18 @@
                                       '&요금=￦' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) +
                                       '&결제=' + $('input:radio[name=pay]:checked').val() +
                                       '&담당자=' + staffList[i][0];
-                console.log(serializedData);
                 request = $.ajax({
                     type: 'POST',
                     url: 'https://script.google.com/macros/s/AKfycbyi2sn97OkkOFIfVt3BVH3ToEPBFvx4G_dQ_oS_jYxqcZNuB_c/exec',
                     data: encodeURI(serializedData)
                 });
                 request.done(function() {
-                  fileRequest = $.ajax({
-                    type: 'POST',
-                    url: 'https://script.google.com/macros/s/AKfycby3rQ8hCBkHlI-D0VnYRnGQjm6_JlzCHFglaeBHwqyYmxUVW8Y/exec',
-                    data: new Formdata($('#filedata')[0].files[0])
-                  });
-                  fileRequest.done(function() {
-                    alertify.success('201 Transmitted');
-                    $('#DATA')[0].reset();
-                    $('#machineSelect').css('display', 'none');
-                  });
-                  fileRequest.fail(function(jqXHR, textStatus, errorThrown) { alertify.error('Error : ' + textStatus + errorThrown); });
-                  fileRequest.always(function() { $('input').attr('disabled', false); });
+                  alertify.success('201 Transmitted');
+                  $('#DATA')[0].reset();
+                  $('#machineSelect').css('display', 'none');
                 });
-                event.preventDefault();
+                request.fail(function(jqXHR, textStatus, errorThrown) { alertify.error('DataError : ' + textStatus + errorThrown); });
+                request.always(function() { $('input').attr('disabled', false); });
                 return;
               }
             }
