@@ -74,7 +74,6 @@
         </div><br><br>
         <div id='submitWrapper' style="display:none; margin:0 0 0 5; text-align:left"><input type="submit" style='padding: 0.3rem 1.3rem;'/></div>
       </div>
-      <div id="filehtml"></div>
     </form>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
@@ -246,19 +245,6 @@
             return str;
           }
         });
-        $('#filedata').on("change", function() {
-            var file = this.files[0];
-            var fr = new FileReader();
-            fr.fileName = file.name
-            fr.onload = function(e) {
-                e.target.result
-                html = '<input type="hidden" name="data" value="' + e.target.result.replace(/^.*,/, '') + '" >';
-                html += '<input type="hidden" name="mimetype" value="' + e.target.result.match(/^.*(?=;)/)[0] + '" >';
-                html += '<input type="hidden" name="filename" value="' + e.target.fileName + '" >';
-                $("#filehtml").empty().append(html);
-            }
-            fr.readAsDataURL(file);
-        });
       });
       $("#DATA").submit(function(event) {
         var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3960'], ['신은영', '7257'], ['배주근', '4910']];
@@ -289,12 +275,16 @@
                     data: encodeURI(serializedData)
                 });
                 request.done(function() {
+                  var formData = new FormData();
+                  var file = $('#filedata')[0].files[0];
+                  console.log(file);
+                  formData.append('file', file);
+                  formData.append('type', file.type);
+                  formData.append('name', file.name);
                   fileRequest = $.ajax({
                     type: 'POST',
                     url: 'https://script.google.com/macros/s/AKfycby3rQ8hCBkHlI-D0VnYRnGQjm6_JlzCHFglaeBHwqyYmxUVW8Y/exec',
-                    data: {
-                      file: $('#filedata')[0].files[0]
-                    },
+                    data: formData,
                     processData: false,
                     contentType: false
                   });
