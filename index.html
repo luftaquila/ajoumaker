@@ -25,10 +25,10 @@
       }
     </style>
     <form id="DATA">
-      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v2.0.1 α</span><br><span style="line-height:25%"><br></span>
+      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v2.1.0 α</span><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem;">
+        <span style="font-weight:bold">파일 업로드는 .stl과 .zip 확장자만 허용됩니다.</span><br>
         <span style="font-weight:bold">1시간 미만의 출력물은 1시간 출력으로 간주합니다.</span><br>
-        <span style="font-weight:bold">파일은 gcode 데이터가 아닌 3D 모델링 파일로 첨부하세요.</span><br>
         <span style="color:red; font-weight:bold">출력이 실패할 경우 출력 요금의 50%가 마일리지로 제공됩니다.</span>
       </div><span style="line-height:70%"><br></span>
       <div style='width:1%; float:left'>&nbsp;</div>
@@ -289,6 +289,7 @@
                           var fileInfo = JSON.parse(xhr.response);
                           $('.alertify-log-show').css('display', 'none');
                           alertify.success('201 Transmitted');
+                          $('input').attr('disabled', false);
                           $('#DATA')[0].reset();
                           $('#machineSelect').css('display', 'none');
                       }
@@ -296,6 +297,7 @@
                           var errorMessage = xhr.response || 'Unable to upload file';
                           $('.alertify-log-show').css('display', 'none');
                           alertify.error('UploadError : ' + errorMessage);
+                          $('input').attr('disabled', false);
                       }
                   };
                   xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
@@ -309,7 +311,7 @@
                   xhr.send(file);
                 });
                 request.fail(function(jqXHR, textStatus, errorThrown) { alertify.error('Error : ' + textStatus + errorThrown); });
-                request.always(function() { $('input').attr('disabled', false); });
+                request.always(function() {  });
                 return;
               }
             }
@@ -378,8 +380,8 @@
           else return calc(6500, 0, hour, min) + Number($('#mainMaterial').val()) * 9000;
         }
         else if(machine == 'objet350') {
-          if(type == '교내구성원') return $('#mainMaterial').val() * 400 + $('#subMaterial').val() * 150;
-          else return $('#mainMaterial').val() * 700 + $('#subMaterial').val() * 250;
+          if(type == '교내구성원') return Math.round(($('#mainMaterial').val() * 400 + $('#subMaterial').val() * 150) / 100) * 100;
+          else return Math.round(($('#mainMaterial').val() * 700 + $('#subMaterial').val() * 250) / 100) * 100;
         }
         else if(machine == 'f370') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
