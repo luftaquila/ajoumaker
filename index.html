@@ -25,19 +25,19 @@
       }
     </style>
     <form id="DATA">
-      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v2.1.0 α</span><br><span style="line-height:25%"><br></span>
+      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v2.1.1 α</span><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem;">
         <span style="font-weight:bold">파일 업로드는 .stl과 .zip 확장자만 허용됩니다.</span><br>
         <span style="font-weight:bold">1시간 미만의 출력물은 1시간 출력으로 간주합니다.</span><br>
         <span style="color:red; font-weight:bold">출력이 실패할 경우 출력 요금의 50%가 마일리지로 제공됩니다.</span>
       </div><span style="line-height:70%"><br></span>
-      <div style='width:1%; float:left'>&nbsp;</div>
+      <div style='width:10; float:left'>&nbsp;</div>
       <div id='basicInfo' style='float:left'>
         <input placeholder="이름 입력" id="name" type="text" style='width:150' autofocus required/><br><span style="line-height:25%"><br></span>
         <input placeholder="소속 / 학과 입력" id="belonging" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
         <input placeholder="연락처 입력" id="contact" type="tel" maxlength="13" pattern="010-[0-9]{4}-[0-9]{4}" style='width:150' required/><br><span style="line-height:25%"><br></span>
         <input placeholder="사용 목적 입력" id="purpose" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
-        <input id="filedata" type="file" name='file' required/><br><span style="line-height:25%"><br></span>
+        <input type="checkbox" id='fileReq' checked='checked'/><input id="filedata" type="file" name='file' required/><br><span style="line-height:25%"><br></span>
         <label for='prepay'><input type='radio' id='prepay' name='pay' value="선불" checked required>선불</input></label>&nbsp;
         <label for='afterpay'><input type='radio' id='afterpay' name='pay' value="후불">후불</input></label><br><span style="line-height:25%"><br></span>
         <span id='manualFee'>사용자 구분</span><br><span style="line-height:10%"><br></span>
@@ -235,6 +235,7 @@
           $('#payment').html(payment_time_str);
           keyupReset();
         });
+        $('#fileReq').click(function() { $('#filedata').attr('required', $('#fileReq').prop('checked') ? true : false); });
         $('#contact').keyup(function(event) {
           event = event || window.event;
           this.value = autoHypen(this.value.trim());
@@ -251,7 +252,12 @@
         event.preventDefault();
         var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3960'], ['신은영', '7257'], ['배주근', '4910']];
         var file = $('#filedata')[0].files[0];
-        if(!new RegExp(/\.(stl|zip)/ig).test(file.name.substr(file.name.length - 4, 4))) { alertify.error('Only .stl or .zip files accepted'); return; }
+        if($('#fileReq').prop('checked')) {
+          if(!new RegExp(/\.(stl|zip)/ig).test(file.name.substr(file.name.length - 4, 4))) {
+            alertify.error('Only .stl or .zip files accepted');
+            return;
+          }
+        }
         alertify.prompt('Verification Required', function(e) {
           var str = $('#alertify-text').val();
           if(e) {
@@ -263,7 +269,7 @@
                                      '&이름=' + $.trim($('#name').val()) +
                                      '&소속 / 학과=' + $('#belonging').val() +
                                      '&연락처=' + $('#contact').val() +
-                                     '&파일명=' + file.name +
+                                     '&파일명=' + ($('#fileReq').prop('checked') ? file.name : '파일 없음') +
                                      '&사용 목적=' + $('#purpose').val() +
                                      '&사용 장비=' + $('input:radio[name=machine]:checked').val() + machineNumReturn() +
                                      '&사용량=' + machineUse($('input:radio[name=machine]:checked').attr('id')) +
@@ -300,15 +306,25 @@
                           $('input').attr('disabled', false);
                       }
                   };
-                  xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
-                  xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
-                  xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-                  xhr.setRequestHeader('Dropbox-API-Arg', UniEncode({
-                    path: '/' + new Date().format('yy. mm. dd ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~') + '/' + file.name,
-                    mode: 'add',
-                    autorename: true
-                  }));
-                  xhr.send(file);
+                  if($('#fileReq').prop('checked')) {
+                    xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
+                    xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+                    xhr.setRequestHeader('Dropbox-API-Arg', UniEncode({
+                      path: '/' + new Date().format('yy. mm. dd ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~') + '/' + file.name,
+                      mode: 'add',
+                      autorename: true
+                    }));
+                    xhr.send(file);
+                  }
+                  else {
+                    xhr.open('POST', 'https://api.dropboxapi.com/2/files/create_folder_v2');
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.send(UniEncode({
+                      path: '/' + new Date().format('yy. mm. dd ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~'),
+                    }));
+                  }
                 });
                 request.fail(function(jqXHR, textStatus, errorThrown) { alertify.error('Error : ' + textStatus + errorThrown); });
                 request.always(function() {  });
