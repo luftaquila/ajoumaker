@@ -27,9 +27,9 @@
     <form id="DATA">
       아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v2.1.1 α</span><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem;">
-        <span style="font-weight:bold">파일 업로드는 .stl과 .zip 확장자만 허용됩니다.</span><br>
-        <span style="font-weight:bold">1시간 미만의 출력물은 1시간 출력으로 간주합니다.</span><br>
-        <span style="color:red; font-weight:bold">출력이 실패할 경우 출력 요금의 50%가 마일리지로 제공됩니다.</span>
+        <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
+        <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br>
+        <span style="color:red; font-weight:bold">작업물이 출력이 실패할 경우 사용 요금의 50%가 마일리지로 제공됩니다.</span>
       </div><span style="line-height:70%"><br></span>
       <div style='width:10; float:left'>&nbsp;</div>
       <div id='basicInfo' style='float:left'>
@@ -294,7 +294,7 @@
                       if (xhr.status === 200) {
                           var fileInfo = JSON.parse(xhr.response);
                           $('.alertify-log-show').css('display', 'none');
-                          alertify.success('201 Transmitted');
+                          alertify.success('Transmitted');
                           $('input').attr('disabled', false);
                           $('#DATA')[0].reset();
                           $('#machineSelect').css('display', 'none');
