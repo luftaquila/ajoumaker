@@ -25,7 +25,7 @@
       }
     </style>
     <form id="DATA">
-      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v2.1.1 α</span><br><span style="line-height:25%"><br></span>
+      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v2.2.0 α</span><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem;">
         <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
         <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br>
@@ -54,6 +54,7 @@
             <label for='sindo'><input type='radio' id='sindo' name='machine' value="신도">신도</input></label><br>
             <label for='onyx'><input type='radio' id='onyx' name='machine' value="Onyx">Onyx One</input></label><br>
             <label for='freeform'><input type='radio' id='freeform' name='machine' value="Freeform">Freeform</input></label><br>
+            <label for='zortrax'><input type='radio' id='zortrax' name='machine' value="Zortrax">Zortrax</input></label><br>
             <label for='laser'><input type='radio' id='laser' name='machine' value="레이저커터">레이저커터</input></label><br>
             <label for='plotter'><input type='radio' id='plotter' name='machine' value="플로터">플로터</input></label><br>
             <label for='cutter'><input type='radio' id='cutter' name='machine' value="커팅플로터">커팅플로터</input></label><br>
@@ -94,7 +95,7 @@
           $('#feeInfo').html('요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:checkbox[name=discount]:checked').length ? $('input:checkbox[name=discount]:checked').length : $('input:radio[name=ppl]:checked').val())) + '원');
           if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
             machine = $('input:radio[name=machine]:checked').attr('id');
-            if(machine == 'cubicon' || machine == 'sindo' || machine == 'onyx' || machine == 'freeform') {
+            if(machine == 'cubicon' || machine == 'sindo' || machine == 'onyx' || machine == 'freeform' || machine == 'zortrax') {
               $('#discountWrap').css('display', 'inline');
             }
           }
@@ -182,6 +183,14 @@
           "<label for='F2'><input type='radio' id='F2' name='machineNum' value='F2'>2</input></label><br>";
           $('#payment').html(payment_time_str);
           $('#machineDetail').html(freeform_str);
+          keyupReset();
+        });
+        $('#zortrax').click(function() {
+          clickReset();
+          if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
+            $('#discountWrap').css('display', 'inline');
+          }
+          $('#payment').html(payment_time_str);
           keyupReset();
         });
         $('#laser').click(function() {
@@ -344,7 +353,7 @@
         if(type == '수동 입력'){
           return $('#manualCost').val().replace(/[^\d]+/g, '');
         }
-        if(machine == 'cubicon' || machine == 'sindo') {
+        if(machine == 'cubicon' || machine == 'sindo' || machine == 'zortrax') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
           if(type == '교내구성원') {
             if(discount) return calc(1500, 6, hour, min);
@@ -419,7 +428,7 @@
         return price <= 0 ? 0 : price < Number(fee) ? Number(fee) : Math.round(price / 100) * 100;
       }
       function machineUse(machine) {
-        if(machine == 'cubicon' || machine == 'sindo' || machine == 'onyx' || machine == 'freeform' || machine == 'laser' || machine == 'cutter' || machine == 'f370' || machine == '3d') {
+        if(machine == 'cubicon' || machine == 'sindo' || machine == 'onyx' || machine == 'freeform' || machine == 'zortrax' || machine == 'laser' || machine == 'cutter' || machine == 'f370' || machine == '3d') {
           return Number($('#usehour').val()) + '시간 ' + Number($('#usemin').val()) + '분';
         }
         else if(machine == 'plotter' || machine == 'uv') {
@@ -436,7 +445,7 @@
         }
       }
       function machineNumReturn() {
-        if($('#plotter:checked, #cutter:checked, #uv:checked, #x7:checked, #objet350:checked, #f370:checked, #xfab:checked').length == 0) {
+        if($('#plotter:checked, #cutter:checked, #uv:checked, #x7:checked, #objet350:checked, #f370:checked, #xfab:checked, #zortrax:checked').length == 0) {
           return ' ' + $('input:radio[name=machineNum]:checked').val().substr(1, 1) + '번';
         }
         else return '';
