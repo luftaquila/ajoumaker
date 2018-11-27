@@ -273,7 +273,7 @@
             for (i in staffList) {
               if(staffList[i][1] == str) {
                 $('input').attr('disabled', true);
-                alertify.log('Transmitting Data...', "", 0);
+                alertify.log('Transmitting...', "", 0);
                 var serializedData = '날짜=' + new Date().format('yyyy. mm. dd TT hh시 MM분') +
                                      '&이름=' + $.trim($('#name').val()) +
                                      '&소속 / 학과=' + $('#belonging').val() +
@@ -297,6 +297,7 @@
                   if (xhr.status === 200) {
                     var fileInfo = JSON.parse(xhr.response);
                     $('.alertify-log-show').css('display', 'none');
+                    alertify.log('Transmitting Data...');
                     request = $.ajax({
                         type: 'POST',
                         url: 'https://script.google.com/macros/s/AKfycbyi2sn97OkkOFIfVt3BVH3ToEPBFvx4G_dQ_oS_jYxqcZNuB_c/exec',
