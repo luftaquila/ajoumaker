@@ -23,7 +23,6 @@
     <script src='/ajoumaker/resources/alertify.min.js'></script>
     <script src='https://www.gstatic.com/charts/loader.js'></script>
     <script>
-
       $(function() {
         var machineList = [['큐비콘', 0], ['신도', 0], ['Onyx', 0], ['Freeform', 0], ['Zortrax', 0], ['레이저커터', 0], ['플로터', 0], ['커팅플로터', 0], ['UV 프린터', 0], ['X7', 0], ['Objet350', 0], ['F370', 0], ['Xfab', 0], ['3D 스캐너', 0]];
         var data = [], str = '', pos;
@@ -45,7 +44,8 @@
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(function() {
           var chart = new google.visualization.PieChart($('#chart')[0]);
-          chart.draw(google.visualization.arrayToDataTable(machineList), null);
+          machineList.unshift(['장비', '사용횟수']);
+          chart.draw(new google.visualization.DataView(google.visualization.arrayToDataTable(machineList)), null);
         });
         for (var machine in machineList) { str += '<option value=' + machineList[machine][0] + '>' + machineList[machine][0] + '</option>'; }
         $('#machine').html(str);
