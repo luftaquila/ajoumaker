@@ -25,7 +25,7 @@
       }
     </style>
     <form id="DATA">
-      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v2.2.0 α</span><br><span style="line-height:25%"><br></span>
+      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">v2.2.1 α</span><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem;">
         <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
         <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br>
@@ -287,56 +287,59 @@
                                      '&결제=' + $('input:radio[name=pay]:checked').val() +
                                      '&담당자=' + staffList[i][0];
                 console.log(serializedData);
-                request = $.ajax({
-                    type: 'POST',
-                    url: 'https://script.google.com/macros/s/AKfycbyi2sn97OkkOFIfVt3BVH3ToEPBFvx4G_dQ_oS_jYxqcZNuB_c/exec',
-                    data: encodeURI(serializedData)
-                });
-                request.done(function() {
-                  var dropboxToken = '2Gsi0PEV9cAAAAAAAAAACY5VZ_5YAk9A0360cufNAI0b1277InPbTU0o-wbw9vPc';
-                  var xhr = new XMLHttpRequest();
-                  xhr.upload.onprogress = function(evt) {
-                      var percentComplete = parseInt(100.0 * evt.loaded / evt.total);
-                      $('.alertify-log-show').html('Uploading... ' + percentComplete + '%');
-                  };
-                  xhr.onload = function() {
-                      if (xhr.status === 200) {
-                          var fileInfo = JSON.parse(xhr.response);
-                          $('.alertify-log-show').css('display', 'none');
-                          alertify.success('Transmitted');
-                          $('input').attr('disabled', false);
-                          $('#DATA')[0].reset();
-                          $('#machineSelect').css('display', 'none');
-                      }
-                      else {
-                          var errorMessage = xhr.response || 'Unable to upload file';
-                          $('.alertify-log-show').css('display', 'none');
-                          alertify.error('UploadError : ' + errorMessage);
-                          $('input').attr('disabled', false);
-                      }
-                  };
-                  if($('#fileReq').prop('checked')) {
-                    xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
-                    xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-                    xhr.setRequestHeader('Dropbox-API-Arg', UniEncode({
-                      path: '/' + new Date().format('yy. mm. dd ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~') + '/' + file.name,
-                      mode: 'add',
-                      autorename: true
-                    }));
-                    xhr.send(file);
+                var dropboxToken = '2Gsi0PEV9cAAAAAAAAAACY5VZ_5YAk9A0360cufNAI0b1277InPbTU0o-wbw9vPc';
+                var xhr = new XMLHttpRequest();
+                xhr.upload.onprogress = function(evt) {
+                  var percentComplete = parseInt(100.0 * evt.loaded / evt.total);
+                  $('.alertify-log-show').html('Uploading File... ' + percentComplete + '%');
+                };
+                xhr.onload = function() {
+                  if (xhr.status === 200) {
+                    var fileInfo = JSON.parse(xhr.response);
+                    $('.alertify-log-show').css('display', 'none');
+                    request = $.ajax({
+                        type: 'POST',
+                        url: 'https://script.google.com/macros/s/AKfycbyi2sn97OkkOFIfVt3BVH3ToEPBFvx4G_dQ_oS_jYxqcZNuB_c/exec',
+                        data: encodeURI(serializedData)
+                    });
+                    request.done(function() {
+                      alertify.success('Transmitted');
+                    });
+                    request.fail(function(jqXHR, textStatus, errorThrown) {
+                      alertify.error('DataError : ' + textStatus + errorThrown);
+                    });
+                    request.always(function() {
+                      $('input').attr('disabled', false);
+                      $('#DATA')[0].reset();
+                      $('#machineSelect').css('display', 'none');
+                    });
                   }
                   else {
-                    xhr.open('POST', 'https://api.dropboxapi.com/2/files/create_folder_v2');
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.send(UniEncode({
-                      path: '/' + new Date().format('yy. mm. dd ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~'),
-                    }));
+                    var errorMessage = xhr.response || 'Unable to upload file';
+                    $('.alertify-log-show').css('display', 'none');
+                    alertify.error('UploadError : ' + errorMessage);
+                    $('input').attr('disabled', false);
                   }
-                });
-                request.fail(function(jqXHR, textStatus, errorThrown) { alertify.error('Error : ' + textStatus + errorThrown); });
-                request.always(function() {  });
+                };
+                if($('#fileReq').prop('checked')) {
+                  xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
+                  xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
+                  xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+                  xhr.setRequestHeader('Dropbox-API-Arg', UniEncode({
+                    path: '/' + new Date().format('yy. mm. dd ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~') + '/' + file.name,
+                    mode: 'add',
+                    autorename: true
+                  }));
+                  xhr.send(file);
+                }
+                else {
+                  xhr.open('POST', 'https://api.dropboxapi.com/2/files/create_folder_v2');
+                  xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
+                  xhr.setRequestHeader('Content-Type', 'application/json');
+                  xhr.send(UniEncode({
+                    path: '/' + new Date().format('yy. mm. dd ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~'),
+                  }));
+                }
                 return;
               }
             }
