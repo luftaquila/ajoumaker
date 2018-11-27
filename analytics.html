@@ -17,7 +17,10 @@
   	<link rel="stylesheet" href="/ajoumaker/resources/alertify.default.css" id="toggleCSS" />
   </head>
   <body>
-    <div id='chart'></div>
+    <div id='chartWrap' style="position:relative">
+      <div id='Piechart' style="width: 900; height: 400"></div>
+      <div id='cnt' style='display:block; text-align:center; vertical-align: middle; position: absolute; top: 173; left: 298; font-size: 40;'></div>
+    </div>
     장비 : <select id='machine' name='machine' size='1' style='width:100px' onchange='load();'></select>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src='/ajoumaker/resources/alertify.min.js'></script>
@@ -25,7 +28,7 @@
     <script>
       $(function() {
         var machineList = [['큐비콘', 0], ['신도', 0], ['Onyx', 0], ['Freeform', 0], ['Zortrax', 0], ['레이저커터', 0], ['플로터', 0], ['커팅플로터', 0], ['UV 프린터', 0], ['X7', 0], ['Objet350', 0], ['F370', 0], ['Xfab', 0], ['3D 스캐너', 0]];
-        var data = [], str = '', pos;
+        var data = [], str = '', total = 0, pos;
         $.ajax({
           url: 'https://docs.google.com/spreadsheet/pub?key=1vMeYMA-GLuTP_o0pUCwe9oUxSEoXZIXseeiYiiARObg&single=true&gid=0&sheet=장비사용&range=G2:G&output=csv',
           type: "GET",
@@ -38,17 +41,33 @@
               data[i] = pos != -1 ? data[i][0].substr(0, pos) : data[i][0];
               for (var j in machineList) { if(data[i].includes(machineList[j][0])) machineList[j][1] += 1; }
             }
-            for (var i in machineList) { machineList[i][1] = Math.round(machineList[i][1] / data.length * 1000) / 10; }
+            for (var i in machineList) {
+              str += '<option value=' + machineList[i][0] + '>' + machineList[i][0] + '</option>';
+              total += machineList[i][1];
+            }
+            $('#machine').html(str);
+            Charts(machineList, total);
           }
+        });
+      });
+      function Charts(machineList, total) {
+        machineList.sort(function(a, b) {
+          a[1] = parseInt(a[1]);
+          b[1] = parseInt(b[1]);
+          return a[1] > b[1] ? -1 : (a[1] < b[1] ? 1 : 0);
         });
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(function() {
-          var chart = new google.visualization.PieChart($('#chart')[0]);
           machineList.unshift(['장비', '사용횟수']);
-          chart.draw(new google.visualization.DataView(google.visualization.arrayToDataTable(machineList)), null);
+          var data = google.visualization.arrayToDataTable(machineList);
+          var options = {
+            title: '장비 사용 현황',
+            pieHole: 0.4
+          };
+          var chart = new google.visualization.PieChart(document.getElementById('Piechart'));
+          $('#cnt').text(total);
+          chart.draw(data, options);
         });
-        for (var machine in machineList) { str += '<option value=' + machineList[machine][0] + '>' + machineList[machine][0] + '</option>'; }
-        $('#machine').html(str);
-      });
+      }
     </script>
   </body>
