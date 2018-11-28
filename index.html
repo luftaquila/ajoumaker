@@ -30,7 +30,7 @@
     </style>
     <form id="DATA" style="height:600">
       아주대학교 메이커스페이스 장비 관리 시스템&nbsp;
-        <a id='version' href="/ajoumaker/about.html?v2.3.2" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
+        <a id='version' href="/ajoumaker/about.html?v2.3.3" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem;">
         <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
         <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br><span style="line-height:50%"><br></span>
@@ -111,7 +111,7 @@
             for (var i in data) {
               var pos = data[i][6].indexOf(' ');
               data[i][6] = pos != -1 ? data[i][6].substr(0, pos) : data[i][6];
-              dept[data[i][2]] = dept[data[i][2]] ? dept[data[i][2]] + 1 : 1;
+              dept[data[i][2].includes('학과') ? data[i][2] : '기타'] = dept[data[i][2].includes('학과') ? data[i][2] : '기타'] ? dept[data[i][2].includes('학과') ? data[i][2] : '기타'] + 1 : 1;
               user[data[i][8]] = user[data[i][8]] ? user[data[i][8]] + 1 : 1;
               date[data[i][0].substr(0, 12)] = date[data[i][0].substr(0, 12)] ? date[data[i][0].substr(0, 12)] + 1 : 1;
               for (var j in machineList) if(data[i].includes(machineList[j][0])) machineList[j][1] += 1;
