@@ -30,7 +30,7 @@
     </style>
     <form id="DATA">
       아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">
-        <a class='ext' href="/ajoumaker/analytics.html" style="color:#0366d6">v2.2.3 α</a>&nbsp;&nbsp;
+        <a href="/ajoumaker/analytics.html" style="color:#0366d6">v2.3.1 α</a>&nbsp;&nbsp;&nbsp;
         <a class="ext" href="/ajoumaker/about.html" style="color:#0366d6">About</a></span>
       <br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem;">
@@ -448,10 +448,10 @@
           return Number($('#usehour').val()) + '시간 ' + Number($('#usemin').val()) + '분';
         }
         else if(machine == 'plotter' || machine == 'uv') {
-          return Number($('#xaxis').val()) + 'mm*' + Number($('#yaxis').val()) + 'mm';
+          return Number($('#xaxis').val()) + 'mm * ' + Number($('#yaxis').val()) + 'mm';
         }
         else if(machine == 'x7') {
-          return Number($('#usehour').val()) + '시간 ' + Number($('#usemin').val()) + '분\n' + '강화재료 : ' + Number($('#mainMaterial').val()) + 'cc';
+          return Number($('#usehour').val()) + '시간 ' + Number($('#usemin').val()) + '분 / 카본 : ' + Number($('#mainMaterial').val()) + 'cc';
         }
         else if(machine == 'objet350') {
           return '메인 : ' + Number($('#mainMaterial').val()) + 'g / 서브 : ' + Number($('#subMaterial').val()) + 'g';
