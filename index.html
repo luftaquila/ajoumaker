@@ -30,9 +30,7 @@
     </style>
     <form id="DATA">
       아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;<span style="font-size:0.75rem">
-        <a href="/ajoumaker/analytics.html" style="color:#0366d6">v2.3.1 α</a>&nbsp;&nbsp;&nbsp;
-        <a class="ext" href="/ajoumaker/about.html" style="color:#0366d6">About</a></span>
-      <br><span style="line-height:25%"><br></span>
+        <a id='version' href="/ajoumaker/about.html?v2.3.1" style="color:#0366d6"></a><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem;">
         <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
         <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br><span style="line-height:50%"><br></span>
@@ -90,6 +88,7 @@
     <script src='/ajoumaker/resources/alertify.min.js'></script>
     <script>
       $(function() {
+        $('#version').html($('#version').attr('href').substring($('#version').attr('href').indexOf('?') + 1) + ' α');
         $('#manualFee').click(function() {
           $('input:checkbox[name=discount]').attr('checked', false);
           $('#discountWrap').css('display', 'none');

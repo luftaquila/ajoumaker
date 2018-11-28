@@ -45,7 +45,7 @@
       @media (min-width:760px){html{font-size:13px;}}
     </style>
     <div class="container" style="font-weight: bold; font-size: 2.5rem;">
-      <br>아주대학교 메이커스페이스<br>장비 사용 자동화 시스템 v2.2.3
+      <br>아주대학교 메이커스페이스<br>장비 사용 자동화 시스템 <span id='version'></span>
       <div style="font-size: 2rem;">
         <br>
         <div style="font-weight: normal">
@@ -85,6 +85,9 @@
       if(!wcs_add) var wcs_add = {};
       wcs_add["wa"] = "89774287089c10";
       wcs_do();
+    </script>
+    <script>
+      document.getElementById('version').innerHTML = window.location.href.substring(window.location.href.indexOf('?') + 1);
     </script>
   </body>
 </html>
