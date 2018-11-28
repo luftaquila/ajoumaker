@@ -28,9 +28,9 @@
         padding-left: 14px;
       }
     </style>
-    <form id="DATA">
+    <form id="DATA" style="height:600">
       아주대학교 메이커스페이스 장비 관리 시스템&nbsp;
-        <a id='version' href="/ajoumaker/about.html?v2.3.1" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
+        <a id='version' href="/ajoumaker/about.html?v2.3.2" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem;">
         <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
         <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br><span style="line-height:50%"><br></span>
@@ -83,12 +83,63 @@
         <div id='submitWrapper' style="display:none; margin:0 0 0 5; text-align:left"><input type="submit" style='padding: 0.3rem 1.3rem;'/></div>
       </div>
     </form>
+    &nbsp;<span id='analytics' style="color:#0366d6">통계 보기 ▼</span>
+    <div id='chartWrap' style="position:relative;text-align:center; vertical-align: middle;display:none">
+      <div id='weekly' style="height: 400"></div>
+      <div id='MachineUse' style="height: 500"></div>
+      <div id='MachineCnt' style='position: absolute; top: 620; left: 315; text-align:center; vertical-align: middle; font-size: 40;'></div>
+      <div id='Belonging' style="height: 500"></div>
+      <div id='User' style="height: 500"></div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script src='https://www.gstatic.com/charts/loader.js'></script>
     <script src='/ajoumaker/resources/alertify.min.js'></script>
     <script>
       $(function() {
         $('#version').html($('#version').attr('href').substring($('#version').attr('href').indexOf('?') + 1) + ' α');
+        var machineList = [['큐비콘', 0], ['신도', 0], ['Onyx', 0], ['Freeform', 0], ['Zortrax', 0], ['레이저커터', 0], ['플로터', 0],
+                           ['커팅플로터', 0], ['UV 프린터', 0], ['X7', 0], ['Objet350', 0], ['F370', 0], ['Xfab', 0], ['3D 스캐너', 0]];
+        var data = [], dept = [], user = [], dpt = [], usr = [], date = [], dt = [], str = '', total = 0;
+        $.ajax({
+          url: 'https://docs.google.com/spreadsheet/pub?key=1vMeYMA-GLuTP_o0pUCwe9oUxSEoXZIXseeiYiiARObg&single=true&gid=0&sheet=장비사용&range=A2:J&output=csv',
+          type: "GET",
+          dataType: 'text',
+          cache: false,
+          success: function (response) {
+            data = response.split('\n').map((line) => line.split(','));
+            for (var i in data) {
+              var pos = data[i][6].indexOf(' ');
+              data[i][6] = pos != -1 ? data[i][6].substr(0, pos) : data[i][6];
+              dept[data[i][2]] = dept[data[i][2]] ? dept[data[i][2]] + 1 : 1;
+              user[data[i][8]] = user[data[i][8]] ? user[data[i][8]] + 1 : 1;
+              date[data[i][0].substr(0, 12)] = date[data[i][0].substr(0, 12)] ? date[data[i][0].substr(0, 12)] + 1 : 1;
+              for (var j in machineList) if(data[i].includes(machineList[j][0])) machineList[j][1] += 1;
+            }
+            for (var i in machineList) {
+              str += '<option value=' + machineList[i][0] + '>' + machineList[i][0] + '</option>';
+              total += machineList[i][1];
+            }
+            $('#machine').html(str);
+            dpt = Object.keys(dept);
+            for (var i in dpt) dpt[i] = [dpt[i], Object.values(dept)[i]];
+            usr = Object.keys(user);
+            for (var i in usr) usr[i] = [usr[i], Object.values(user)[i]];
+            dt = Object.keys(date);
+            for (var i in dt) dt[i] = [dt[i], Object.values(date)[i]];
+            Charts(machineList, total, dpt, usr, dt);
+          }
+        });
+        $('#analytics').click(function() {
+          if($('#analytics').html() == '통계 보기 ▼') {
+            $('#chartWrap').css('display', 'block');
+            $('#analytics').html('통계 접기 ▲');
+          }
+          else {
+            $('#chartWrap').css('display', 'none');
+            $('#analytics').html('통계 보기 ▼');
+          }
+        });
         $('#manualFee').click(function() {
           $('input:checkbox[name=discount]').attr('checked', false);
           $('#discountWrap').css('display', 'none');
@@ -504,6 +555,53 @@
       function UniEncode(str) {
         return JSON.stringify(str).replace(/[\u007f-\uffff]/g,
           function(c) { return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4); });
+      }
+      function Charts(machineList, total, dpt, usr, dt) {
+        machineList.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+        dpt.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+        usr.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(function() {
+          var options = {
+            title: '오늘 현재까지 ' + dt[dt.length - 1][1] + ' 명 방문\n하루 평균 ' + (total / dt.length).toFixed(1) + ' 명 방문\n\n주간 사용자 수 현황',
+            legend: 'none'
+          };
+          dt.splice(0, dt.length - 8);
+          dt.pop();
+          dt.unshift(['날짜', '사용자 수']);
+          var data = google.visualization.arrayToDataTable(dt);
+          var chart = new google.visualization.BarChart(document.getElementById('weekly'));
+          chart.draw(data, options);
+        });
+        google.charts.setOnLoadCallback(function() {
+          machineList.unshift(['장비', '사용횟수']);
+          var data = google.visualization.arrayToDataTable(machineList);
+          var options = {
+            title: '장비별 사용 현황',
+            pieHole: 0.4
+          };
+          var chart = new google.visualization.PieChart(document.getElementById('MachineUse'));
+          $('#MachineCnt').text(total);
+          chart.draw(data, options);
+        });
+        google.charts.setOnLoadCallback(function() {
+          dpt.unshift(['학과', '방문횟수']);
+          var data = google.visualization.arrayToDataTable(dpt);
+          var options = {
+            title: '소속별 사용 현황',
+            pieHole: 0.4
+          };
+          new google.visualization.PieChart(document.getElementById('Belonging')).draw(data, options);
+        });
+        google.charts.setOnLoadCallback(function() {
+          usr.unshift(['유형', '방문횟수']);
+          var data = google.visualization.arrayToDataTable(usr);
+          var options = {
+            title: '사용자별 현황',
+            pieHole: 0.4
+          };
+          new google.visualization.PieChart(document.getElementById('User')).draw(data, options);
+        });
       }
       var dateFormat = function () {
         var	token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
