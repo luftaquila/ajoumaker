@@ -175,7 +175,7 @@
                   xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
                   xhr.setRequestHeader('Content-Type', 'application/octet-stream');
                   xhr.setRequestHeader('Dropbox-API-Arg', UniEncode({
-                    path: '/' + new Date().format('yy. mm. dd ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~') + '/' + file.name,
+                    path: '/' + new Date().format('yyyy. mm. dd TT hh시 MM분 ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~') + '/' + file.name,
                     mode: 'add',
                     autorename: true
                   }));
@@ -186,7 +186,7 @@
                   xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
                   xhr.setRequestHeader('Content-Type', 'application/json');
                   xhr.send(UniEncode({
-                    path: '/' + new Date().format('yy. mm. dd HH MM') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~'),
+                    path: '/' + new Date().format('yyyy. mm. dd TT hh시 MM분 ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~'),
                   }));
                 }
                 return;
