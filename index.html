@@ -30,7 +30,7 @@
     </style>
     <form id="DATA" style="height:600">
       아주대학교 메이커스페이스 장비 관리 시스템&nbsp;
-        <a id='version' href="/ajoumaker/about.html?v2.3.3" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
+        <a id='version' href="/ajoumaker/about.html?v2.3.4" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
       <div id='notice' style="font-size:1rem;">
         <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
         <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br><span style="line-height:50%"><br></span>
@@ -98,6 +98,251 @@
     <script>
       $(function() {
         $('#version').html($('#version').attr('href').substring($('#version').attr('href').indexOf('?') + 1) + ' α');
+        clickEventListener();
+        setInterval(chartLoader(), 600);
+      });
+      $("#DATA").submit(function(event) {
+        event.preventDefault();
+        var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3960'], ['신은영', '7257'], ['배주근', '4910']];
+        var file = $('#filedata')[0].files[0];
+        if($('#fileReq').prop('checked')) {
+          if(!new RegExp(/\.(stl|zip)/ig).test(file.name.substr(file.name.length - 4, 4))) {
+            alertify.error('Only .stl or .zip files accepted');
+            return;
+          }
+        }
+        alertify.prompt('Verification Required', function(e) {
+          var str = $('#alertify-text').val();
+          if(e) {
+            for (i in staffList) {
+              if(staffList[i][1] == str) {
+                $('input').attr('disabled', true);
+                alertify.log('Transmitting...', "", 0);
+                var serializedData = '날짜=' + new Date().format('yyyy. mm. dd TT hh시 MM분') +
+                                     '&이름=' + $.trim($('#name').val()) +
+                                     '&소속 / 학과=' + $('#belonging').val() +
+                                     '&연락처=' + $('#contact').val() +
+                                     '&파일명=' + ($('#fileReq').prop('checked') ? file.name : '파일 없음') +
+                                     '&사용 목적=' + $('#purpose').val() +
+                                     '&사용 장비=' + $('input:radio[name=machine]:checked').val() + machineNumReturn() +
+                                     '&사용량=' + machineUse($('input:radio[name=machine]:checked').attr('id')) +
+                                     '&구분=' + $('input:radio[name=ppl]:checked').val() +
+                                     '&요금=￦' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) +
+                                     '&결제=' + $('input:radio[name=pay]:checked').val() +
+                                     '&담당자=' + staffList[i][0];
+                console.log(serializedData);
+                var dropboxToken = '2Gsi0PEV9cAAAAAAAAAACY5VZ_5YAk9A0360cufNAI0b1277InPbTU0o-wbw9vPc';
+                var xhr = new XMLHttpRequest();
+                xhr.upload.onprogress = function(evt) {
+                  var percentComplete = parseInt(100.0 * evt.loaded / evt.total);
+                  $('.alertify-log-show').html('Uploading File... ' + percentComplete + '%');
+                  if(isNaN(percentComplete)) {
+                    alertify.error('File Not Found');
+                    $('input').attr('disabled', false);
+                  }
+                };
+                xhr.onload = function() {
+                  if (xhr.status === 200) {
+                    var fileInfo = JSON.parse(xhr.response);
+                    $('.alertify-log-show').css('display', 'none');
+                    alertify.log('Transmitting Data...');
+                    request = $.ajax({
+                        type: 'POST',
+                        url: 'https://script.google.com/macros/s/AKfycbyi2sn97OkkOFIfVt3BVH3ToEPBFvx4G_dQ_oS_jYxqcZNuB_c/exec',
+                        data: encodeURI(serializedData)
+                    });
+                    request.done(function() {
+                      alertify.success('Transmitted');
+                    });
+                    request.fail(function(jqXHR, textStatus, errorThrown) {
+                      alertify.error('DataError : ' + textStatus + errorThrown);
+                    });
+                    request.always(function() {
+                      $('input').attr('disabled', false);
+                      $('#DATA')[0].reset();
+                      $('#machineSelect').css('display', 'none');
+                    });
+                  }
+                  else {
+                    var errorMessage = xhr.response || 'Unable to upload file';
+                    $('.alertify-log-show').css('display', 'none');
+                    alertify.error('UploadError : ' + errorMessage);
+                    $('input').attr('disabled', false);
+                  }
+                };
+                if($('#fileReq').prop('checked')) {
+                  xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
+                  xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
+                  xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+                  xhr.setRequestHeader('Dropbox-API-Arg', UniEncode({
+                    path: '/' + new Date().format('yy. mm. dd ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~') + '/' + file.name,
+                    mode: 'add',
+                    autorename: true
+                  }));
+                  xhr.send(file);
+                }
+                else {
+                  xhr.open('POST', 'https://api.dropboxapi.com/2/files/create_folder_v2');
+                  xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
+                  xhr.setRequestHeader('Content-Type', 'application/json');
+                  xhr.send(UniEncode({
+                    path: '/' + new Date().format('yy. mm. dd HH MM') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~'),
+                  }));
+                }
+                return;
+              }
+            }
+          }
+          alertify.error('Verification Failure');
+        });
+        $('#alertify-text').replaceWith('<input type="password" id="alertify-text" class="alertify-text"/>');
+        setTimeout(function() {
+          $('#alertify-text').focus();
+        }, 500);
+        $('#alertify-text').focus();
+      });
+      function feeCalc(machine, type, discount) {
+        if(type == '수동 입력'){
+          return $('#manualCost').val().replace(/[^\d]+/g, '');
+        }
+        if(machine == 'cubicon' || machine == 'sindo' || machine == 'zortrax') {
+          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
+          if(type == '교내구성원') {
+            if(discount) return calc(1500, 6, hour, min);
+            else return calc(1500, 0, hour, min);
+          }
+          else return calc(2000, 0, hour, min);
+        }
+        else if(machine == 'onyx') {
+          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
+          if(type == '교내구성원') {
+            if(discount) return calc(2000, 2, hour, min);
+            else return calc(2000, 0, hour, min);
+          }
+          else return calc(4000, 0, hour, min);
+        }
+        else if(machine == 'freeform') {
+          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
+          if(type == '교내구성원') {
+            if(discount) return calc(4000, 1, hour, min);
+            else return calc(4000, 0, hour, min);
+          }
+          else return calc(6000, 0, hour, min);
+        }
+        else if(machine == 'laser') {
+          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
+          if(type == '교내구성원') return calc(1500, 0, hour, min);
+          else return calc(2500, 0, hour, min);
+        }
+        else if(machine == 'plotter') {
+          var area = $('#xaxis').val() * $('#yaxis').val();
+          fee = area / 100;
+          if(type == '교내구성원') return Math.round(fee / 200) * 100;
+          else return Math.round(fee / 100) * 100;
+        }
+        else if(machine == 'cutter') {
+          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
+          if(type == '교내구성원') return calc(1500, 0, hour, min);
+          else return calc(2500, 0, hour, min);
+        }
+        else if(machine == 'uv') {
+          var area = $('#xaxis').val() * $('#yaxis').val();
+          fee = area / 10;
+          if(type == '교내구성원') return Math.round(fee / 200) * 100;
+          else return Math.round(fee / 100) * 100;
+        }
+        else if(machine == 'x7') {
+          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
+          if(type == '교내구성원') return calc(3500, 0, hour, min) + Number($('#mainMaterial').val()) * 5000;
+          else return calc(6500, 0, hour, min) + Number($('#mainMaterial').val()) * 9000;
+        }
+        else if(machine == 'objet350') {
+          if(type == '교내구성원') return Math.round(($('#mainMaterial').val() * 400 + $('#subMaterial').val() * 150) / 100) * 100;
+          else return Math.round(($('#mainMaterial').val() * 700 + $('#subMaterial').val() * 250) / 100) * 100;
+        }
+        else if(machine == 'f370') {
+          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
+          if(type == '교내구성원') return calc(14000, 0, hour, min);
+          else return calc(20000, 0, hour, min);
+        }
+        else if(machine == 'xfab') {
+          if(type == '교내구성원') return $('#mainMaterial').val() * 400;
+          else return $('#mainMaterial').val() * 600;
+        }
+        else if(machine == '3d') {
+          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
+          if(type == '교내구성원') return calc(6000, 0, hour, min);
+          else return calc(12000, 0, hour, min);
+        }
+      }
+      function calc(fee, sub, hour, min) {
+        var price = Number(fee) * (hour - Number(sub) + (min / 60));
+        return price <= 0 ? 0 : price < Number(fee) ? Number(fee) : Math.round(price / 100) * 100;
+      }
+      function machineUse(machine) {
+        if(machine == 'cubicon' || machine == 'sindo' || machine == 'onyx' || machine == 'freeform' || machine == 'zortrax' || machine == 'laser' || machine == 'cutter' || machine == 'f370' || machine == '3d') {
+          return Number($('#usehour').val()) + '시간 ' + Number($('#usemin').val()) + '분';
+        }
+        else if(machine == 'plotter' || machine == 'uv') {
+          return Number($('#xaxis').val()) + 'mm * ' + Number($('#yaxis').val()) + 'mm';
+        }
+        else if(machine == 'x7') {
+          return Number($('#usehour').val()) + '시간 ' + Number($('#usemin').val()) + '분 / 카본 : ' + Number($('#mainMaterial').val()) + 'cc';
+        }
+        else if(machine == 'objet350') {
+          return '메인 : ' + Number($('#mainMaterial').val()) + 'g / 서브 : ' + Number($('#subMaterial').val()) + 'g';
+        }
+        else if(machine == 'xfab') {
+          return '메인 : ' +  Number($('#mainMaterial').val()) + 'g';
+        }
+      }
+      function machineNumReturn() {
+        if($('#plotter:checked, #cutter:checked, #uv:checked, #x7:checked, #objet350:checked, #f370:checked, #xfab:checked, #zortrax:checked').length == 0) {
+          return ' ' + $('input:radio[name=machineNum]:checked').val().substr(1, 1) + '번';
+        }
+        else return '';
+      }
+      function clickReset() {
+        $('#feeInfo').css('display', 'inline');
+        $('#machineDetail').html('');
+        $('#payment').html('');
+        $('#feeInfo').html('요금 : 0원');
+        $('#discountWrap').css('display', 'none');
+      }
+      function keyupReset() {
+        $('#submitWrapper').css('display', 'block');
+        $('#usehour').keyup(function(event) {
+          event = event || window.event;
+          this.value = autoLimit(this.value.trim(), 3);
+        });
+        $('#usemin').keyup(function(event) {
+          event = event || window.event;
+          this.value = autoLimit(this.value.trim(), 2);
+        });
+        $('input[name=cost]').keyup(function() {
+          if(!$('#manualActivate').attr('checked')) {
+            $('#feeInfo').html('요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) + '원');
+          }
+        });
+        $('#discountWrap').click(function() {
+          $('#feeInfo').html('요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) + '원');
+        });
+      }
+      function autoLimit(str, num) {
+        if(str.length > num) { return str.substr(0, num); }
+        return str;
+      }
+      function addComma(x) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+      function isNum(s) {
+        s += '';
+        if (s == '' || isNaN(s)) return false;
+        return true;
+      }
+      function UniEncode(str) {
+        return JSON.stringify(str).replace(/[\u007f-\uffff]/g,
+          function(c) { return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4); });
+      }
+      function chartLoader() {
         var machineList = [['큐비콘', 0], ['신도', 0], ['Onyx', 0], ['Freeform', 0], ['Zortrax', 0], ['레이저커터', 0], ['플로터', 0],
                            ['커팅플로터', 0], ['UV 프린터', 0], ['X7', 0], ['Objet350', 0], ['F370', 0], ['Xfab', 0], ['3D 스캐너', 0]];
         var data = [], dept = [], user = [], dpt = [], usr = [], date = [], dt = [], str = '', total = 0;
@@ -130,6 +375,55 @@
             Charts(machineList, total, dpt, usr, dt);
           }
         });
+      }
+      function Charts(machineList, total, dpt, usr, dt) {
+        machineList.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+        dpt.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+        usr.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(function() {
+          var options = {
+            title: '오늘 현재까지 ' + dt[dt.length - 1][1] + ' 명 방문\n하루 평균 ' + (total / dt.length).toFixed(1) + ' 명 방문\n\n주간 사용자 수 현황',
+            legend: 'none'
+          };
+          dt.splice(0, dt.length - 8);
+          dt.pop();
+          dt.unshift(['날짜', '사용자 수']);
+          var data = google.visualization.arrayToDataTable(dt);
+          var chart = new google.visualization.BarChart(document.getElementById('weekly'));
+          chart.draw(data, options);
+        });
+        google.charts.setOnLoadCallback(function() {
+          machineList.unshift(['장비', '사용횟수']);
+          var data = google.visualization.arrayToDataTable(machineList);
+          var options = {
+            title: '장비별 사용 현황',
+            pieHole: 0.4
+          };
+          var chart = new google.visualization.PieChart(document.getElementById('MachineUse'));
+          $('#MachineCnt').text(total);
+          chart.draw(data, options);
+        });
+        google.charts.setOnLoadCallback(function() {
+          dpt.unshift(['학과', '방문횟수']);
+          var data = google.visualization.arrayToDataTable(dpt);
+          var options = {
+            title: '소속별 사용 현황',
+            pieHole: 0.4
+          };
+          new google.visualization.PieChart(document.getElementById('Belonging')).draw(data, options);
+        });
+        google.charts.setOnLoadCallback(function() {
+          usr.unshift(['유형', '방문횟수']);
+          var data = google.visualization.arrayToDataTable(usr);
+          var options = {
+            title: '사용자별 현황',
+            pieHole: 0.4
+          };
+          new google.visualization.PieChart(document.getElementById('User')).draw(data, options);
+        });
+      }
+      function clickEventListener() {
         $('#analytics').click(function() {
           if($('#analytics').html() == '통계 보기 ▼') {
             $('#chartWrap').css('display', 'block');
@@ -313,294 +607,6 @@
             else { return str.substr(0, 3) + '-' + str.substr(3, 4) + '-' + str.substr(7); }
             return str;
           }
-        });
-      });
-      $("#DATA").submit(function(event) {
-        event.preventDefault();
-        var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3960'], ['신은영', '7257'], ['배주근', '4910']];
-        var file = $('#filedata')[0].files[0];
-        if($('#fileReq').prop('checked')) {
-          if(!new RegExp(/\.(stl|zip)/ig).test(file.name.substr(file.name.length - 4, 4))) {
-            alertify.error('Only .stl or .zip files accepted');
-            return;
-          }
-        }
-        alertify.prompt('Verification Required', function(e) {
-          var str = $('#alertify-text').val();
-          if(e) {
-            for (i in staffList) {
-              if(staffList[i][1] == str) {
-                $('input').attr('disabled', true);
-                alertify.log('Transmitting...', "", 0);
-                var serializedData = '날짜=' + new Date().format('yyyy. mm. dd TT hh시 MM분') +
-                                     '&이름=' + $.trim($('#name').val()) +
-                                     '&소속 / 학과=' + $('#belonging').val() +
-                                     '&연락처=' + $('#contact').val() +
-                                     '&파일명=' + ($('#fileReq').prop('checked') ? file.name : '파일 없음') +
-                                     '&사용 목적=' + $('#purpose').val() +
-                                     '&사용 장비=' + $('input:radio[name=machine]:checked').val() + machineNumReturn() +
-                                     '&사용량=' + machineUse($('input:radio[name=machine]:checked').attr('id')) +
-                                     '&구분=' + $('input:radio[name=ppl]:checked').val() +
-                                     '&요금=￦' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) +
-                                     '&결제=' + $('input:radio[name=pay]:checked').val() +
-                                     '&담당자=' + staffList[i][0];
-                console.log(serializedData);
-                var dropboxToken = '2Gsi0PEV9cAAAAAAAAAACY5VZ_5YAk9A0360cufNAI0b1277InPbTU0o-wbw9vPc';
-                var xhr = new XMLHttpRequest();
-                xhr.upload.onprogress = function(evt) {
-                  var percentComplete = parseInt(100.0 * evt.loaded / evt.total);
-                  $('.alertify-log-show').html('Uploading File... ' + percentComplete + '%');
-                  if(isNaN(percentComplete)) {
-                    alertify.error('File Not Found');
-                    $('input').attr('disabled', false);
-                  }
-                };
-                xhr.onload = function() {
-                  if (xhr.status === 200) {
-                    var fileInfo = JSON.parse(xhr.response);
-                    $('.alertify-log-show').css('display', 'none');
-                    alertify.log('Transmitting Data...');
-                    request = $.ajax({
-                        type: 'POST',
-                        url: 'https://script.google.com/macros/s/AKfycbyi2sn97OkkOFIfVt3BVH3ToEPBFvx4G_dQ_oS_jYxqcZNuB_c/exec',
-                        data: encodeURI(serializedData)
-                    });
-                    request.done(function() {
-                      alertify.success('Transmitted');
-                    });
-                    request.fail(function(jqXHR, textStatus, errorThrown) {
-                      alertify.error('DataError : ' + textStatus + errorThrown);
-                    });
-                    request.always(function() {
-                      $('input').attr('disabled', false);
-                      $('#DATA')[0].reset();
-                      $('#machineSelect').css('display', 'none');
-                    });
-                  }
-                  else {
-                    var errorMessage = xhr.response || 'Unable to upload file';
-                    $('.alertify-log-show').css('display', 'none');
-                    alertify.error('UploadError : ' + errorMessage);
-                    $('input').attr('disabled', false);
-                  }
-                };
-                if($('#fileReq').prop('checked')) {
-                  xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
-                  xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
-                  xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-                  xhr.setRequestHeader('Dropbox-API-Arg', UniEncode({
-                    path: '/' + new Date().format('yy. mm. dd ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~') + '/' + file.name,
-                    mode: 'add',
-                    autorename: true
-                  }));
-                  xhr.send(file);
-                }
-                else {
-                  xhr.open('POST', 'https://api.dropboxapi.com/2/files/create_folder_v2');
-                  xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
-                  xhr.setRequestHeader('Content-Type', 'application/json');
-                  xhr.send(UniEncode({
-                    path: '/' + new Date().format('yy. mm. dd ') + $.trim($('#name').val()) + ' - ' + $('#belonging').val().replace(/\//g, '~'),
-                  }));
-                }
-                return;
-              }
-            }
-          }
-          alertify.error('Verification Failure');
-        });
-        $('#alertify-text').replaceWith('<input type="password" id="alertify-text" class="alertify-text"/>');
-        setTimeout(function() {
-          $('#alertify-text').focus();
-        }, 500);
-        $('#alertify-text').focus();
-      });
-      function feeCalc(machine, type, discount) {
-        if(type == '수동 입력'){
-          return $('#manualCost').val().replace(/[^\d]+/g, '');
-        }
-        if(machine == 'cubicon' || machine == 'sindo' || machine == 'zortrax') {
-          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(type == '교내구성원') {
-            if(discount) return calc(1500, 6, hour, min);
-            else return calc(1500, 0, hour, min);
-          }
-          else return calc(2000, 0, hour, min);
-        }
-        else if(machine == 'onyx') {
-          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(type == '교내구성원') {
-            if(discount) return calc(2000, 2, hour, min);
-            else return calc(2000, 0, hour, min);
-          }
-          else return calc(4000, 0, hour, min);
-        }
-        else if(machine == 'freeform') {
-          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(type == '교내구성원') {
-            if(discount) return calc(4000, 1, hour, min);
-            else return calc(4000, 0, hour, min);
-          }
-          else return calc(6000, 0, hour, min);
-        }
-        else if(machine == 'laser') {
-          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(type == '교내구성원') return calc(1500, 0, hour, min);
-          else return calc(2500, 0, hour, min);
-        }
-        else if(machine == 'plotter') {
-          var area = $('#xaxis').val() * $('#yaxis').val();
-          fee = area / 100;
-          if(type == '교내구성원') return Math.round(fee / 200) * 100;
-          else return Math.round(fee / 100) * 100;
-        }
-        else if(machine == 'cutter') {
-          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(type == '교내구성원') return calc(1500, 0, hour, min);
-          else return calc(2500, 0, hour, min);
-        }
-        else if(machine == 'uv') {
-          var area = $('#xaxis').val() * $('#yaxis').val();
-          fee = area / 10;
-          if(type == '교내구성원') return Math.round(fee / 200) * 100;
-          else return Math.round(fee / 100) * 100;
-        }
-        else if(machine == 'x7') {
-          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(type == '교내구성원') return calc(3500, 0, hour, min) + Number($('#mainMaterial').val()) * 5000;
-          else return calc(6500, 0, hour, min) + Number($('#mainMaterial').val()) * 9000;
-        }
-        else if(machine == 'objet350') {
-          if(type == '교내구성원') return Math.round(($('#mainMaterial').val() * 400 + $('#subMaterial').val() * 150) / 100) * 100;
-          else return Math.round(($('#mainMaterial').val() * 700 + $('#subMaterial').val() * 250) / 100) * 100;
-        }
-        else if(machine == 'f370') {
-          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(type == '교내구성원') return calc(14000, 0, hour, min);
-          else return calc(20000, 0, hour, min);
-        }
-        else if(machine == 'xfab') {
-          if(type == '교내구성원') return $('#mainMaterial').val() * 400;
-          else return $('#mainMaterial').val() * 600;
-        }
-        else if(machine == '3d') {
-          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
-          if(type == '교내구성원') return calc(6000, 0, hour, min);
-          else return calc(12000, 0, hour, min);
-        }
-      }
-      function calc(fee, sub, hour, min) {
-        var price = Number(fee) * (hour - Number(sub) + (min / 60));
-        return price <= 0 ? 0 : price < Number(fee) ? Number(fee) : Math.round(price / 100) * 100;
-      }
-      function machineUse(machine) {
-        if(machine == 'cubicon' || machine == 'sindo' || machine == 'onyx' || machine == 'freeform' || machine == 'zortrax' || machine == 'laser' || machine == 'cutter' || machine == 'f370' || machine == '3d') {
-          return Number($('#usehour').val()) + '시간 ' + Number($('#usemin').val()) + '분';
-        }
-        else if(machine == 'plotter' || machine == 'uv') {
-          return Number($('#xaxis').val()) + 'mm * ' + Number($('#yaxis').val()) + 'mm';
-        }
-        else if(machine == 'x7') {
-          return Number($('#usehour').val()) + '시간 ' + Number($('#usemin').val()) + '분 / 카본 : ' + Number($('#mainMaterial').val()) + 'cc';
-        }
-        else if(machine == 'objet350') {
-          return '메인 : ' + Number($('#mainMaterial').val()) + 'g / 서브 : ' + Number($('#subMaterial').val()) + 'g';
-        }
-        else if(machine == 'xfab') {
-          return '메인 : ' +  Number($('#mainMaterial').val()) + 'g';
-        }
-      }
-      function machineNumReturn() {
-        if($('#plotter:checked, #cutter:checked, #uv:checked, #x7:checked, #objet350:checked, #f370:checked, #xfab:checked, #zortrax:checked').length == 0) {
-          return ' ' + $('input:radio[name=machineNum]:checked').val().substr(1, 1) + '번';
-        }
-        else return '';
-      }
-      function clickReset() {
-        $('#feeInfo').css('display', 'inline');
-        $('#machineDetail').html('');
-        $('#payment').html('');
-        $('#feeInfo').html('요금 : 0원');
-        $('#discountWrap').css('display', 'none');
-      }
-      function keyupReset() {
-        $('#submitWrapper').css('display', 'block');
-        $('#usehour').keyup(function(event) {
-          event = event || window.event;
-          this.value = autoLimit(this.value.trim(), 3);
-        });
-        $('#usemin').keyup(function(event) {
-          event = event || window.event;
-          this.value = autoLimit(this.value.trim(), 2);
-        });
-        $('input[name=cost]').keyup(function() {
-          if(!$('#manualActivate').attr('checked')) {
-            $('#feeInfo').html('요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) + '원');
-          }
-        });
-        $('#discountWrap').click(function() {
-          $('#feeInfo').html('요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length))) + '원');
-        });
-      }
-      function autoLimit(str, num) {
-        if(str.length > num) { return str.substr(0, num); }
-        return str;
-      }
-      function addComma(x) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
-      function isNum(s) {
-        s += '';
-        if (s == '' || isNaN(s)) return false;
-        return true;
-      }
-      function UniEncode(str) {
-        return JSON.stringify(str).replace(/[\u007f-\uffff]/g,
-          function(c) { return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4); });
-      }
-      function Charts(machineList, total, dpt, usr, dt) {
-        machineList.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-        dpt.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-        usr.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(function() {
-          var options = {
-            title: '오늘 현재까지 ' + dt[dt.length - 1][1] + ' 명 방문\n하루 평균 ' + (total / dt.length).toFixed(1) + ' 명 방문\n\n주간 사용자 수 현황',
-            legend: 'none'
-          };
-          dt.splice(0, dt.length - 8);
-          dt.pop();
-          dt.unshift(['날짜', '사용자 수']);
-          var data = google.visualization.arrayToDataTable(dt);
-          var chart = new google.visualization.BarChart(document.getElementById('weekly'));
-          chart.draw(data, options);
-        });
-        google.charts.setOnLoadCallback(function() {
-          machineList.unshift(['장비', '사용횟수']);
-          var data = google.visualization.arrayToDataTable(machineList);
-          var options = {
-            title: '장비별 사용 현황',
-            pieHole: 0.4
-          };
-          var chart = new google.visualization.PieChart(document.getElementById('MachineUse'));
-          $('#MachineCnt').text(total);
-          chart.draw(data, options);
-        });
-        google.charts.setOnLoadCallback(function() {
-          dpt.unshift(['학과', '방문횟수']);
-          var data = google.visualization.arrayToDataTable(dpt);
-          var options = {
-            title: '소속별 사용 현황',
-            pieHole: 0.4
-          };
-          new google.visualization.PieChart(document.getElementById('Belonging')).draw(data, options);
-        });
-        google.charts.setOnLoadCallback(function() {
-          usr.unshift(['유형', '방문횟수']);
-          var data = google.visualization.arrayToDataTable(usr);
-          var options = {
-            title: '사용자별 현황',
-            pieHole: 0.4
-          };
-          new google.visualization.PieChart(document.getElementById('User')).draw(data, options);
         });
       }
       var dateFormat = function () {
