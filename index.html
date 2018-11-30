@@ -28,69 +28,79 @@
         padding-left: 14px;
       }
     </style>
-    <form id="DATA" style="height:600">
-      아주대학교 메이커스페이스 장비 관리 시스템&nbsp;
-        <a id='version' href="/ajoumaker/about.html?v2.3.4" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
-      <div id='notice' style="font-size:1rem;">
-        <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
-        <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br><span style="line-height:50%"><br></span>
-        <span style="color:red; font-weight:bold">작업물이 출력이 실패할 경우 사용 요금의 50%가 마일리지로 제공됩니다.</span><br>
-        <span style="color:red; font-weight:bold">파일 업로드가 끝나기 전에 USB를 제거하면 업로드가 정상적으로 이루어지지 않습니다.</span>
-      </div><span style="line-height:70%"><br></span>
-      <div style='width:10; float:left'>&nbsp;</div>
-      <div id='basicInfo' style='float:left'>
-        <input placeholder="이름 입력" id="name" type="text" style='width:150' autofocus required/><br><span style="line-height:25%"><br></span>
-        <input placeholder="소속 / 학과 입력" id="belonging" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
-        <input placeholder="연락처 입력" id="contact" type="tel" maxlength="13" pattern="010-[0-9]{4}-[0-9]{4}" style='width:150' required/><br><span style="line-height:25%"><br></span>
-        <input placeholder="사용 목적 입력" id="purpose" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
-        <input type="checkbox" id='fileReq' checked='checked'/><input id="filedata" type="file" name='file' required/><br><span style="line-height:25%"><br></span>
-        <label for='prepay'><input type='radio' id='prepay' name='pay' value="선불" checked required>선불</input></label>&nbsp;
-        <label for='afterpay'><input type='radio' id='afterpay' name='pay' value="후불">후불</input></label><br><span style="line-height:25%"><br></span>
-        <span id='manualFee'>사용자 구분</span><br><span style="line-height:10%"><br></span>
-        <label for='internal'><input type='radio' id='internal' name='ppl' value="교내구성원" required>교내구성원</input></label><br>
-        <label for='standard'><input type='radio' id='standard' name='ppl' value="일반인">일반인</input></label><br><span style="line-height:25%"><br></span>
-        사용 장비<br><span style="line-height:10%"><br></span>
-        <label for='normal'><input type='radio' id='normal' name='machineType' value="normal" required>일반 장비</input></label><br>
-        <label for='industrial'><input type='radio' id='industrial' name='machineType' value="industrial">산업용 장비</input></label><br><br>
-      </div><div style='width:50; float:left'>&nbsp;</div>
-      <div id='machineSelect' style='float:left; text-align:center; display:none'>
-        <div id='machineContainer' style='text-align:left; width:auto; margin:auto; display:inline-block'>
-          <div id='normalWrapper' style="display: none">
-            <label for='cubicon'><input type='radio' id='cubicon' name='machine' value="큐비콘" required>큐비콘</input></label><br>
-            <label for='sindo'><input type='radio' id='sindo' name='machine' value="신도">신도</input></label><br>
-            <label for='onyx'><input type='radio' id='onyx' name='machine' value="Onyx">Onyx One</input></label><br>
-            <label for='freeform'><input type='radio' id='freeform' name='machine' value="Freeform">Freeform</input></label><br>
-            <label for='zortrax'><input type='radio' id='zortrax' name='machine' value="Zortrax">Zortrax</input></label><br>
-            <label for='laser'><input type='radio' id='laser' name='machine' value="레이저커터">레이저커터</input></label><br>
-            <label for='plotter'><input type='radio' id='plotter' name='machine' value="플로터">플로터</input></label><br>
-            <label for='cutter'><input type='radio' id='cutter' name='machine' value="커팅플로터">커팅플로터</input></label><br>
-            <label for='uv'><input type='radio' id='uv' name='machine' value="UV 프린터">UV 프린터</input></label><br>
+    <table style="table-layout:fixed">
+      <tr>
+        <td style="vertical-align:top">
+          <form id="DATA" style="height:600; width:800; margin:30 0 0 30">
+            아주대학교 메이커스페이스 장비 관리 시스템&nbsp;
+              <a id='version' href="/ajoumaker/about.html?v2.3.5" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
+            <div id='notice' style="font-size:1rem;">
+              <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
+              <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br><span style="line-height:50%"><br></span>
+              <span style="color:red; font-weight:bold">작업물이 출력이 실패할 경우 사용 요금의 50%가 마일리지로 제공됩니다.</span><br>
+              <span style="color:red; font-weight:bold">파일 업로드가 끝나기 전에 USB를 제거하면 업로드가 정상적으로 이루어지지 않습니다.</span>
+            </div><span style="line-height:70%"><br></span>
+            <div style='width:10; float:left'>&nbsp;</div>
+            <div id='basicInfo' style='float:left'>
+              <input placeholder="이름 입력" id="name" type="text" style='width:150' autofocus required/><br><span style="line-height:25%"><br></span>
+              <input placeholder="소속 / 학과 입력" id="belonging" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
+              <input placeholder="연락처 입력" id="contact" type="tel" maxlength="13" pattern="010-[0-9]{4}-[0-9]{4}" style='width:150' required/><br><span style="line-height:25%"><br></span>
+              <input placeholder="사용 목적 입력" id="purpose" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
+              <input type="checkbox" id='fileReq' checked='checked'/><input id="filedata" type="file" name='file' required/><br><span style="line-height:25%"><br></span>
+              <label for='prepay'><input type='radio' id='prepay' name='pay' value="선불" checked required>선불</input></label>&nbsp;
+              <label for='afterpay'><input type='radio' id='afterpay' name='pay' value="후불">후불</input></label><br><span style="line-height:25%"><br></span>
+              <span id='manualFee'>사용자 구분</span><br><span style="line-height:10%"><br></span>
+              <label for='internal'><input type='radio' id='internal' name='ppl' value="교내구성원" required>교내구성원</input></label><br>
+              <label for='standard'><input type='radio' id='standard' name='ppl' value="일반인">일반인</input></label><br><span style="line-height:25%"><br></span>
+              사용 장비<br><span style="line-height:10%"><br></span>
+              <label for='normal'><input type='radio' id='normal' name='machineType' value="normal" required>일반 장비</input></label><br>
+              <label for='industrial'><input type='radio' id='industrial' name='machineType' value="industrial">산업용 장비</input></label><br><br>
+            </div><div style='width:50; float:left'>&nbsp;</div>
+            <div id='machineSelect' style='float:left; text-align:center; display:none'>
+              <div id='machineContainer' style='text-align:left; width:auto; margin:auto; display:inline-block'>
+                <div id='normalWrapper' style="display: none">
+                  <label for='cubicon'><input type='radio' id='cubicon' name='machine' value="큐비콘" required>큐비콘</input></label><br>
+                  <label for='sindo'><input type='radio' id='sindo' name='machine' value="신도">신도</input></label><br>
+                  <label for='onyx'><input type='radio' id='onyx' name='machine' value="Onyx">Onyx One</input></label><br>
+                  <label for='freeform'><input type='radio' id='freeform' name='machine' value="Freeform">Freeform</input></label><br>
+                  <label for='zortrax'><input type='radio' id='zortrax' name='machine' value="Zortrax">Zortrax</input></label><br>
+                  <label for='laser'><input type='radio' id='laser' name='machine' value="레이저커터">레이저커터</input></label><br>
+                  <label for='plotter'><input type='radio' id='plotter' name='machine' value="플로터">플로터</input></label><br>
+                  <label for='cutter'><input type='radio' id='cutter' name='machine' value="커팅플로터">커팅플로터</input></label><br>
+                  <label for='uv'><input type='radio' id='uv' name='machine' value="UV 프린터">UV 프린터</input></label><br>
+                </div>
+                <div id='industrialWrapper' style='display:none'>
+                  <label for='x7'><input type='radio' id='x7' name='machine' value="X7" required>X7</input></label><br>
+                  <label for='objet350'><input type='radio' id='objet350' name='machine' value="Objet350">Objet350</input></label><br>
+                  <label for='f370'><input type='radio' id='f370' name='machine' value="F370">F370</input></label><br>
+                  <label for='xfab'><input type='radio' id='xfab' name='machine' value="Xfab">Xfab</input></label><br>
+                  <label for='3d'><input type='radio' id='3d' name='machine' value="3D 스캐너">3D 스캐너</input></label><br>
+                </div><span style="line-height:35%"><br></span>
+                <div id='payment'></div><span style="line-height:25%"><br></span>
+                <span id='feeInfo' style="display:none">요금 : 0원</span>&nbsp;
+                <span id='discountWrap' style="display:none">
+                  <label for='discount'><input type='checkbox' id='discount' name='discount' value='discount'/>할인</input></label>
+                </span><br><span style="line-height:25%"><br></span>
+                <div id='machineDetail'></div>
+              </div><br><br>
+              <div id='submitWrapper' style="display:none; margin:0 0 0 5; text-align:left"><input type="submit" style='padding: 0.3rem 1.3rem;'/></div>
+            </div>
+          </form>
+        </td>
+        <td>
+          <div style="margin:30 0 0 30">
+            <span id='analytics' style="color:#0366d6">통계 접기 ▲</span>
+            <div id='chartWrap' style="text-align:center; vertical-align: middle; position: relative; width: 950">
+              <div id='weekly' style="height: 400"></div>
+              <div id='MachineUse' style="height: 500"></div>
+              <div id='MachineCnt' style='position: absolute; top: 620; left: 322; text-align:center; vertical-align: middle; font-size: 40;'></div>
+              <div id='Belonging' style="height: 500"></div>
+              <div id='User' style="height: 500"></div>
+            </div>
           </div>
-          <div id='industrialWrapper' style='display:none'>
-            <label for='x7'><input type='radio' id='x7' name='machine' value="X7" required>X7</input></label><br>
-            <label for='objet350'><input type='radio' id='objet350' name='machine' value="Objet350">Objet350</input></label><br>
-            <label for='f370'><input type='radio' id='f370' name='machine' value="F370">F370</input></label><br>
-            <label for='xfab'><input type='radio' id='xfab' name='machine' value="Xfab">Xfab</input></label><br>
-            <label for='3d'><input type='radio' id='3d' name='machine' value="3D 스캐너">3D 스캐너</input></label><br>
-          </div><span style="line-height:35%"><br></span>
-          <div id='payment'></div><span style="line-height:25%"><br></span>
-          <span id='feeInfo' style="display:none">요금 : 0원</span>&nbsp;
-          <span id='discountWrap' style="display:none">
-            <label for='discount'><input type='checkbox' id='discount' name='discount' value='discount'/>할인</input></label>
-          </span><br><span style="line-height:25%"><br></span>
-          <div id='machineDetail'></div>
-        </div><br><br>
-        <div id='submitWrapper' style="display:none; margin:0 0 0 5; text-align:left"><input type="submit" style='padding: 0.3rem 1.3rem;'/></div>
-      </div>
-    </form>
-    &nbsp;<span id='analytics' style="color:#0366d6">통계 접기 ▲</span>
-    <div id='chartWrap' style="text-align:center; vertical-align: middle; position: relative; width: 950">
-      <div id='weekly' style="height: 400"></div>
-      <div id='MachineUse' style="height: 500"></div>
-      <div id='MachineCnt' style='position: absolute; top: 620; left: 322; text-align:center; vertical-align: middle; font-size: 40;'></div>
-      <div id='Belonging' style="height: 500"></div>
-      <div id='User' style="height: 500"></div>
-    </div>
+        </td>
+      </tr>
+    </table>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script src='https://www.gstatic.com/charts/loader.js'></script>
