@@ -111,7 +111,7 @@
         clickEventListener();
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(chartLoader());
-        setInterval(chartLoader(), 30000);
+        setTimeout(function() { setInterval(chartLoader(), 30000); }, 30000);
       });
       $("#DATA").submit(function(event) {
         event.preventDefault();
