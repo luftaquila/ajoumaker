@@ -383,6 +383,7 @@
             dt = Object.keys(date);
             for (var i in dt) dt[i] = [dt[i], Object.values(date)[i]];
             Charts(machineList, total, dpt, usr, dt);
+            console.log('Chart updated : ' + new Date());
           }
         });
       }
