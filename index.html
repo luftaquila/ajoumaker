@@ -33,7 +33,7 @@
         <td style="vertical-align:top">
           <form id="DATA" style="height:600; width:870; margin:25 0 0 25">
             아주대학교 메이커스페이스 장비 관리 시스템&nbsp;
-              <a id='version' href="/ajoumaker/about.html?v2.3.5" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
+              <a id='version' href="/ajoumaker/about.html?v2.3.6" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
             <div id='notice' style="font-size:1rem;">
               <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
               <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br><span style="line-height:50%"><br></span>
@@ -109,6 +109,8 @@
       $(function() {
         $('#version').html($('#version').attr('href').substring($('#version').attr('href').indexOf('?') + 1) + ' α');
         clickEventListener();
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(chartLoader());
         setInterval(chartLoader(), 30000);
       });
       $("#DATA").submit(function(event) {
@@ -388,51 +390,47 @@
         });
       }
       function Charts(machineList, total, dpt, usr, dt) {
+        var data, options;
         machineList.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
         dpt.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
         usr.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(function() {
-          var options = {
-            title: '오늘 현재까지 ' + dt[dt.length - 1][1] + ' 명 방문\n하루 평균 ' + (total / dt.length).toFixed(1) + ' 명 방문\n\n주간 사용자 수 현황',
-            legend: 'none'
-          };
-          dt.splice(0, dt.length - 8);
-          dt.pop();
-          dt.unshift(['날짜', '사용자 수']);
-          var data = google.visualization.arrayToDataTable(dt);
-          var chart = new google.visualization.BarChart(document.getElementById('weekly'));
-          chart.draw(data, options);
-        });
-        google.charts.setOnLoadCallback(function() {
-          machineList.unshift(['장비', '사용횟수']);
-          var data = google.visualization.arrayToDataTable(machineList);
-          var options = {
-            title: '장비별 사용 현황',
-            pieHole: 0.4
-          };
-          var chart = new google.visualization.PieChart(document.getElementById('MachineUse'));
-          $('#MachineCnt').text(total);
-          chart.draw(data, options);
-        });
-        google.charts.setOnLoadCallback(function() {
-          dpt.unshift(['학과', '방문횟수']);
-          var data = google.visualization.arrayToDataTable(dpt);
-          var options = {
-            title: '소속별 사용 현황',
-            pieHole: 0.4
-          };
-          new google.visualization.PieChart(document.getElementById('Belonging')).draw(data, options);
-        });
-        google.charts.setOnLoadCallback(function() {
-          usr.unshift(['유형', '방문횟수']);
-          var data = google.visualization.arrayToDataTable(usr);
-          var options = {
-            title: '사용자별 현황',
-            pieHole: 0.4
-          };
-          new google.visualization.PieChart(document.getElementById('User')).draw(data, options);
-        });
+
+        options = {
+          title: '오늘 현재까지 ' + dt[dt.length - 1][1] + ' 명 방문\n하루 평균 ' + (total / dt.length).toFixed(1) + ' 명 방문\n\n주간 사용자 수 현황',
+          legend: 'none'
+        };
+        dt.splice(0, dt.length - 8);
+        dt.pop();
+        dt.unshift(['날짜', '사용자 수']);
+        machineList.unshift(['장비', '사용횟수']);
+        dpt.unshift(['학과', '방문횟수']);
+        usr.unshift(['유형', '방문횟수']);
+
+        data = google.visualization.arrayToDataTable(dt);
+        new google.visualization.BarChart(document.getElementById('weekly')).draw(data, options);
+
+        data = google.visualization.arrayToDataTable(machineList);
+        options = {
+          title: '장비별 사용 현황',
+          pieHole: 0.4
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('MachineUse'));
+        $('#MachineCnt').text(total);
+        chart.draw(data, options);
+
+        data = google.visualization.arrayToDataTable(dpt);
+        options = {
+          title: '소속별 사용 현황',
+          pieHole: 0.4
+        };
+        new google.visualization.PieChart(document.getElementById('Belonging')).draw(data, options);
+
+        data = google.visualization.arrayToDataTable(usr);
+        options = {
+          title: '사용자별 현황',
+          pieHole: 0.4
+        };
+        new google.visualization.PieChart(document.getElementById('User')).draw(data, options);
       }
       function clickEventListener() {
         $('#analytics').click(function() {
