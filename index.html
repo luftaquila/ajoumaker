@@ -109,7 +109,7 @@
       $(function() {
         $('#version').html($('#version').attr('href').substring($('#version').attr('href').indexOf('?') + 1) + ' α');
         clickEventListener();
-        setInterval(chartLoader(), 600);
+        setInterval(chartLoader(), 30000);
       });
       $("#DATA").submit(function(event) {
         event.preventDefault();
