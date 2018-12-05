@@ -111,12 +111,9 @@
         clickEventListener();
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(chartLoader());
-        setTimeout(interval(), 30000);
+        setTimeout(function() {
+          setInterval(chartLoader(), 300000) }, 300000);
       });
-      function interval() {
-        setTimeout(interval(), 30000);
-        chartLoader();
-      }
       $("#DATA").submit(function(event) {
         event.preventDefault();
         var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3960'], ['신은영', '7257'], ['배주근', '4910']];
