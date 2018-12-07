@@ -33,7 +33,7 @@
         <td style="vertical-align:top">
           <form id="DATA" style="height:600; width:870; margin:25 0 0 25">
             아주대학교 메이커스페이스 장비 관리 시스템&nbsp;
-              <a id='version' href="/ajoumaker/about.html?v2.3.6" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
+              <a id='version' href="/ajoumaker/about.html?v2.3.7" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
             <div id='notice' style="font-size:1rem;">
               <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
               <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br><span style="line-height:50%"><br></span>
@@ -93,7 +93,7 @@
             <div id='chartWrap' style="text-align:center; vertical-align: middle; position: relative; width: 950">
               <div id='weekly' style="height: 400"></div>
               <div id='MachineUse' style="height: 500"></div>
-              <div id='MachineCnt' style='position: absolute; top: 620; left: 322; text-align:center; vertical-align: middle; font-size: 40;'></div>
+              <div id='MachineCnt' style='position: absolute; top: 620; left: 325; text-align:center; vertical-align: middle; font-size: 40;'></div>
               <div id='Belonging' style="height: 500"></div>
               <div id='User' style="height: 500"></div>
             </div>
@@ -218,10 +218,18 @@
         if(type == '수동 입력'){
           return $('#manualCost').val().replace(/[^\d]+/g, '');
         }
-        if(machine == 'cubicon' || machine == 'sindo' || machine == 'zortrax') {
+        if(machine == 'cubicon' || machine == 'sindo') {
           var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
           if(type == '교내구성원') {
             if(discount) return calc(1500, 6, hour, min);
+            else return calc(1500, 0, hour, min);
+          }
+          else return calc(2000, 0, hour, min);
+        }
+        else if(machine == 'zortrax') {
+          var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
+          if(type == '교내구성원') {
+            if(discount) return calc(1500, 2, hour, min);
             else return calc(1500, 0, hour, min);
           }
           else return calc(2000, 0, hour, min);
@@ -398,7 +406,8 @@
 
         options = {
           title: '오늘 현재까지 ' + dt[dt.length - 1][1] + ' 명 방문\n하루 평균 ' + (total / dt.length).toFixed(1) + ' 명 방문\n\n주간 사용자 수 현황',
-          legend: 'none'
+          legend: 'none',
+          hAxis.minValue: 10
         };
         dt.splice(0, dt.length - 8);
         dt.pop();
