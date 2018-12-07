@@ -407,7 +407,7 @@
         options = {
           title: '오늘 현재까지 ' + dt[dt.length - 1][1] + ' 명 방문\n하루 평균 ' + (total / dt.length).toFixed(1) + ' 명 방문\n\n주간 사용자 수 현황',
           legend: 'none',
-          hAxis.minValue: 10
+          hAxis: { minValue: 10 }
         };
         dt.splice(0, dt.length - 8);
         dt.pop();
