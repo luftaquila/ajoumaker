@@ -33,7 +33,7 @@
         <td style="vertical-align:top">
           <form id="DATA" style="height:600; width:870; margin:25 0 0 25">
             아주대학교 메이커스페이스 장비 관리 시스템&nbsp;
-              <a id='version' href="/ajoumaker/about.html?v2.3.7" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
+              <a id='version' href="/ajoumaker/about.html?v2.4.0" style="color:#0366d6; font-size:0.75rem"></a><br><span style="line-height:25%"><br></span>
             <div id='notice' style="font-size:1rem;">
               <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
               <span style="font-weight:bold">파일은 STL 파일과 gcode 데이터를 압축해서 .zip 확장자로 업로드 바랍니다.</span><br><span style="line-height:50%"><br></span>
@@ -43,7 +43,7 @@
             <div style='width:10; float:left'>&nbsp;</div>
             <div id='basicInfo' style='float:left'>
               <input placeholder="이름 입력" id="name" type="text" style='width:150' autofocus required/><br><span style="line-height:25%"><br></span>
-              <input placeholder="소속 / 학과 입력" id="belonging" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
+              <input placeholder="학과 입력" id="belonging" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
               <input placeholder="연락처 입력" id="contact" type="tel" maxlength="13" pattern="010-[0-9]{4}-[0-9]{4}" style='width:150' required/><br><span style="line-height:25%"><br></span>
               <input placeholder="사용 목적 입력" id="purpose" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
               <input type="checkbox" id='fileReq' checked='checked'/><input id="filedata" type="file" name='file' required/><br><span style="line-height:25%"><br></span>
@@ -462,15 +462,18 @@
             this.value = addComma(this.value.replace(/[^\d]+/g, ''));
           });
         });
-        $('input:radio[name=ppl]').click(function() {
-          $('#feeInfo').html('요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:checkbox[name=discount]:checked').length ? $('input:checkbox[name=discount]:checked').length : $('input:radio[name=ppl]:checked').val())) + '원');
-          if($('input:radio[name=ppl]:checked').val() == '교내구성원') {
+        $('input:radio[name=ppl], input:radio[name=pay]').click(function() {
+          if($('input:radio[name=ppl]:checked').val() == '교내구성원' && $('input:radio[name=pay]:checked').val() == '선불') {
             machine = $('input:radio[name=machine]:checked').attr('id');
             if(machine == 'cubicon' || machine == 'sindo' || machine == 'onyx' || machine == 'freeform' || machine == 'zortrax') {
               $('#discountWrap').css('display', 'inline');
             }
           }
-          else $('#discountWrap').css('display', 'none');
+          else {
+            $('input:checkbox[name=discount]').prop('checked', false);
+            $('#discountWrap').css('display', 'none');
+          }
+          $('#feeInfo').html('요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), $('input:checkbox[name=discount]').prop('checked'))) + '원');
         });
         $('#normal').click(function() {
           $('#machineDetail').html('');
