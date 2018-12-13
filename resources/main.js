@@ -154,8 +154,8 @@ function feeCalc(machine, type, discount) {
   else if(machine == 'plotter') {
     var area = $('#xaxis').val() * $('#yaxis').val();
     fee = area / 100;
-    if(type == '교내구성원') return Math.round(fee / 200) * 100;
-    else return Math.round(fee / 100) * 100;
+    if(type == '교내구성원') return Math.round(fee * 5 / 1000) * 100;
+    else return Math.round(fee * 5 / 1000) * 100;
   }
   else if(machine == 'cutter') {
     var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
@@ -164,9 +164,9 @@ function feeCalc(machine, type, discount) {
   }
   else if(machine == 'uv') {
     var area = $('#xaxis').val() * $('#yaxis').val();
-    fee = area / 10;
-    if(type == '교내구성원') return Math.round(fee / 200) * 100;
-    else return Math.round(fee / 100) * 100;
+    fee = area / 100;
+    if(type == '교내구성원') return Math.round(fee * 8 / 100) * 100;
+    else return Math.round(fee * 8 / 100) * 100;
   }
   else if(machine == 'x7') {
     var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
