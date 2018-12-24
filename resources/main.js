@@ -260,10 +260,8 @@ function UniEncode(str) {
     function(c) { return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4); });
 }
 function chartLoader() {
-  var machineList = [['큐비콘', 0, 0, 0, 0], ['신도', 0, 0, 0, 0], ['Onyx', 0, 0, 0, 0], ['Freeform', 0, 0, 0, 0], ['Zortrax', 0, 0, 0, 0], ['레이저커터', 0, 0, 0, 0], ['플로터', 0, 0, 0, 0],
-                     ['커팅플로터', 0, 0, 0, 0], ['UV 프린터', 0, 0, 0, 0], ['X7', 0, 0, 0, 0], ['Objet350', 0, 0, 0, 0], ['F370', 0, 0, 0, 0], ['Xfab', 0, 0, 0, 0], ['3D 스캐너', 0, 0, 0, 0]];
-  var data = [], dept = [], user = [], dpt = [], usr = [], date = [], dt = [];
-  var machineTotUse = [], machineAvgUse = [], machineTotFee = [], machineAvgFee = [], freeUse = [], usrFee = [['교내구성원', 0], ['일반인' , 0]];
+  data = [], dataSlice = [], monthList = [];
+  var date = [], dropDown = [], timeStr = '';
   $.ajax({
     url: 'https://docs.google.com/spreadsheet/pub?key=1vMeYMA-GLuTP_o0pUCwe9oUxSEoXZIXseeiYiiARObg&single=true&gid=0&sheet=장비사용&range=A2:J&output=csv',
     type: "GET",
@@ -272,208 +270,231 @@ function chartLoader() {
     success: function (response) {
       response = response.replace(/\"|￦/g, '');
       data = response.split('\n').map((line) => line.split(','));
-      for (var i in data) {
-        var pos = data[i][6].indexOf(' ');
-        data[i][6] = pos != -1 ? data[i][6].substr(0, pos) : data[i][6];
-        dept[data[i][2].includes('학과') ? data[i][2] : '기타'] = dept[data[i][2].includes('학과') ? data[i][2] : '기타'] ? dept[data[i][2].includes('학과') ? data[i][2] : '기타'] + 1 : 1;
-        user[data[i][8]] = user[data[i][8]] ? user[data[i][8]] + 1 : 1;
-        date[data[i][0].substr(0, 12)] = date[data[i][0].substr(0, 12)] ? date[data[i][0].substr(0, 12)] + 1 : 1;
-        if(data[i].length > 10) {
-          var str = '';
-          for (var j = 9; j < data[i].length; j++) {
-            str += data[i][j];
-          }
-          data[i][9] = str;
-          data[i].splice(10);
-        }
-        if(data[i][8] == '교내구성원') usrFee[0][1] += Number(data[i][9]);
-        else if(data[i][8] == '일반인') usrFee[1][1] += Number(data[i][9]);
-        for (var j in machineList) {
-          var machine = machineList[j][0].split(' ');
-          if(data[i].includes(machine[0])) {
-            machineList[j][1] += 1;
-            if(!(data[i].includes('Objet350') || data[i].includes('플로터') || data[i].includes('UV') || data[i].includes('Xfab'))) {
-              var time;
-              if(!data[i].includes('X7')) {
-                time = data[i][7].split('시간 ');
-                machineList[j][2] += (Number(time[0]) * 60 + Number(time[1].slice(0, -1)));
-              }
-              else {
-                usage = data[i][7].split('분 /');
-                time = usage[0].split('시간 ');
-                machineList[j][2] += (Number(time[0]) * 60 + Number(time[1]));
-              }
-            }
-            machineList[j][3] += Number(data[i][9]);
-            if(data[i][9] == 0) { machineList[j][4] += 1; }
-          }
-        }
-      }
-      var dpt = Object.keys(dept), usr = Object.keys(user), dt = Object.keys(date)
-      var datum, options, avgUseZeroCount = 0, totUseZeroCount = 0, avgFeeZeroCount = 0, totFeeZeroCount = 0, freeUseCount = 0;
-      machineTotUse = JSON.parse(JSON.stringify(machineList));
-      machineAvgUse = JSON.parse(JSON.stringify(machineList));
-      machineTotFee = JSON.parse(JSON.stringify(machineList));
-      machineAvgFee = JSON.parse(JSON.stringify(machineList));
-      freeUse = JSON.parse(JSON.stringify(machineList));
-      for (var i in dpt) dpt[i] = [dpt[i], Object.values(dept)[i]];
-      for (var i in usr) usr[i] = [usr[i], Object.values(user)[i]];
-      for (var i in dt) dt[i] = [dt[i], Object.values(date)[i]];
-      for (var i in machineAvgUse) {
-        machineAvgUse[i][1] = Math.round(machineAvgUse[i][2] / machineAvgUse[i][1]);
-        machineAvgUse[i].splice(2);
-        machineAvgUse[i][1] = isNaN(machineAvgUse[i][1]) ? 0 : machineAvgUse[i][1];
-        avgUseZeroCount = machineAvgUse[i][1] == 0 ? avgUseZeroCount + 1 : avgUseZeroCount;
-      }
-      for (var i in machineAvgFee) {
-        machineAvgFee[i][1] = Math.round(machineAvgFee[i][3] / machineAvgFee[i][1]);
-        machineAvgFee[i].splice(2, 2);
-        machineAvgFee[i][1] = isNaN(machineAvgFee[i][1]) ? 0 : machineAvgFee[i][1];
-        avgFeeZeroCount = machineAvgFee[i][1] == 0 ? avgFeeZeroCount + 1 : avgFeeZeroCount;
-      }
-      for (var i in machineTotUse) {
-        machineTotUse[i].splice(1, 1);
-        machineTotUse[i].splice(3);
-        totUseZeroCount = machineTotUse[i][1] == 0 ? totUseZeroCount + 1 : totUseZeroCount;
-      }
-      for (var i in machineTotFee) {
-        machineTotFee[i].splice(1, 2);
-        totFeeZeroCount = machineTotFee[i][1] == 0 ? totFeeZeroCount + 1 : totFeeZeroCount;
-      }
-      for(var i in freeUse) {
-        freeUse[i].splice(2, 2);
-        freeUse[i][1] = Math.round(freeUse[i][2] / freeUse[i][1] * 1000) / 10;
-        freeUse[i][1] = isNaN(freeUse[i][1]) ? 0 : freeUse[i][1];
-        freeUseCount = freeUse[i][1] == 0 ? freeUseCount + 1 : freeUseCount;
-      }
-      machineList.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-      machineAvgUse.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-      machineTotUse.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-      machineAvgFee.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-      machineTotFee.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-      freeUse.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-      dpt.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-      usr.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-      machineAvgUse.splice(machineAvgUse.length - avgUseZeroCount, avgUseZeroCount);
-      machineTotUse.splice(machineTotUse.length - totUseZeroCount, totUseZeroCount);
-      machineAvgFee.splice(machineAvgFee.length - avgFeeZeroCount, avgFeeZeroCount);
-      machineTotFee.splice(machineTotFee.length - totFeeZeroCount, totFeeZeroCount);
-      freeUse.splice(freeUse.length - freeUseCount, freeUseCount);
-
-      options = {
-        title: '오늘 현재까지 ' + dt[dt.length - 1][1] + ' 명 방문\n하루 평균 ' + (data.length / dt.length).toFixed(1) + ' 명 방문\n\n사용자 수 현황',
-        legend: 'none',
-        hAxis: { minValue: 0 }
-      };
-      dt.unshift(['날짜', '사용자 수']);
-      for (var i in dt) {
-        dt[i][2] = dt[i][1];
-      }
-      dt[0][2] = { role : 'annotation' };
-      datum = google.visualization.arrayToDataTable(dt);
-      new google.visualization.LineChart(document.getElementById('totalUsage')).draw(datum, options);
-
-      machineList.unshift(['장비', '사용횟수', '총 가동 시간', '총 매출액', '무료 사용자 수']);
-      machineAvgUse.unshift(['장비', '평균 가동 시간']);
-      machineTotUse.unshift(['장비', '총 가동 시간']);
-      machineAvgFee.unshift(['장비', '평균 매출액']);
-      machineTotFee.unshift(['장비', '총 매출액']);
-      freeUse.unshift(['장비', '무료 사용자 비율']);
-      usrFee.unshift(['유형', '매출액']);
-      dpt.unshift(['학과', '방문횟수']);
-      usr.unshift(['유형', '방문횟수']);
-
-      datum = google.visualization.arrayToDataTable(machineList);
-      options = {
-        title: '장비별 사용 현황',
-        pieHole: 0.4
-      };
-      var chart = new google.visualization.PieChart(document.getElementById('MachineUse'));
-      $('#MachineCnt').text(data.length);
-      chart.draw(datum, options);
-
-      datum = google.visualization.arrayToDataTable(dpt);
-      options = {
-        title: '학과별 사용 현황',
-        pieHole: 0.4
-      };
-      new google.visualization.PieChart(document.getElementById('Belonging')).draw(datum, options);
-
-      datum = google.visualization.arrayToDataTable(usr);
-      options = {
-        title: '사용자 분류별 현황',
-        pieHole: 0.4
-      };
-      new google.visualization.PieChart(document.getElementById('User')).draw(datum, options);
-
-      for (var i in machineTotUse) { machineTotUse[i][2] = parseInt(machineTotUse[i][1] / 60) + '시간 ' + machineTotUse[i][1] % 60 + '분'; }
-      machineTotUse[0][2] = { role : 'annotation' };
-      machineTotUse.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
-      datum = google.visualization.arrayToDataTable(machineTotUse);
-      options = {
-        title: '장비 총 가동 시간 현황',
-        pieSliceText : 'value',
-        legend: 'none',
-      };
-      new google.visualization.BarChart(document.getElementById('totalWorkTime')).draw(datum, options);
-
-      for (var i in machineAvgUse) { machineAvgUse[i][2] = parseInt(machineAvgUse[i][1] / 60) + '시간 ' + machineAvgUse[i][1] % 60 + '분'; }
-      machineAvgUse[0][2] = { role : 'annotation' };
-      datum = google.visualization.arrayToDataTable(machineAvgUse);
-      options = {
-        title: '장비 1회 평균 가동 시간 현황',
-        pieSliceText : 'value',
-        legend: 'none',
-      };
-      new google.visualization.BarChart(document.getElementById('avgWorkTime')).draw(datum, options);
-
-      for (var i in machineTotFee) { machineTotFee[i][2] = addComma(machineTotFee[i][1]) + '원'; }
-      machineTotFee[0][2] = { role : 'annotation' };
-      datum = google.visualization.arrayToDataTable(machineTotFee);
-      options = {
-        title: '장비 총 매출액 현황',
-        pieSliceText : 'value',
-        legend: 'none',
-      };
-      new google.visualization.BarChart(document.getElementById('totalMoney')).draw(datum, options);
-      for (var i in machineAvgFee) { machineAvgFee[i][2] = addComma(Math.round(machineAvgFee[i][1])) + '원'; }
-      machineAvgFee[0][2] = { role : 'annotation' };
-      datum = google.visualization.arrayToDataTable(machineAvgFee);
-      options = {
-        title: '장비 1회 평균 매출액 현황',
-        pieSliceText : 'value',
-        legend: 'none',
-      };
-      new google.visualization.BarChart(document.getElementById('avgMoney')).draw(datum, options);
-
-      for (var i in usrFee) { usrFee[i][2] = addComma(Math.round(usrFee[i][1])) + '원'; }
-      usrFee[0][2] = { role : 'annotation' };
-      datum = google.visualization.arrayToDataTable(usrFee);
-      options = {
-        title: '사용자 분류별 총 매출액 현황',
-        pieSliceText : 'value',
-        legend: 'none',
-        hAxis: { minValue: 0 }
-      };
-      new google.visualization.BarChart(document.getElementById('UserMoney')).draw(datum, options);
-
-      for (var i in freeUse) { freeUse[i][2] = freeUse[i][2] + '건 (' + freeUse[i][1] + '%)' }
-      freeUse[0][2] = { role : 'annotation' };
-      datum = google.visualization.arrayToDataTable(freeUse);
-      options = {
-        title: '장비별 무료 사용자 비율 현황',
-        pieSliceText : 'value',
-        legend: 'none',
-        hAxis: { minValue: 0,
-                 maxValue: 100 }
-      };
-      new google.visualization.BarChart(document.getElementById('freeUsage')).draw(datum, options);
-
-      console.log('Chart updated : ' + new Date());
+      for (var i in data) date[data[i][0].substr(0, 12)] = date[data[i][0].substr(0, 12)] ? date[data[i][0].substr(0, 12)] + 1 : 1;
+      monthList = Object.keys(date);
+      for (var i in monthList) monthList[i] = [monthList[i], Object.values(date)[i]];
+      dropDown = JSON.parse(JSON.stringify(monthList));
+      for (var i in dropDown) dropDown[i] = String(dropDown[i]).substr(0, 8).replace('. ', '.');
+      dropDown = dropDown.reduce( function(a,b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []);
+      dropDown.unshift('total');
+      dropDown.forEach(function(value) { timeStr += '<option value=' + value + '>' + (value == 'total' ? '전체 기간' : value.replace('.', '년 ') + '월' ) + '</option>'; });
+      $('#time').html(timeStr);
+      chartDrawer();
     }
   });
 }
+function chartDrawer() {
+  machineList = [['큐비콘', 0, 0, 0, 0], ['신도', 0, 0, 0, 0], ['Onyx', 0, 0, 0, 0], ['Freeform', 0, 0, 0, 0], ['Zortrax', 0, 0, 0, 0], ['레이저커터', 0, 0, 0, 0], ['플로터', 0, 0, 0, 0],
+                     ['커팅플로터', 0, 0, 0, 0], ['UV 프린터', 0, 0, 0, 0], ['X7', 0, 0, 0, 0], ['Objet350', 0, 0, 0, 0], ['F370', 0, 0, 0, 0], ['Xfab', 0, 0, 0, 0], ['3D 스캐너', 0, 0, 0, 0]];
+  dept = [], user = [];
+  machineTotUse = [], machineAvgUse = [], machineTotFee = [], machineAvgFee = [], freeUse = [], usrFee = [['교내구성원', 0], ['일반인' , 0]];
+  var startVal = 0, endVal = 0, dte = [];
+  if( $('#time').val() != 'total') {
+    for (var i in data) { if (data[i][0].substr(0, 8) == $('#time').val().replace('.', '. ')) { startVal = i; break; } }
+    for (var i = startVal; i < data.length; i++) {
+      if (data[i][0].substr(0, 8) != $('#time').val().replace('.', '. ')) { endVal = i; break; }
+      else endVal = data.length;
+    }
+    dataSlice = JSON.parse(JSON.stringify(data)).splice(startVal, endVal - startVal);
+  }
+  else dataSlice = JSON.parse(JSON.stringify(data));
+  for (var i in dataSlice) dte[dataSlice[i][0].substr(0, 12)] = dte[dataSlice[i][0].substr(0, 12)] ? dte[dataSlice[i][0].substr(0, 12)] + 1 : 1;
+  for (var i in dataSlice) {
+    var pos = dataSlice[i][6].indexOf(' ');
+    dataSlice[i][6] = pos != -1 ? dataSlice[i][6].substr(0, pos) : dataSlice[i][6];
+    dept[dataSlice[i][2].includes('학과') ? dataSlice[i][2] : '기타'] = dept[dataSlice[i][2].includes('학과') ? dataSlice[i][2] : '기타'] ? dept[dataSlice[i][2].includes('학과') ? dataSlice[i][2] : '기타'] + 1 : 1;
+    user[dataSlice[i][8]] = user[dataSlice[i][8]] ? user[dataSlice[i][8]] + 1 : 1;
+    if(dataSlice[i].length > 10) {
+      var str = '';
+      for (var j = 9; j < dataSlice[i].length; j++) str += dataSlice[i][j];
+      dataSlice[i][9] = str;
+      dataSlice[i].splice(10);
+    }
+    if(dataSlice[i][8] == '교내구성원') usrFee[0][1] += Number(dataSlice[i][9]);
+    else if(dataSlice[i][8] == '일반인') usrFee[1][1] += Number(dataSlice[i][9]);
+    for (var j in machineList) {
+      var machine = machineList[j][0].split(' ');
+      if(dataSlice[i].includes(machine[0])) {
+        machineList[j][1] += 1;
+        if(!(dataSlice[i].includes('Objet350') || dataSlice[i].includes('플로터') || dataSlice[i].includes('UV') || dataSlice[i].includes('Xfab'))) {
+          var time;
+          if(!dataSlice[i].includes('X7')) {
+            time = dataSlice[i][7].split('시간 ');
+            machineList[j][2] += (Number(time[0]) * 60 + Number(time[1].slice(0, -1)));
+          }
+          else {
+            usage = dataSlice[i][7].split('분 /');
+            time = usage[0].split('시간 ');
+            machineList[j][2] += (Number(time[0]) * 60 + Number(time[1]));
+          }
+        }
+        machineList[j][3] += Number(dataSlice[i][9]);
+        if(dataSlice[i][9] == 0) { machineList[j][4] += 1; }
+      }
+    }
+  }
+  var dpt = Object.keys(dept), usr = Object.keys(user), dt = Object.keys(dte);
+  var datum, options, avgUseZeroCount = 0, totUseZeroCount = 0, avgFeeZeroCount = 0, totFeeZeroCount = 0, freeUseCount = 0;
+  machineTotUse = JSON.parse(JSON.stringify(machineList));
+  machineAvgUse = JSON.parse(JSON.stringify(machineList));
+  machineTotFee = JSON.parse(JSON.stringify(machineList));
+  machineAvgFee = JSON.parse(JSON.stringify(machineList));
+  freeUse = JSON.parse(JSON.stringify(machineList));
+  for (var i in dpt) dpt[i] = [dpt[i], Object.values(dept)[i]];
+  for (var i in usr) usr[i] = [usr[i], Object.values(user)[i]];
+  for (var i in dt) dt[i] = [dt[i], Object.values(dte)[i]];
+  for (var i in machineAvgUse) {
+    machineAvgUse[i][1] = Math.round(machineAvgUse[i][2] / machineAvgUse[i][1]);
+    machineAvgUse[i].splice(2);
+    machineAvgUse[i][1] = isNaN(machineAvgUse[i][1]) ? 0 : machineAvgUse[i][1];
+    avgUseZeroCount = machineAvgUse[i][1] == 0 ? avgUseZeroCount + 1 : avgUseZeroCount;
+  }
+  for (var i in machineAvgFee) {
+    machineAvgFee[i][1] = Math.round(machineAvgFee[i][3] / machineAvgFee[i][1]);
+    machineAvgFee[i].splice(2, 2);
+    machineAvgFee[i][1] = isNaN(machineAvgFee[i][1]) ? 0 : machineAvgFee[i][1];
+    avgFeeZeroCount = machineAvgFee[i][1] == 0 ? avgFeeZeroCount + 1 : avgFeeZeroCount;
+  }
+  for (var i in machineTotUse) {
+    machineTotUse[i].splice(1, 1);
+    machineTotUse[i].splice(3);
+    totUseZeroCount = machineTotUse[i][1] == 0 ? totUseZeroCount + 1 : totUseZeroCount;
+  }
+  for (var i in machineTotFee) {
+    machineTotFee[i].splice(1, 2);
+    totFeeZeroCount = machineTotFee[i][1] == 0 ? totFeeZeroCount + 1 : totFeeZeroCount;
+  }
+  for (var i in freeUse) {
+    freeUse[i].splice(2, 2);
+    freeUse[i][1] = Math.round(freeUse[i][2] / freeUse[i][1] * 1000) / 10;
+    freeUse[i][1] = isNaN(freeUse[i][1]) ? 0 : freeUse[i][1];
+    freeUseCount = freeUse[i][1] == 0 ? freeUseCount + 1 : freeUseCount;
+  }
+  machineList.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+  machineAvgUse.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+  machineTotUse.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+  machineAvgFee.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+  machineTotFee.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+  freeUse.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+  dpt.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+  usr.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+  machineAvgUse.splice(machineAvgUse.length - avgUseZeroCount, avgUseZeroCount);
+  machineTotUse.splice(machineTotUse.length - totUseZeroCount, totUseZeroCount);
+  machineAvgFee.splice(machineAvgFee.length - avgFeeZeroCount, avgFeeZeroCount);
+  machineTotFee.splice(machineTotFee.length - totFeeZeroCount, totFeeZeroCount);
+  freeUse.splice(freeUse.length - freeUseCount, freeUseCount);
+  options = {
+    title: '오늘 현재까지 ' + (dt[dt.length - 1][0] == new Date().format('yyyy. mm. dd') ? dt[dt.length - 1][1] : 0) + ' 명 방문\n하루 평균 ' + (dataSlice.length / dt.length).toFixed(1) + ' 명 방문\n\n사용자 수 현황',
+    legend: 'none',
+    hAxis: { minValue: 0 }
+  };
+  dt.unshift(['날짜', '사용자 수']);
+  for (var i in dt) dt[i][2] = dt[i][1];
+  dt[0][2] = { role : 'annotation' };
+  datum = google.visualization.arrayToDataTable(dt);
+  new google.visualization.LineChart(document.getElementById('totalUsage')).draw(datum, options);
+
+  machineList.unshift(['장비', '사용횟수', '총 가동 시간', '총 매출액', '무료 사용자 수']);
+  machineAvgUse.unshift(['장비', '평균 가동 시간']);
+  machineTotUse.unshift(['장비', '총 가동 시간']);
+  machineAvgFee.unshift(['장비', '평균 매출액']);
+  machineTotFee.unshift(['장비', '총 매출액']);
+  freeUse.unshift(['장비', '무료 사용자 비율']);
+  usrFee.unshift(['유형', '매출액']);
+  dpt.unshift(['학과', '방문횟수']);
+  usr.unshift(['유형', '방문횟수']);
+
+  datum = google.visualization.arrayToDataTable(machineList);
+  options = {
+    title: '장비별 사용 현황',
+    pieHole: 0.4
+  };
+  var chart = new google.visualization.PieChart(document.getElementById('MachineUse'));
+  $('#MachineCnt').text(dataSlice.length);
+  chart.draw(datum, options);
+
+  datum = google.visualization.arrayToDataTable(dpt);
+  options = {
+    title: '학과별 사용 현황',
+    pieHole: 0.4
+  };
+  new google.visualization.PieChart(document.getElementById('Belonging')).draw(datum, options);
+
+  datum = google.visualization.arrayToDataTable(usr);
+  options = {
+    title: '사용자 분류별 현황',
+    pieHole: 0.4
+  };
+  new google.visualization.PieChart(document.getElementById('User')).draw(datum, options);
+
+  for (var i in machineTotUse) machineTotUse[i][2] = parseInt(machineTotUse[i][1] / 60) + '시간 ' + machineTotUse[i][1] % 60 + '분';
+  machineTotUse[0][2] = { role : 'annotation' };
+  machineTotUse.sort(function(a, b) { return parseInt(a[1]) > parseInt(b[1]) ? -1 : (parseInt(a[1]) < parseInt(b[1]) ? 1 : 0); });
+  datum = google.visualization.arrayToDataTable(machineTotUse);
+  options = {
+    title: '장비 총 가동 시간 현황',
+    pieSliceText : 'value',
+    legend: 'none',
+  };
+  new google.visualization.BarChart(document.getElementById('totalWorkTime')).draw(datum, options);
+
+  for (var i in machineAvgUse) machineAvgUse[i][2] = parseInt(machineAvgUse[i][1] / 60) + '시간 ' + machineAvgUse[i][1] % 60 + '분';
+  machineAvgUse[0][2] = { role : 'annotation' };
+  datum = google.visualization.arrayToDataTable(machineAvgUse);
+  options = {
+    title: '장비 1회 평균 가동 시간 현황',
+    pieSliceText : 'value',
+    legend: 'none',
+  };
+  new google.visualization.BarChart(document.getElementById('avgWorkTime')).draw(datum, options);
+
+  for (var i in machineTotFee) machineTotFee[i][2] = addComma(machineTotFee[i][1]) + '원';
+  machineTotFee[0][2] = { role : 'annotation' };
+  datum = google.visualization.arrayToDataTable(machineTotFee);
+  options = {
+    title: '장비 총 매출액 현황',
+    pieSliceText : 'value',
+    legend: 'none',
+  };
+  new google.visualization.BarChart(document.getElementById('totalMoney')).draw(datum, options);
+  for (var i in machineAvgFee) machineAvgFee[i][2] = addComma(Math.round(machineAvgFee[i][1])) + '원';
+  machineAvgFee[0][2] = { role : 'annotation' };
+  datum = google.visualization.arrayToDataTable(machineAvgFee);
+  options = {
+    title: '장비 1회 평균 매출액 현황',
+    pieSliceText : 'value',
+    legend: 'none',
+  };
+  new google.visualization.BarChart(document.getElementById('avgMoney')).draw(datum, options);
+
+  for (var i in usrFee) usrFee[i][2] = addComma(Math.round(usrFee[i][1])) + '원';
+  usrFee[0][2] = { role : 'annotation' };
+  datum = google.visualization.arrayToDataTable(usrFee);
+  options = {
+    title: '사용자 분류별 총 매출액 현황',
+    pieSliceText : 'value',
+    legend: 'none',
+    hAxis: { minValue: 0 }
+  };
+  new google.visualization.BarChart(document.getElementById('UserMoney')).draw(datum, options);
+
+  for (var i in freeUse) freeUse[i][2] = freeUse[i][2] + '건 (' + freeUse[i][1] + '%)';
+  freeUse[0][2] = { role : 'annotation' };
+  datum = google.visualization.arrayToDataTable(freeUse);
+  options = {
+    title: '장비별 무료 사용자 비율 현황',
+    pieSliceText : 'value',
+    legend: 'none',
+    hAxis: { minValue: 0,
+             maxValue: 100 }
+  };
+  new google.visualization.BarChart(document.getElementById('freeUsage')).draw(datum, options);
+
+  console.log('Chart updated : ' + new Date());
+}
+
 function clickEventListener() {
+  $('#time').change(function() { chartDrawer(); });
   $('#analytics').click(function() {
     if($('#analytics').html() == '통계 보기 ▼') {
       $('#chartWrap1').css('display', 'block');
@@ -534,9 +555,7 @@ function clickEventListener() {
   payment_area_str = '인쇄 면적 : <input placeholder="mm" id="xaxis" name="cost" type="number" required style="width:40"/> * <input placeholder="mm" id="yaxis" name="cost" type="number" required style="width:40"/><br>';
   $('#cubicon').click(function() {
     clickReset();
-    if($('input:radio[name=ppl]:checked').val() == '교내구성원' && $('input:radio[name=pay]:checked').val() == '선불') {
-      $('#discountWrap').css('display', 'inline');
-    }
+    if($('input:radio[name=ppl]:checked').val() == '교내구성원' && $('input:radio[name=pay]:checked').val() == '선불') $('#discountWrap').css('display', 'inline');
     cubicon_str = "장비 번호<br><span style='line-height:10%'><br></span>" +
     "<label for='C1'><input type='radio' id='C1' name='machineNum' value='C1' required>1</input></label>&nbsp;&nbsp;" +
     "<label for='C2'><input type='radio' id='C2' name='machineNum' value='C2'>2</input></label><br>" +
@@ -552,9 +571,7 @@ function clickEventListener() {
   });
   $('#sindo').click(function() {
     clickReset();
-    if($('input:radio[name=ppl]:checked').val() == '교내구성원' && $('input:radio[name=pay]:checked').val() == '선불') {
-      $('#discountWrap').css('display', 'inline');
-    }
+    if($('input:radio[name=ppl]:checked').val() == '교내구성원' && $('input:radio[name=pay]:checked').val() == '선불') $('#discountWrap').css('display', 'inline');
     sindo_str = "장비 번호<br><span style='line-height:10%'><br></span>" +
     "<label for='S1'><input type='radio' id='S1' name='machineNum' value='S1' required>1</input></label>&nbsp;&nbsp;" +
     "<label for='S2'><input type='radio' id='S2' name='machineNum' value='S2'>2</input></label><br>" +
@@ -567,9 +584,7 @@ function clickEventListener() {
   });
   $('#onyx').click(function() {
     clickReset();
-    if($('input:radio[name=ppl]:checked').val() == '교내구성원' && $('input:radio[name=pay]:checked').val() == '선불') {
-      $('#discountWrap').css('display', 'inline');
-    }
+    if($('input:radio[name=ppl]:checked').val() == '교내구성원' && $('input:radio[name=pay]:checked').val() == '선불') $('#discountWrap').css('display', 'inline');
     onyx_str = "장비 번호<br><span style='line-height:10%'><br></span>" +
     "<label for='O1'><input type='radio' id='O1' name='machineNum' value='O1' required>1</input></label>&nbsp;&nbsp;" +
     "<label for='O2'><input type='radio' id='O2' name='machineNum' value='O2'>2</input></label><br>" +
@@ -582,9 +597,7 @@ function clickEventListener() {
   });
   $('#freeform').click(function() {
     clickReset();
-    if($('input:radio[name=ppl]:checked').val() == '교내구성원' && $('input:radio[name=pay]:checked').val() == '선불') {
-      $('#discountWrap').css('display', 'inline');
-    }
+    if($('input:radio[name=ppl]:checked').val() == '교내구성원' && $('input:radio[name=pay]:checked').val() == '선불') $('#discountWrap').css('display', 'inline');
     freeform_str = "장비 번호<br><span style='line-height:10%'><br></span>" +
     "<label for='F1'><input type='radio' id='F1' name='machineNum' value='F1' required>1</input></label>&nbsp;&nbsp;" +
     "<label for='F2'><input type='radio' id='F2' name='machineNum' value='F2'>2</input></label><br>";
@@ -594,9 +607,7 @@ function clickEventListener() {
   });
   $('#zortrax').click(function() {
     clickReset();
-    if($('input:radio[name=ppl]:checked').val() == '교내구성원' && $('input:radio[name=pay]:checked').val() == '선불') {
-      $('#discountWrap').css('display', 'inline');
-    }
+    if($('input:radio[name=ppl]:checked').val() == '교내구성원' && $('input:radio[name=pay]:checked').val() == '선불') $('#discountWrap').css('display', 'inline');
     $('#payment').html(payment_time_str);
     keyupReset();
   });

@@ -35,7 +35,7 @@
         <td style="vertical-align:top">
           <form id="DATA" style="height:600; width:870; margin:25 0 0 25">
             아주대학교 메이커스페이스 장비 관리 시스템&nbsp;
-              <a id='version' class='ext' href="/ajoumaker/about.html?v2.5.3"></a>&nbsp;&nbsp;
+              <a id='version' class='ext' href="/ajoumaker/about.html?v2.6.0"></a>&nbsp;&nbsp;
               <a class='ext' href="https://docs.google.com/spreadsheets/d/1vMeYMA-GLuTP_o0pUCwe9oUxSEoXZIXseeiYiiARObg/edit#gid=0" target="_blank">Sheet</a><br><span style="line-height:25%"><br></span>
             <div id='notice' style="font-size:1rem;">
               <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 간주합니다.</span><br>
@@ -99,7 +99,8 @@
         </td>
         <td style="vertical-align:top">
           <div style="margin:25 0 0 25">
-            <span id='analytics' style="color:#0366d6">통계 접기 ▲</span>
+            <select id='time' name='time' size='1' style='width:100px'></select>
+            <span id='analytics' style="color:#0366d6">통계 접기 ▲</span><br><span style="line-height:25%"><br></span>
             <div id='chartWrap2' style="text-align:center; vertical-align: middle; position: relative; width: 950">
               <div id='totalUsage' style="height: 400"></div><br><br><br>
               <div id='MachineUse' style="height: 480"></div>
@@ -116,7 +117,7 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script src='https://www.gstatic.com/charts/loader.js'></script>
     <script src='/ajoumaker/resources/alertify.min.js'></script>
-    <script src='/ajoumaker/resources/main.js'></script>
+    <script src='/ajoumaker/resources/main.js' charset='utf-8'></script>
     <script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
     <script type="text/javascript">
       if(!wcs_add) var wcs_add = {};
