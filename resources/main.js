@@ -8,15 +8,19 @@ $(function() {
 });
 $("#DATA").submit(function(event) {
   event.preventDefault();
-  var staffList = [['강문석', '5582'], ['김현기', '0796'], ['양승창', '0270'], ['오병준', '3691'], ['최은정', '3960'], ['신은영', '7257'], ['배주근', '4910']];
+  var staffList = [['오병준', '3691'], ['신은영', '7257'], ['배주근', '4910']];
   var file = $('#filedata')[0].files[0];
   if($('#fileReq').prop('checked')) {
     if(!file) {
-      alertify.error('No file selected');
+      alertify.error('파일을 선택하세요');
       return;
     }
     if(!new RegExp(/\.(stl|zip)/ig).test(file.name.substr(file.name.length - 4, 4))) {
-      alertify.error('Only .stl or .zip files accepted');
+      alertify.error('stl 또는 zip 확장자만 업로드 가능합니다.');
+      return;
+    }
+    if(file.name.indexOf(',') + 1) {
+      alertify.error('파일명에 콤마(,)는 사용하실 수 없습니다.');
       return;
     }
   }
