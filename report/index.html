@@ -11,14 +11,24 @@
       이름 : <input type='text' id='name' style="width:70; text-align:center" disabled></input><br><br>
     </div>
     <div id='list' style="padding-left:15;"></div>
-    <div id='confirm' style="padding: 0 0 0 15; display:none">
-      <span id='infoBox'></span><br><br>
-      <input type='file' id='image' accept='image/png, image/jpeg'></input><br><br>
-      <img id="preview" style="width:300"/><br><br>
+    <div id='DATA' style="padding: 0 0 0 15; display:none;">
+      <form id='payload' action="/upload" method='post' enctype="multipart/form-data">
+        <input type='text' id='infoBox1' name='info1' class='infoBox' readonly onfocus="this.blur()"/><br>
+        <input type='text' id='infoBox2' name='info2' class='infoBox' readonly onfocus="this.blur()"/><br><br>
+        <input type='file' id='image' name='image' accept='image/*' style="width: 230"></input>
+        <input type='submit' value='제출' style="width: 70; height: 30"/>
+      </form>
+      <img id="preview" style="width:300; max-height:300"/><br><br>
       <input type='button' id='previous' value="← 이전" style="width:70; height:30;"></input>
-      <input type='button' id='submit' value="제출 →" style="width:70; height:30; margin-left: 300"></input>
     </div>
-    <script src='/ajoumeow/Resources/Libraries/jquery-3.3.1.min.js'></script>
-    <script src='/ajoumaker/report/operator.js'></script>
+    <script src='/Resources/jquery-3.3.1.min.js'></script>
+    <script src='/Resources/operator.js'></script>
   </body>
+  <style>
+    .infoBox {
+      width: 400;
+      font-size: 1rem;
+      background-color: transparent;
+      border: 0 solid black;
+    }
 </html>
