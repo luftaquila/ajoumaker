@@ -2,6 +2,7 @@ const http = require('http');
 const multer = require('multer');
 const mkdirp = require('mkdirp');
 const express = require('express');
+const dateUtil = require('date-utils');
 const localtunnel = require('localtunnel');
 
 const PORT = 8000;
@@ -22,7 +23,15 @@ var storage = multer.diskStorage({
   }
 });
 
-app.use(express.static('report'));
+app.use(express.static(__dirname));
+app.use('/', function(req, res, next) {
+  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  if (ip.substr(0, 7) == "::ffff:") {
+    ip = ip.substr(7)
+  }
+  console.log('[' + new Date() + '] - ' + ip + ' : ' + req.method);
+  next();
+});
 app.post('/upload', multer({ storage: storage }).single('image'), (req, res) => {
   console.log(req.body.info1);
   console.log(req.body.info2);
