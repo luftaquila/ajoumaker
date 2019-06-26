@@ -10,7 +10,6 @@ const app = express();
 
 const Client = require("ssh2").Client;
 const Socket = require("net").Socket;
-
 const conn = new Client();
 const config = {
   remoteHost: "ajoumaker",
@@ -18,6 +17,7 @@ const config = {
   localHost: "localhost",
   localPort: PORT
 };
+
 conn
   .on("ready", () => {
     console.log(" SSH Connection ready.");
