@@ -11,18 +11,16 @@ $("#DATA").submit(function(event) {
   var staffList = [['오병준', '3691'], ['신은영', '7257'], ['배주근', '4910']];
   var file = $('#filedata')[0].files[0];
   if($('#fileReq').prop('checked')) {
-    if(!file) {
-      alertify.error('파일을 선택하세요');
-      return;
-    }
-    if(!new RegExp(/\.(stl|zip)/ig).test(file.name.substr(file.name.length - 4, 4))) {
-      alertify.error('stl 또는 zip 확장자만 업로드 가능합니다.');
-      return;
-    }
-    if(file.name.indexOf(',') + 1) {
-      alertify.error('파일명에 콤마(,)는 사용하실 수 없습니다.');
-      return;
-    }
+    if(!$.trim($('#name').val()))      { alertify.error('이름을 입력하세요');      return; }
+    if(!$.trim($('#belonging').val())) { alertify.error('학과를 입력하세요');      return; }
+    if(!$.trim($('#contact').val()))   { alertify.error('연락처를 입력하세요');    return; }
+    if(!$.trim($('#purpose').val()))   { alertify.error('사용 목적을 입력하세요'); return; }
+    if(file.name.indexOf(',') + 1)     { alertify.error('파일명에 콤마(,)는 사용하실 수 없습니다.');            return; }
+    if($('#name').val().indexOf(',') + 1)      { alertify.error('이름에 콤마(,)는 사용하실 수 없습니다.');      return; }
+    if($('#belonging').val().indexOf(',') + 1) { alertify.error('학과명에 콤마(,)는 사용하실 수 없습니다.');    return; }
+    if($('#purpose').val().indexOf(',') + 1)   { alertify.error('사용 목적에 콤마(,)는 사용하실 수 없습니다.'); return; }
+    if(!file) { alertify.error('파일을 선택하세요'); return; }
+    if(!new RegExp(/\.(stl|zip)/ig).test(file.name.substr(file.name.length - 4, 4))) { alertify.error('stl 또는 zip 확장자만 업로드 가능합니다.'); return; }
   }
   alertify.prompt('Verification Required', function(e) {
     var str = $('#alertify-text').val();
@@ -33,10 +31,10 @@ $("#DATA").submit(function(event) {
           alertify.log('Transmitting...', "", 0);
           var serializedData = '날짜=' + new Date().format('yyyy. mm. dd TT hh시 MM분') +
                                '&이름=' + $.trim($('#name').val()) +
-                               '&소속 / 학과=' + $('#belonging').val() +
-                               '&연락처=' + $('#contact').val() +
+                               '&소속 / 학과=' + $.trim($('#belonging').val()) +
+                               '&연락처=' + $.trim($('#contact').val()) +
                                '&파일명=' + ($('#fileReq').prop('checked') ? file.name : '파일 없음') +
-                               '&사용 목적=' + $('#purpose').val() +
+                               '&사용 목적=' + $.trim($('#purpose').val()) +
                                '&사용 장비=' + $('input:radio[name=machine]:checked').val() + machineNumReturn() +
                                '&사용량=' + machineUse($('input:radio[name=machine]:checked').attr('id')) +
                                '&구분=' + $('input:radio[name=ppl]:checked').val() +
