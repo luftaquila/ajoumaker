@@ -136,9 +136,9 @@
       1. `추가` - Node.js 설치 폴더의 경로를 입력한 후 확인을 눌러 빠져나오고, 재부팅합니다.  
       일반적으로 Node.js의 설치 경로는 `C:\Program Files\nodejs\` 입니다.
       1. 재부팅 후에도 `node` 명령어를 인식하지 못하면 재설치합니다.
-1. 인증 서버 [server.js](https://github.com/luftaquila/ajoumaker/blob/master/report/server.js)를 다운로드해 컴퓨터에 저장합니다.
+1. 인증 서버 [`server.js`](https://github.com/luftaquila/ajoumaker/blob/master/report/server.js)를 다운로드해 컴퓨터에 저장합니다.
 1. 인증 데이터를 저장할 폴더를 새로 만들고, 해당 폴더로 `server.js` 파일을 이동합니다.
-1. 명령 프롬프트에서 `cd` 명령어를 이용해 server.js 파일을 저장한 위치로 이동합니다.
+1. 명령 프롬프트에서 `cd` 명령어를 이용해 `server.js` 파일을 저장한 위치로 이동합니다.
 1. `node server` 명령어를 이용해 서버를 실행합니다.  
 서버가 성공적으로 실행됐을 때 `Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0/80/)` 문구가 콘솔에 출력됩니다.
 
