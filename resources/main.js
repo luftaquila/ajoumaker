@@ -4,7 +4,7 @@ $(function() {
   google.charts.load('current', {'packages':['corechart']});
   google.charts.setOnLoadCallback(chartLoader());
   setTimeout(function() {
-    setInterval(chartLoader, 180000) }, 180000);
+    setInterval(chartLoader, 600000) }, 600000);
 });
 $("#DATA").submit(function(event) {
   event.preventDefault();
