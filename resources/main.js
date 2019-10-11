@@ -214,9 +214,15 @@ function machineUse(machine) {
   else if(machine == 'xfab') {
     return '메인 : ' +  Number($('#mainMaterial').val()) + 'g';
   }
+  else if(machine == 'laptop') {
+    return '노트북 ' + Number($('#rentalNum').val()) + '대 대여 / ' + $('#rentalFromDate').val() + ' ~ ' + $('#rentalToDate').val();
+  }
+  else if(machine == 'room') {
+    return '강의실 ' + Number($('#roomBorrow').val()) + '호 대실 / ' + $('#borrowFromDate').val() + ' ~ ' + $('#borrowToDate').val();
+  }
 }
 function machineNumReturn() {
-  if($('#plotter:checked, #cutter:checked, #uv:checked, #x7:checked, #objet350:checked, #f370:checked, #xfab:checked, #zortrax:checked, #3d:checked').length == 0) {
+  if(!$('#plotter:checked, #cutter:checked, #uv:checked, #x7:checked, #objet350:checked, #f370:checked, #xfab:checked, #zortrax:checked, #3d:checked, #laptop:checked, #room:checked').length) {
     return ' ' + $('input:radio[name=machineNum]:checked').val().substr(1, 1) + '번';
   }
   else return '';
@@ -512,7 +518,7 @@ function clickEventListener() {
   $('#manualFee').click(function() {
     $('input:checkbox[name=discount]').attr('checked', false);
     $('#discountWrap').css('display', 'none');
-    $('#feeInfo').html('<input type="radio" id="manualActivate" name="ppl" value="수동 입력" checked>수동 입력 활성화</input><br>요금 : <input type="text" id="manualCost" style="width:70"/>원');
+    $('#feeInfo').html('<input type="radio" id="manualActivate" name="ppl" value="수동 입력" checked>수동 입력 활성화</input><br>요금 : <input type="text" id="manualCost" style="width:70"/> 원');
     $('#manualCost').keyup(function(event) {
       event = event || window.event;
       this.value = addComma(this.value.replace(/[^\d]+/g, ''));
@@ -535,8 +541,8 @@ function clickEventListener() {
     $('#machineDetail').html('');
     $('#payment').html('');
     $('#machineSelect').css('display', 'block');
+    $('.machineWrapper').css('display', 'none');
     $('#normalWrapper').css('display', 'block');
-    $('#industrialWrapper').css('display', 'none');
     $('#feeInfo').html('');
     $('#discountWrap').css('display', 'none');
     $('#submitWrapper').css('display', 'none');
@@ -546,8 +552,19 @@ function clickEventListener() {
     $('#machineDetail').html('');
     $('#payment').html('');
     $('#machineSelect').css('display', 'block');
-    $('#normalWrapper').css('display', 'none');
+    $('.machineWrapper').css('display', 'none');
     $('#industrialWrapper').css('display', 'block');
+    $('#feeInfo').html('');
+    $('#discountWrap').css('display', 'none');
+    $('#submitWrapper').css('display', 'none');
+    $('input:radio[name=machine]:checked').prop('checked', false);
+  });
+  $('#others').click(function() {
+    $('#machineDetail').html('');
+    $('#payment').html('');
+    $('#machineSelect').css('display', 'block');
+    $('.machineWrapper').css('display', 'none');
+    $('#othersWrapper').css('display', 'block');
     $('#feeInfo').html('');
     $('#discountWrap').css('display', 'none');
     $('#submitWrapper').css('display', 'none');
@@ -663,6 +680,19 @@ function clickEventListener() {
     clickReset();
     $('#payment').html(payment_time_str);
     keyupReset();
+  });
+  $('#laptop').click(function() {
+    clickReset();
+    payment_str = '<br>사용 대수 : <input id="rentalNum" type="number" required style="width:40"/> 대<br><span style="line-height:10%"><br></span>사용 기간<br><input id="rentalFromDate" type="date" required style="width: 110"/> ~ <input id="rentalToDate" type="date" required style="width: 110"/><br><span style="line-height:30%"><br></span>'
+    $('#payment').html(payment_str);
+    keyupReset();
+    $('#manualFee').trigger('click');
+  });
+  $('#room').click(function() {
+    payment_str = '<br>사용 호수 : <input id="roomBorrow" type="number" required style="width:40"/> 호<br><span style="line-height:10%"><br></span>사용 기간<br><input id="borrowFromDate" type="date" required style="width: 110"/> ~ <input id="borrowToDate" type="date" required style="width: 110"/><br><span style="line-height:30%"><br></span>사용 시간<br><input id="borrowFromTime" type="time" required style="width: 110"/> ~ <input id="borrowToTime" type="time" required style="width: 110"/><br><span style="line-height:10%"><br></span>'
+    $('#payment').html(payment_str);
+    keyupReset();
+    $('#manualFee').trigger('click');
   });
   $('#fileReq').click(function() { $('#filedata').attr('required', $('#fileReq').prop('checked') ? true : false); });
   $('#contact').keyup(function(event) {
