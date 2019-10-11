@@ -36,7 +36,7 @@ $(function() {
           var tmp = data[i][0].slice(0, 8).split('.');
           if(Number(tmp[0]) > 2018 && Number(tmp[1]) > 5) {
             str += '<label><input type="radio" name="radioList" value="' + i + '">' +
-                    data[i][0].slice(7).replace('.', '월').replace(' 오후', '일 오후').replace(' 오전', '일 오전') + ' ' + data[i][2] + ' ' + data[i][1] + ' 님<br>' +
+                    data[i][0].slice(6).replace('.', '월').replace(' 오후', '일 오후').replace(' 오전', '일 오전') + ' ' + data[i][2] + ' ' + data[i][1] + ' 님<br>' +
                     '&nbsp;&nbsp;&nbsp;&nbsp;' + data[i][5] + ' / ' + data[i][6] + ' - ' + data[i][7] + ' 사용</input></label><br><span style="line-height:50%"><br></span>';
           }
         }
@@ -49,7 +49,7 @@ $(function() {
       $('#name').attr('disabled', true);
       $('#list').css('display', 'none');
       $('#DATA').css('display', 'block');
-      $('#infoBox1').val( data[i][0].slice(7).replace('.', '월').replace(' 오후', '일 오후').replace(' 오전', '일 오전') + ' ' +  data[i][2] + ' ' + data[i][1] + ' 님' );
+      $('#infoBox1').val( data[i][0].slice(6).replace('.', '월').replace(' 오후', '일 오후').replace(' 오전', '일 오전') + ' ' +  data[i][2] + ' ' + data[i][1] + ' 님' );
       $('#infoBox2').val( data[i][5] + ' # ' + data[i][6] + ' - ' + data[i][7] + ' 사용' );
     });
   });
