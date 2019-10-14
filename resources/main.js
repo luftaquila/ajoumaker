@@ -28,7 +28,7 @@ $("#DATA").submit(function(event) {
       for (i in staffList) {
         if(staffList[i][1] == str) {
           $('input').attr('disabled', true);
-          alertify.log('Transmitting...', "", 0);
+          //alertify.log('Transmitting...', "", 0);
           var serializedData = '날짜=' + new Date().format('yyyy. mm. dd TT hh시 MM분') +
                                '&이름=' + $.trim($('#name').val()) +
                                '&소속 / 학과=' + $.trim($('#belonging').val()) +
@@ -42,6 +42,7 @@ $("#DATA").submit(function(event) {
                                '&결제=' + $('input:radio[name=pay]:checked').val() +
                                '&담당자=' + staffList[i][0];
           console.log(serializedData);
+          /*
           var dropboxToken = '2Gsi0PEV9cAAAAAAAAAAMCBypIG0PwZKHVyMf-5N7i76YX5wtJC-826h1Z1S7bzH';
           var xhr = new XMLHttpRequest();
           xhr.upload.onprogress = function(evt) {
@@ -54,7 +55,7 @@ $("#DATA").submit(function(event) {
           };
           xhr.onload = function() {
             if (xhr.status === 200) {
-              var fileInfo = JSON.parse(xhr.response);
+              var fileInfo = JSON.parse(xhr.response);*/
               $('.alertify-log-show').css('display', 'none');
               alertify.log('Transmitting Data...');
               request = $.ajax({
@@ -72,7 +73,7 @@ $("#DATA").submit(function(event) {
                 $('input').attr('disabled', false);
                 $('#DATA')[0].reset();
                 $('#machineSelect').css('display', 'none');
-              });
+              });/*
             }
             else {
               var errorMessage = xhr.response || 'Unable to upload file';
@@ -101,10 +102,11 @@ $("#DATA").submit(function(event) {
             }));
           }
           return;
+          */
         }
       }
     }
-    alertify.error('Verification Failure');
+    //alertify.error('Verification Failure');
   });
   $('#alertify-text').replaceWith('<input type="password" id="alertify-text" class="alertify-text"/>');
   setTimeout(function() {
