@@ -42,7 +42,7 @@ $("#DATA").submit(function(event) {
                                '&결제=' + $('input:radio[name=pay]:checked').val() +
                                '&담당자=' + staffList[i][0];
           console.log(serializedData);
-          var dropboxToken = '2Gsi0PEV9cAAAAAAAAAACY5VZ_5YAk9A0360cufNAI0b1277InPbTU0o-wbw9vPc';
+          var dropboxToken = '2Gsi0PEV9cAAAAAAAAAAMCBypIG0PwZKHVyMf-5N7i76YX5wtJC-826h1Z1S7bzH';
           var xhr = new XMLHttpRequest();
           xhr.upload.onprogress = function(evt) {
             var percentComplete = parseInt(100.0 * evt.loaded / evt.total);
