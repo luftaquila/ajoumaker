@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>아주대학교 메이커스페이스</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap&subset=korean" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin-2.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-icon">
+          <i class="fas fa-wrench"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">아주대학교<br>메이커스페이스</div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">
+          <i class="far fa-fw fa-chart-bar"></i>
+          <span>통계</span>
+        </a>
+      </li>
+      
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item active">
+        <a class="nav-link" href="apply.html">
+          <i class="fas fa-fw fa-clipboard-list"></i>
+          <span>사용 신청</span>
+        </a>
+      </li>
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item">
+        <a class="nav-link" href="history.html">
+          <i class="fas fa-fw fa-history"></i>
+          <span>사용 기록</span>
+        </a>
+      </li>
+      
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+          
+          <div>
+            <span>아주대학교 메이커스페이스 장비사용관리체계 v3.0&nbsp;&nbsp;<a href='https://github.com/luftaquila/ajoumaker'><i class='far fa-question-circle'></i></a></span>
+            <br>
+            <span style='font-size: 0.6rem'>©<script>document.write(new Date().getFullYear())</script> LUFT-AQUILA, 아주대학교 전자공학과 18학번 <a href='https://luftaquila.io/'>오병준</a></span>
+          </div>
+                    
+          <!-- Topbar Search -->
+          <form class="d-none d-sm-inline-block form-inline ml-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style='width: 15rem; margin-left: auto!important;'>
+            <div class="input-group">
+              <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                  <i class="fas fa-search fa-sm"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">장비 사용 신청</h1>
+          </div>
+
+          <!-- Contents -->
+          <span id="set">saaaa</span>
+          <div>
+            <div id='basicInfo' style='float:left; line-height: 1.3rem;'>
+              <input placeholder="이름" id="name" class="form-control bg-white border-dark small" type="text" style='width:10rem!important; display: inline-block; margin-right: 1rem;' autofocus required/>
+              <input placeholder="연락처" id="contact" class="form-control bg-white border-dark small" type="tel" maxlength="13" pattern="010-[0-9]{4}-[0-9]{4}" style='width:10rem!important; display: inline-block;' required/><br><br>
+
+              <select placeholder="소속" id="unit" class="form-control bg-white border-dark small" style='width:10rem!important; display: inline-block; margin-right: 1rem;'></select>
+              <select placeholder="학과" id="belonging" class="form-control bg-white border-dark small" style='width:10rem!important; display: inline-block;' required><option value='' selected disabled>소속 2</option></select><br><br>
+              <input placeholder="사용 목적" id="purpose" class="form-control bg-white border-dark small" type="text" style='width:10rem!important; display: inline-block;'/><br><br>
+
+              <label><input type='radio' id='prepay' name='pay' value="선불" checked required> 선불</label>&nbsp;&nbsp;
+              <label><input type='radio' id='afterpay' name='pay' value="후불"> 후불</label><br><br>
+              
+              <div style='margin-bottom: 0.5rem;'>사용자 구분</div>
+              <label><input type='radio' id='internal' name='ppl' value="교내구성원" required> 교내구성원</label><br>
+              <label><input type='radio' id='standard' name='ppl' value="일반인"> 일반인</label><br><br>
+              
+              <div style='margin-bottom: 0.5rem;'>사용 장비</div>
+              <label><input type='radio' id='normal' name='machineType' value="normal" required> 일반 장비</label><br>
+              <label><input type='radio' id='industrial' name='machineType' value="industrial"> 산업용 장비</label><br>
+              <label><input type='radio' id='others' name='machineType' value='others'> 기타</label><br><br>
+            </div>
+            <div style='width:100px; float:left'>&nbsp;</div>
+            <div id='machineSelect' style='float:left; text-align:center; display:none'>
+              <div id='machineContainer' style='text-align:left; width:auto; margin:auto; display:inline-block'>
+                <div id='normalWrapper' class='machineWrapper' style="display: none">
+                  <label><input type='radio' id='cubicon' name='machine' value="큐비콘" required> 큐비콘</label><br>
+                  <label><input type='radio' id='sindo' name='machine' value="신도"> 신도</label><br>
+                  <label><input type='radio' id='onyx' name='machine' value="Onyx"> Onyx One</label><br>
+                  <label><input type='radio' id='freeform' name='machine' value="Freeform"> Freeform</label><br>
+                  <label><input type='radio' id='zortrax' name='machine' value="Zortrax"> Zortrax</label><br>
+                  <label><input type='radio' id='laser' name='machine' value="레이저커터"> 레이저커터</label><br>
+                  <label><input type='radio' id='plotter' name='machine' value="플로터"> 플로터</label><br>
+                  <label><input type='radio' id='cutter' name='machine' value="커팅플로터"> 커팅플로터</label><br>
+                  <label><input type='radio' id='uv' name='machine' value="UV 프린터"> UV 프린터</label><br>
+                </div>
+                <div id='industrialWrapper' class='machineWrapper' style='display:none'>
+                  <label><input type='radio' id='x7' name='machine' value="X7" required> X7</label><br>
+                  <label><input type='radio' id='objet350' name='machine' value="Objet350"> Objet350</label><br>
+                  <label><input type='radio' id='f370' name='machine' value="F370"> F370</label><br>
+                  <label><input type='radio' id='xfab' name='machine' value="Xfab"> Xfab</label><br>
+                  <label><input type='radio' id='3d' name='machine' value="3D 스캐너"> 3D 스캐너</label><br>
+                </div>
+                <div id='othersWrapper' class='machineWrapper' style="display: none">
+                  <label><input type='radio' id='laptop' name='machine' value="노트북 사용" required> 노트북 사용</label><br>
+                  <label><input type='radio' id='room' name='machine' value="강의실 사용"> 강의실 사용</label>
+                </div>
+                <br>
+                <div id='payment' style='margin-bottom: 0.5rem'></div>
+                <span id='feeInfo' style="display:none">요금 : 0원</span>&nbsp;
+                <span id='discountWrap' style="display:none">
+                  <label><input type='checkbox' id='discount' name='discount' value='discount'/> 할인</label>
+                </span>
+                <br>
+                <div id='machineDetail' style='margin-top: 1rem;'></div>
+              </div><br><br>
+              <div id='submitWrapper' style="display:none; margin:0 0 0 5; text-align:left">
+                <a id='manualFee' class="d-sm-inline-block btn btn-sm btn-primary shadow-sm text-white"><i class="far fa-edit fa-sm text-white"></i> 요금 수동 입력</a><br><br>
+                <a id='submit' class="d-sm-inline-block btn btn-sm btn-success shadow-sm text-white"><i class="fas fa-cloud-upload-alt fa-sm text-white"></i> 제출</a>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; LUFT-AQUILA</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+  
+  <script>(function () { var script = document.createElement('script'); script.src="//cdn.jsdelivr.net/npm/eruda"; document.body.appendChild(script); script.onload = function () { eruda.init() } })();</script>
+
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="js/apply.js"></script>
+	<script src="js/sweetalert2.min.js"></script>
+</body>
+
+</html>

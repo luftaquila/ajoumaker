@@ -1,11 +1,11 @@
 <html style='-ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none;'>
   <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119383265-2"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-102734518-4"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'UA-119383265-2');
+      gtag('config', 'UA-102734518-4');
     </script>
     <title>아주대학교 메이커스페이스</title>
     <meta charset="utf-8">
@@ -13,11 +13,13 @@
     <meta property="og:url" content="https://luftaquila.github.io/ajouMaker/"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html">
-  	<link rel="stylesheet" href="/ajoumaker/resources/alertify.core.css" />
-  	<link rel="stylesheet" href="/ajoumaker/resources/alertify.default.css" id="toggleCSS" />
+    <link rel="stylesheet" href="/ajoumaker/resources/alertify.core.css" />
+    <link rel="stylesheet" href="/ajoumaker/resources/alertify.default.css" id="toggleCSS" />
+    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap&subset=korean" rel="stylesheet">
   </head>
   <body>
     <style>
+      html { font-family: 'Nanum Gothic', sans-serif; }
       input[type="number"]::-webkit-outer-spin-button,
       input[type="number"]::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -38,15 +40,16 @@
       <tr>
         <td style="vertical-align:top">
           <form id="DATA" style="height:600; width:870; margin:25 0 0 25">
-            아주대학교 메이커스페이스 장비 관리 시스템&nbsp;&nbsp;©LUFT - AQUILA&nbsp;&nbsp;
-              <a id='version' class='ext' href="/ajoumaker/about.html?v2.7.0"></a>&nbsp;&nbsp;
-              <a class='ext' href="https://docs.google.com/spreadsheets/d/1vMeYMA-GLuTP_o0pUCwe9oUxSEoXZIXseeiYiiARObg/edit#gid=0" target="_blank">Sheet</a>&nbsp;&nbsp;
-              <a class='ext' href="https://github.com/luftaquila/ajoumaker">사용설명서</a><br><span style="line-height:25%"><br></span>
+            아주대학교 메이커스페이스 장비사용관리 시스템 v2.7.1&nbsp;&nbsp;©<script>document.write(new Date().getFullYear())</script> LUFT - AQUILA&nbsp;&nbsp;
+              <!-- <a id='version' class='ext' href="/ajoumaker/about.html?v2.7.0"></a>&nbsp;&nbsp;
+              <a class='ext' href="https://docs.google.com/spreadsheets/d/1vMeYMA-GLuTP_o0pUCwe9oUxSEoXZIXseeiYiiARObg/edit#gid=0" target="_blank">Sheet</a>&nbsp;&nbsp; -->
+              <a class='ext' href="https://github.com/luftaquila/ajoumaker">사용설명서</a><br><span style="line-height:70%"><br></span>
+              <span style="font-size:0.7rem; margin-left: 400">개발 : 아주대학교 전자공학과 18학번 <a class="ext" style="font-size:0.7rem" href="https://luftaquila.io">오병준</a></span><br><span style="line-height:70%"><br></span>
             <div id='notice' style="font-size:1rem;">
               <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 사용 요금을 계산합니다.</span><br>
               <span style="font-weight:bold">파일 업로드 시 STL 및 gcode 데이터를 압축해서 .zip 확장자로 업로드하세요.</span><br><span style="line-height:50%"><br></span>
               <span style="color:red; font-weight:bold">작업물이 출력이 실패할 경우 사용 요금의 50%가 마일리지로 제공됩니다.</span><br>
-              <span style="color:red; font-weight:bold">파일 업로드가 끝나기 전에 USB를 제거하면 업로드가 정상적으로 이루어지지 않습니다.</span>
+              <span style="color:red; font-weight:bold">파일 업로드가 끝나기 전에 USB를 제거하면 업로드가 정상적으로 이루어지지 않습니다.</span><br>
             </div><span style="line-height:70%"><br></span>
             <div style='width:10; float:left'>&nbsp;</div>
             <div id='basicInfo' style='float:left'>
@@ -104,7 +107,7 @@
             <div id='avgWorkTime' style="height: 380; margin: 0 0 0 20"></div>
             <div id='totalMoney' style="height: 450"></div>
             <div id='avgMoney' style="height: 450"></div>
-            <div id='freeUsage' style="height: 200; margin: 0 0 0 50"></div>
+            <div id='freeUsage' style="height: 400; margin: 0 0 0 20"></div>
           </div>
         </td>
         <td style="vertical-align:top">
@@ -113,11 +116,20 @@
             <span id='analytics' style="color:#0366d6">통계 접기 ▲</span><br><span style="line-height:25%"><br></span>
             <div id='chartWrap2' style="text-align:center; vertical-align: middle; position: relative; width: 950">
               <div id='totalUsage' style="height: 400"></div><br><br><br>
+              <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+              <!-- ajoumaker -->
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="ca-pub-7125803081319468"
+                   data-ad-slot="9191844910"
+                   data-ad-format="auto"
+                   data-full-width-responsive="true"></ins>
+              <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
               <div id='MachineUse' style="height: 480"></div>
-              <div id='MachineCnt' style='position: absolute; width: 100; top: 673; left: 303; font-size: 40; text-align: center'></div>
+              <div id='MachineCnt' style='position: absolute; width: 100; top: 953; left: 303; font-size: 40; text-align: center'></div>
               <div id='Belonging' style="height: 480"></div>
               <div id='User' style="height: 480"></div>
-              <div id='UserMoney' style="height: 380"></div>
+              <div id='UserMoney' style="height: 300"></div>
             </div>
           </div>
         </td>
@@ -131,7 +143,7 @@
     <script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
     <script type="text/javascript">
       if(!wcs_add) var wcs_add = {};
-      wcs_add["wa"] = "125568d2258e0e";
+      wcs_add["wa"] = "4bbe7a4f4216fc";
       wcs_do();
     </script>
   </body>

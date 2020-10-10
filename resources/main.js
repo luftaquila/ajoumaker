@@ -1,5 +1,6 @@
 $(function() {
-  $('#version').html($('#version').attr('href').substring($('#version').attr('href').indexOf('?') + 1) + ' α');
+  //(function () { var script = document.createElement('script'); script.src="//cdn.jsdelivr.net/npm/eruda"; document.body.appendChild(script); script.onload = function () { eruda.init() } })();
+  //$('#version').html($('#version').attr('href').substring($('#version').attr('href').indexOf('?') + 1) + ' α');
   clickEventListener();
   google.charts.load('current', {'packages':['corechart']});
   google.charts.setOnLoadCallback(chartLoader());
@@ -273,18 +274,18 @@ function chartLoader() {
   data = [], dataSlice = [], monthList = [];
   var date = [], dropDown = [], timeStr = '';
   $.ajax({
-    url: 'https://docs.google.com/spreadsheet/pub?key=1vMeYMA-GLuTP_o0pUCwe9oUxSEoXZIXseeiYiiARObg&single=true&gid=0&sheet=장비사용&range=A2:J&output=csv',
+    url: 'https://luftaquila.io/api/proxy?url=' + encodeURIComponent('https://docs.google.com/spreadsheet/pub?key=1vMeYMA-GLuTP_o0pUCwe9oUxSEoXZIXseeiYiiARObg&single=true&gid=0&sheet=장비사용&range=A2:J&output=csv'),
     type: "GET",
     dataType: 'text',
     cache: false,
     success: function (response) {
       response = response.replace(/\"|￦/g, '');
       data = response.split('\n').map((line) => line.split(','));
-      for (var i in data) date[data[i][0].substr(0, 12)] = date[data[i][0].substr(0, 12)] ? date[data[i][0].substr(0, 12)] + 1 : 1;
+      for (var i in data) date[data[i][0].substr(0, data[i][0].indexOf("오"))] = date[data[i][0].substr(0, data[i][0].indexOf('오'))] ? date[data[i][0].substr(0, data[i][0].indexOf('오'))] + 1 : 1;
       monthList = Object.keys(date);
       for (var i in monthList) monthList[i] = [monthList[i], Object.values(date)[i]];
       dropDown = JSON.parse(JSON.stringify(monthList));
-      for (var i in dropDown) dropDown[i] = String(dropDown[i]).substr(0, 8).replace('. ', '.');
+      for (var i in dropDown) dropDown[i] = String(dropDown[i]).substr(0, String(dropDown[i]).indexOf('.', String(dropDown[i]).indexOf('.') + 1)).replace('. ', '.');
       dropDown = dropDown.reduce( function(a,b) { if (a.indexOf(b) < 0) a.push(b); return a; }, []);
       dropDown.unshift('total');
       dropDown.forEach(function(value) { timeStr += '<option value=' + value + '>' + (value == 'total' ? '전체 기간' : value.replace('.', '년 ') + '월' ) + '</option>'; });
@@ -300,20 +301,19 @@ function chartDrawer() {
   machineTotUse = [], machineAvgUse = [], machineTotFee = [], machineAvgFee = [], freeUse = [], usrFee = [['교내구성원', 0], ['일반인' , 0]];
   var startVal = 0, endVal = 0, dte = [];
   if( $('#time').val() != 'total') {
-    for (var i in data) { if (data[i][0].substr(0, 8) == $('#time').val().replace('.', '. ')) { startVal = i; break; } }
+    for (var i in data) { if (data[i][0].substr(0, data[i][0].indexOf('.', data[i][0].indexOf('.') + 1)) == $('#time').val().replace('.', '. ')) { startVal = i; break; } }
     for (var i = startVal; i < data.length; i++) {
-      if (data[i][0].substr(0, 8) != $('#time').val().replace('.', '. ')) { endVal = i; break; }
+      if (data[i][0].substr(0, data[i][0].indexOf('.', data[i][0].indexOf('.') + 1)) != $('#time').val().replace('.', '. ')) { endVal = i; break; }
       else endVal = data.length;
     }
     dataSlice = JSON.parse(JSON.stringify(data)).splice(startVal, endVal - startVal);
   }
   else dataSlice = JSON.parse(JSON.stringify(data));
-  for (var i in dataSlice) dte[dataSlice[i][0].substr(0, 12)] = dte[dataSlice[i][0].substr(0, 12)] ? dte[dataSlice[i][0].substr(0, 12)] + 1 : 1;
+  for (var i in dataSlice) dte[dataSlice[i][0].substr(0, dataSlice[i][0].indexOf('오'))] = dte[dataSlice[i][0].substr(0, dataSlice[i][0].indexOf('오'))] ? dte[dataSlice[i][0].substr(0, dataSlice[i][0].indexOf('오'))] + 1 : 1;
   for (var i in dataSlice) {
     var pos = dataSlice[i][6].indexOf(' ');
     dataSlice[i][6] = pos != -1 ? dataSlice[i][6].substr(0, pos) : dataSlice[i][6];
-    dept[dataSlice[i][2].includes('학과') ? dataSlice[i][2] : '기타'] = dept[dataSlice[i][2].includes('학과') ? dataSlice[i][2] : '기타'] ? dept[dataSlice[i][2].includes('학과') ? dataSlice[i][2] : '기타'] + 1 : 1;
-    user[dataSlice[i][8]] = user[dataSlice[i][8]] ? user[dataSlice[i][8]] + 1 : 1;
+    dept[dataSlice[i][2].includes('학과') ? dataSlice[i][2] : '기타'] = dept[dataSlice[i][2].includes('학과') ? dataSlice[i][2] : '기타'] ? dept[dataSlice[i][2].includes('학과') ? dataSlice[i][2] : '기타'] + 1 : 1;    user[dataSlice[i][8]] = user[dataSlice[i][8]] ? user[dataSlice[i][8]] + 1 : 1;
     if(dataSlice[i].length > 10) {
       var str = '';
       for (var j = 9; j < dataSlice[i].length; j++) str += dataSlice[i][j];
@@ -329,8 +329,10 @@ function chartDrawer() {
         if(!(dataSlice[i].includes('Objet350') || dataSlice[i].includes('플로터') || dataSlice[i].includes('UV') || dataSlice[i].includes('Xfab'))) {
           var time;
           if(!dataSlice[i].includes('X7')) {
-            time = dataSlice[i][7].split('시간 ');
-            machineList[j][2] += (Number(time[0]) * 60 + Number(time[1].slice(0, -1)));
+            try {
+              time = dataSlice[i][7].split('시간 ');
+              machineList[j][2] += (Number(time[0]) * 60 + Number(time[1].slice(0, -1)));
+            } catch(e) { continue; }
           }
           else {
             usage = dataSlice[i][7].split('분 /');
@@ -394,7 +396,7 @@ function chartDrawer() {
   machineTotFee.splice(machineTotFee.length - totFeeZeroCount, totFeeZeroCount);
   freeUse.splice(freeUse.length - freeUseCount, freeUseCount);
   options = {
-    title: '오늘 현재까지 ' + (dt[dt.length - 1][0] == new Date().format('yyyy. mm. dd') ? dt[dt.length - 1][1] : 0) + ' 명 방문\n하루 평균 ' + (dataSlice.length / dt.length).toFixed(1) + ' 명 방문\n\n사용자 수 현황',
+    title: '오늘 현재까지 ' + (dt[dt.length - 1][0].includes(new Date().format('yyyy. m. d')) ? dt[dt.length - 1][1] : 0) + ' 명 방문\n하루 평균 ' + (dataSlice.length / dt.length).toFixed(1) + ' 명 방문\n\n사용자 수 현황',
     legend: 'none',
     hAxis: { minValue: 0 }
   };
@@ -731,7 +733,9 @@ var dateFormat = function () {
       H = date[_ + "Hours"](),
       M = date[_ + "Minutes"](),
       flags = {
+        d :   d,
         dd:   pad(d),
+        m :   m + 1,
         mm:   pad(m + 1),
         yy:   String(y).slice(2),
         yyyy: y,
