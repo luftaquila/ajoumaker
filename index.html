@@ -1,417 +1,453 @@
-<html>
-  <div id="error">
-    <div id="box"></div>
-    <h3>301 Moved</h3>
-    <p>Things are a little <span>unstable</span> here.</p>
-    <p>Page Moved Permanently.</p>
-    <p>This page moved to<br><a href="https://luftaquila.io/ajoumaker">https://luftaquila.io/ajoumaker</a></p>
-  </div>
-<style>
-html,
-body {
-  height: 100%;
-}
-body {
-  display: grid;
-  width: 100%;
-  font-family: Inconsolata, monospace;
-}
-body div#error {
-  position: relative;
-  margin: auto;
-  padding: 20px;
-  z-index: 2;
-}
-body div#error div#box {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 1px solid #000;
-}
-body div#error div#box:before,
-body div#error div#box:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  box-shadow: inset 0px 0px 0px 1px #000;
-  mix-blend-mode: multiply;
-  animation: dance 2s infinite steps(1);
-}
-body div#error div#box:before {
-  clip-path: polygon(0 0, 65% 0, 35% 100%, 0 100%);
-  box-shadow: inset 0px 0px 0px 1px currentColor;
-  color: #f0f;
-}
-body div#error div#box:after {
-  clip-path: polygon(65% 0, 100% 0, 100% 100%, 35% 100%);
-  animation-duration: 0.5s;
-  animation-direction: alternate;
-  box-shadow: inset 0px 0px 0px 1px currentColor;
-  color: #0ff;
-}
-body div#error h3 {
-  position: relative;
-  font-size: 5vw;
-  font-weight: 700;
-  text-transform: uppercase;
-  animation: blink 1.3s infinite steps(1);
-}
-body div#error h3:before,
-body div#error h3:after {
-  content: '301 Moved';
-  position: absolute;
-  top: -1px;
-  left: 0;
-  mix-blend-mode: soft-light;
-  animation: dance 2s infinite steps(2);
-}
-body div#error h3:before {
-  clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
-  color: #f0f;
-  animation: shiftright 2s steps(2) infinite;
-}
-body div#error h3:after {
-  clip-path: polygon(0 100%, 100% 100%, 100% 50%, 0 50%);
-  color: #0ff;
-  animation: shiftleft 2s steps(2) infinite;
-}
-body div#error p {
-  position: relative;
-  margin-bottom: 8px;
-}
-body div#error p span {
-  position: relative;
-  display: inline-block;
-  font-weight: bold;
-  color: #000;
-  animation: blink 3s steps(1) infinite;
-}
-body div#error p span:before,
-body div#error p span:after {
-  content: 'unstable';
-  position: absolute;
-  top: -1px;
-  left: 0;
-  mix-blend-mode: multiply;
-}
-body div#error p span:before {
-  clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
-  color: #f0f;
-  animation: shiftright 1.5s steps(2) infinite;
-}
-body div#error p span:after {
-  clip-path: polygon(0 100%, 100% 100%, 100% 50%, 0 50%);
-  color: #0ff;
-  animation: shiftleft 1.7s steps(2) infinite;
-}
-@-moz-keyframes dance {
-  0%, 84%, 94% {
-    transform: skew(0deg);
-  }
-  85% {
-    transform: skew(5deg);
-  }
-  90% {
-    transform: skew(-5deg);
-  }
-  98% {
-    transform: skew(3deg);
-  }
-}
-@-webkit-keyframes dance {
-  0%, 84%, 94% {
-    transform: skew(0deg);
-  }
-  85% {
-    transform: skew(5deg);
-  }
-  90% {
-    transform: skew(-5deg);
-  }
-  98% {
-    transform: skew(3deg);
-  }
-}
-@-o-keyframes dance {
-  0%, 84%, 94% {
-    transform: skew(0deg);
-  }
-  85% {
-    transform: skew(5deg);
-  }
-  90% {
-    transform: skew(-5deg);
-  }
-  98% {
-    transform: skew(3deg);
-  }
-}
-@keyframes dance {
-  0%, 84%, 94% {
-    transform: skew(0deg);
-  }
-  85% {
-    transform: skew(5deg);
-  }
-  90% {
-    transform: skew(-5deg);
-  }
-  98% {
-    transform: skew(3deg);
-  }
-}
-@-moz-keyframes shiftleft {
-  0%, 87%, 100% {
-    transform: translate(0, 0) skew(0deg);
-  }
-  84%, 90% {
-    transform: translate(-8px, 0) skew(20deg);
-  }
-}
-@-webkit-keyframes shiftleft {
-  0%, 87%, 100% {
-    transform: translate(0, 0) skew(0deg);
-  }
-  84%, 90% {
-    transform: translate(-8px, 0) skew(20deg);
-  }
-}
-@-o-keyframes shiftleft {
-  0%, 87%, 100% {
-    transform: translate(0, 0) skew(0deg);
-  }
-  84%, 90% {
-    transform: translate(-8px, 0) skew(20deg);
-  }
-}
-@keyframes shiftleft {
-  0%, 87%, 100% {
-    transform: translate(0, 0) skew(0deg);
-  }
-  84%, 90% {
-    transform: translate(-8px, 0) skew(20deg);
-  }
-}
-@-moz-keyframes shiftright {
-  0%, 87%, 100% {
-    transform: translate(0, 0) skew(0deg);
-  }
-  84%, 90% {
-    transform: translate(8px, 0) skew(20deg);
-  }
-}
-@-webkit-keyframes shiftright {
-  0%, 87%, 100% {
-    transform: translate(0, 0) skew(0deg);
-  }
-  84%, 90% {
-    transform: translate(8px, 0) skew(20deg);
-  }
-}
-@-o-keyframes shiftright {
-  0%, 87%, 100% {
-    transform: translate(0, 0) skew(0deg);
-  }
-  84%, 90% {
-    transform: translate(8px, 0) skew(20deg);
-  }
-}
-@keyframes shiftright {
-  0%, 87%, 100% {
-    transform: translate(0, 0) skew(0deg);
-  }
-  84%, 90% {
-    transform: translate(8px, 0) skew(20deg);
-  }
-}
-@-moz-keyframes blink {
-  0%, 50%, 85%, 100% {
-    color: #000;
-  }
-  87%, 95% {
-    color: transparent;
-  }
-}
-@-webkit-keyframes blink {
-  0%, 50%, 85%, 100% {
-    color: #000;
-  }
-  87%, 95% {
-    color: transparent;
-  }
-}
-@-o-keyframes blink {
-  0%, 50%, 85%, 100% {
-    color: #000;
-  }
-  87%, 95% {
-    color: transparent;
-  }
-}
-@keyframes blink {
-  0%, 50%, 85%, 100% {
-    color: #000;
-  }
-  87%, 95% {
-    color: transparent;
-  }
-}
-</style>
-</html>
+<!DOCTYPE html>
+<html lang="en">
 
-<!-- <html style='-ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none;'>
-  <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-102734518-4"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-102734518-4');
-    </script>
-    <title>아주대학교 메이커스페이스</title>
-    <meta charset="utf-8">
-    <meta property="og:title" content="아주대학교 메이커스페이스"/>
-    <meta property="og:url" content="https://luftaquila.github.io/ajouMaker/"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="Content-Type" content="text/html">
-    <link rel="stylesheet" href="/ajoumaker/resources/alertify.core.css" />
-    <link rel="stylesheet" href="/ajoumaker/resources/alertify.default.css" id="toggleCSS" />
-    <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap&subset=korean" rel="stylesheet">
-  </head>
-  <body>
-    <style>
-      html { font-family: 'Nanum Gothic', sans-serif; }
-      input[type="number"]::-webkit-outer-spin-button,
-      input[type="number"]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-      input[type="date"]::-webkit-inner-spin-button {
-          display: none;
-          -webkit-appearance: none;
-      }
-      .ext {
-        background: url(/ajoumaker/resources/Icons/Resized/external.png) no-repeat left center;
-        padding-left: 14px;
-        color: #0366d6;
-        font-size: 0.9rem;
-      }
-    </style>
-    <table style="table-layout:fixed">
-      <tr>
-        <td style="vertical-align:top">
-          <form id="DATA" style="height:600; width:870; margin:25 0 0 25">
-            아주대학교 메이커스페이스 장비사용관리 시스템 v2.7.1&nbsp;&nbsp;©<script>document.write(new Date().getFullYear())</script> LUFT - AQUILA&nbsp;&nbsp;
-              <!-- <a id='version' class='ext' href="/ajoumaker/about.html?v2.7.0"></a>&nbsp;&nbsp;
-              <a class='ext' href="https://docs.google.com/spreadsheets/d/1vMeYMA-GLuTP_o0pUCwe9oUxSEoXZIXseeiYiiARObg/edit#gid=0" target="_blank">Sheet</a>&nbsp;&nbsp; -->
-              <a class='ext' href="https://github.com/luftaquila/ajoumaker">사용설명서</a><br><span style="line-height:70%"><br></span>
-              <span style="font-size:0.7rem; margin-left: 400">개발 : 아주대학교 전자공학과 18학번 <a class="ext" style="font-size:0.7rem" href="https://luftaquila.io">오병준</a></span><br><span style="line-height:70%"><br></span>
-            <div id='notice' style="font-size:1rem;">
-              <span style="font-weight:bold">1시간 미만의 작업물은 1시간 사용으로 사용 요금을 계산합니다.</span><br>
-              <span style="font-weight:bold">파일 업로드 시 STL 및 gcode 데이터를 압축해서 .zip 확장자로 업로드하세요.</span><br><span style="line-height:50%"><br></span>
-              <span style="color:red; font-weight:bold">작업물이 출력이 실패할 경우 사용 요금의 50%가 마일리지로 제공됩니다.</span><br>
-              <span style="color:red; font-weight:bold">파일 업로드가 끝나기 전에 USB를 제거하면 업로드가 정상적으로 이루어지지 않습니다.</span><br>
-            </div><span style="line-height:70%"><br></span>
-            <div style='width:10; float:left'>&nbsp;</div>
-            <div id='basicInfo' style='float:left'>
-              <input placeholder="이름 입력" id="name" type="text" style='width:150' autofocus required/><br><span style="line-height:25%"><br></span>
-              <input placeholder="학과 입력" id="belonging" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
-              <input placeholder="연락처 입력" id="contact" type="tel" maxlength="13" pattern="010-[0-9]{4}-[0-9]{4}" style='width:150' required/><br><span style="line-height:25%"><br></span>
-              <input placeholder="사용 목적 입력" id="purpose" type="text" style='width:150' required/><br><span style="line-height:25%"><br></span>
-              <input type="checkbox" id='fileReq' checked='checked'/><input id="filedata" type="file" name='file' required/><br><span style="line-height:25%"><br></span>
-              <label for='prepay'><input type='radio' id='prepay' name='pay' value="선불" checked required>선불</input></label>&nbsp;
-              <label for='afterpay'><input type='radio' id='afterpay' name='pay' value="후불">후불</input></label><br><span style="line-height:25%"><br></span>
-              <span id='manualFee'>사용자 구분</span><br><span style="line-height:10%"><br></span>
-              <label for='internal'><input type='radio' id='internal' name='ppl' value="교내구성원" required>교내구성원</input></label><br>
-              <label for='standard'><input type='radio' id='standard' name='ppl' value="일반인">일반인</input></label><br><span style="line-height:25%"><br></span>
-              사용 장비<br><span style="line-height:10%"><br></span>
-              <label for='normal'><input type='radio' id='normal' name='machineType' value="normal" required>일반 장비</input></label><br>
-              <label for='industrial'><input type='radio' id='industrial' name='machineType' value="industrial">산업용 장비</input></label><br>
-              <label for='others'><input type='radio' id='others' name='machineType' value='others'>기타</input></label><br><br>
-            </div><div style='width:50; float:left'>&nbsp;</div>
-            <div id='machineSelect' style='float:left; text-align:center; display:none'>
-              <div id='machineContainer' style='text-align:left; width:auto; margin:auto; display:inline-block'>
-                <div id='normalWrapper' class='machineWrapper' style="display: none">
-                  <label for='cubicon'><input type='radio' id='cubicon' name='machine' value="큐비콘" required>큐비콘</input></label><br>
-                  <label for='sindo'><input type='radio' id='sindo' name='machine' value="신도">신도</input></label><br>
-                  <label for='onyx'><input type='radio' id='onyx' name='machine' value="Onyx">Onyx One</input></label><br>
-                  <label for='freeform'><input type='radio' id='freeform' name='machine' value="Freeform">Freeform</input></label><br>
-                  <label for='zortrax'><input type='radio' id='zortrax' name='machine' value="Zortrax">Zortrax</input></label><br>
-                  <label for='laser'><input type='radio' id='laser' name='machine' value="레이저커터">레이저커터</input></label><br>
-                  <label for='plotter'><input type='radio' id='plotter' name='machine' value="플로터">플로터</input></label><br>
-                  <label for='cutter'><input type='radio' id='cutter' name='machine' value="커팅플로터">커팅플로터</input></label><br>
-                  <label for='uv'><input type='radio' id='uv' name='machine' value="UV 프린터">UV 프린터</input></label><br>
-                </div>
-                <div id='industrialWrapper' class='machineWrapper' style='display:none'>
-                  <label for='x7'><input type='radio' id='x7' name='machine' value="X7" required>X7</input></label><br>
-                  <label for='objet350'><input type='radio' id='objet350' name='machine' value="Objet350">Objet350</input></label><br>
-                  <label for='f370'><input type='radio' id='f370' name='machine' value="F370">F370</input></label><br>
-                  <label for='xfab'><input type='radio' id='xfab' name='machine' value="Xfab">Xfab</input></label><br>
-                  <label for='3d'><input type='radio' id='3d' name='machine' value="3D 스캐너">3D 스캐너</input></label><br>
-                </div>
-                <div id='othersWrapper' class='machineWrapper' style="display: none">
-                  <label for='laptop'><input type='radio' id='laptop' name='machine' value="노트북 사용" required>노트북 사용</input></label><br>
-                  <label for='room'><input type='radio' id='room' name='machine' value="강의실 사용">강의실 사용</input></label><br>
-                </div><span style="line-height:35%"><br></span>
-                <div id='payment'></div><span style="line-height:25%"><br></span>
-                <span id='feeInfo' style="display:none">요금 : 0원</span>&nbsp;
-                <span id='discountWrap' style="display:none">
-                  <label for='discount'><input type='checkbox' id='discount' name='discount' value='discount'/>할인</input></label>
-                </span><br><span style="line-height:25%"><br></span>
-                <div id='machineDetail'></div>
-              </div><br><br>
-              <div id='submitWrapper' style="display:none; margin:0 0 0 5; text-align:left"><input type="submit" style='padding: 0.3rem 1.3rem;'/></div>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>아주대학교 메이커스페이스</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap&subset=korean" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin-2.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-icon">
+          <i class="fas fa-wrench"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">아주대학교<br>메이커스페이스</div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item active">
+        <a class="nav-link" href="index.html">
+          <i class="far fa-fw fa-chart-bar"></i>
+          <span>통계</span>
+        </a>
+      </li>
+      
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item">
+        <a class="nav-link" href="apply.html">
+          <i class="fas fa-fw fa-clipboard-list"></i>
+          <span>사용 신청</span>
+        </a>
+      </li>
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item">
+        <a class="nav-link" href="history.html">
+          <i class="fas fa-fw fa-history"></i>
+          <span>사용 기록</span>
+        </a>
+      </li>
+      
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+          
+          <div>
+            <span>아주대학교 메이커스페이스 장비사용관리체계 v3.0&nbsp;&nbsp;<a href='https://github.com/luftaquila/ajoumaker'><i class='far fa-question-circle'></i></a></span>
+            <br>
+            <span style='font-size: 0.6rem'>©<script>document.write(new Date().getFullYear())</script> LUFT-AQUILA, 아주대학교 전자공학과 18학번 <a href='https://luftaquila.io/'>오병준</a></span>
+          </div>
+                    
+          <!-- Topbar Search -->
+          <form class="d-none d-sm-inline-block form-inline ml-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style='width: 15rem; margin-left: auto!important;'>
+            <div class="input-group">
+              <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                  <i class="fas fa-search fa-sm"></i>
+                </button>
+              </div>
             </div>
           </form>
-          <div id='chartWrap1'>
-            <div id='totalWorkTime' style="height: 380; margin: 0 0 0 20"></div>
-            <div id='avgWorkTime' style="height: 380; margin: 0 0 0 20"></div>
-            <div id='totalMoney' style="height: 450"></div>
-            <div id='avgMoney' style="height: 450"></div>
-            <div id='freeUsage' style="height: 400; margin: 0 0 0 20"></div>
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">장비 사용 통계</h1>
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
           </div>
-        </td>
-        <td style="vertical-align:top">
-          <div style="margin:25 0 0 25">
-            <select id='time' name='time' size='1' style='width:100px'></select>
-            <span id='analytics' style="color:#0366d6">통계 접기 ▲</span><br><span style="line-height:25%"><br></span>
-            <div id='chartWrap2' style="text-align:center; vertical-align: middle; position: relative; width: 950">
-              <div id='totalUsage' style="height: 400"></div><br><br><br>
-              <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-              <!-- ajoumaker -->
-              <ins class="adsbygoogle"
-                   style="display:block"
-                   data-ad-client="ca-pub-7125803081319468"
-                   data-ad-slot="9191844910"
-                   data-ad-format="auto"
-                   data-full-width-responsive="true"></ins>
-              <script> (adsbygoogle = window.adsbygoogle || []).push({}); </script>
-              <div id='MachineUse' style="height: 480"></div>
-              <div id='MachineCnt' style='position: absolute; width: 100; top: 953; left: 303; font-size: 40; text-align: center'></div>
-              <div id='Belonging' style="height: 480"></div>
-              <div id='User' style="height: 480"></div>
-              <div id='UserMoney' style="height: 300"></div>
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Earnings (Monthly)</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Earnings (Annual)</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks</div>
+                      <div class="row no-gutters align-items-center">
+                        <div class="col-auto">
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                        </div>
+                        <div class="col">
+                          <div class="progress progress-sm mr-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Requests</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-comments fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </td>
-      </tr>
-    </table>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-    <script src='https://www.gstatic.com/charts/loader.js'></script>
-    <script src='/ajoumaker/resources/alertify.min.js'></script>
-    <script src='/ajoumaker/resources/main.js' charset='utf-8'></script>
-    <script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
-    <script type="text/javascript">
-      if(!wcs_add) var wcs_add = {};
-      wcs_add["wa"] = "4bbe7a4f4216fc";
-      wcs_do();
-    </script>
-  </body>
+
+          <!-- Content Row -->
+
+          <div class="row">
+
+            <!-- Area Chart -->
+            <div class="col-xl-8 col-lg-7">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                  <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                      <div class="dropdown-header">Dropdown Header:</div>
+                      <a class="dropdown-item" href="#">Action</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-area">
+                    <canvas id="myAreaChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="col-xl-4 col-lg-5">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
+                  <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                      <div class="dropdown-header">Dropdown Header:</div>
+                      <a class="dropdown-item" href="#">Action</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-pie pt-4 pb-2">
+                    <canvas id="myPieChart"></canvas>
+                  </div>
+                  <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                      <i class="fas fa-circle text-primary"></i> Direct
+                    </span>
+                    <span class="mr-2">
+                      <i class="fas fa-circle text-success"></i> Social
+                    </span>
+                    <span class="mr-2">
+                      <i class="fas fa-circle text-info"></i> Referral
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Content Column -->
+            <div class="col-lg-6 mb-4">
+
+              <!-- Project Card Example -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
+                </div>
+                <div class="card-body">
+                  <h4 class="small font-weight-bold">Server Migration <span class="float-right">20%</span></h4>
+                  <div class="progress mb-4">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <h4 class="small font-weight-bold">Sales Tracking <span class="float-right">40%</span></h4>
+                  <div class="progress mb-4">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <h4 class="small font-weight-bold">Customer Database <span class="float-right">60%</span></h4>
+                  <div class="progress mb-4">
+                    <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <h4 class="small font-weight-bold">Payout Details <span class="float-right">80%</span></h4>
+                  <div class="progress mb-4">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <h4 class="small font-weight-bold">Account Setup <span class="float-right">Complete!</span></h4>
+                  <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Color System -->
+              <div class="row">
+                <div class="col-lg-6 mb-4">
+                  <div class="card bg-primary text-white shadow">
+                    <div class="card-body">
+                      Primary
+                      <div class="text-white-50 small">#4e73df</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                  <div class="card bg-success text-white shadow">
+                    <div class="card-body">
+                      Success
+                      <div class="text-white-50 small">#1cc88a</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                  <div class="card bg-info text-white shadow">
+                    <div class="card-body">
+                      Info
+                      <div class="text-white-50 small">#36b9cc</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                  <div class="card bg-warning text-white shadow">
+                    <div class="card-body">
+                      Warning
+                      <div class="text-white-50 small">#f6c23e</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                  <div class="card bg-danger text-white shadow">
+                    <div class="card-body">
+                      Danger
+                      <div class="text-white-50 small">#e74a3b</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                  <div class="card bg-secondary text-white shadow">
+                    <div class="card-body">
+                      Secondary
+                      <div class="text-white-50 small">#858796</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                  <div class="card bg-light text-black shadow">
+                    <div class="card-body">
+                      Light
+                      <div class="text-black-50 small">#f8f9fc</div>
+                    </div>
+                  </div>
+              </div>
+              <div class="col-lg-6 mb-4">
+                <div class="card bg-dark text-white shadow">
+                  <div class="card-body">
+                      Dark
+                      <div class="text-white-50 small">#5a5c69</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            </div>
+
+            <div class="col-lg-6 mb-4">
+
+              <!-- Illustrations -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
+                </div>
+                <div class="card-body">
+                  <div class="text-center">
+                    <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="img/undraw_posting_photo.svg" alt="">
+                  </div>
+                  <p>Add some quality, svg illustrations to your project courtesy of <a target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a constantly updated collection of beautiful svg images that you can use completely free and without attribution!</p>
+                  <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on unDraw &rarr;</a>
+                </div>
+              </div>
+
+              <!-- Approach -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
+                </div>
+                <div class="card-body">
+                  <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce CSS bloat and poor page performance. Custom CSS classes are used to create custom components and custom utility classes.</p>
+                  <p class="mb-0">Before working with this theme, you should become familiar with the Bootstrap framework, especially the utility classes.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; LUFT-AQUILA</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+  
+  <script>(function () { var script = document.createElement('script'); script.src="//cdn.jsdelivr.net/npm/eruda"; document.body.appendChild(script); script.onload = function () { eruda.init() } })();</script>
+
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="js/statistics.js"></script>
+
+</body>
+
 </html>
--->
