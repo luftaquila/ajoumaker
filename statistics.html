@@ -17,7 +17,17 @@
 
   <!-- Custom styles for this template-->
   <link href="css/sb-admin-2.css" rel="stylesheet">
+  <link href="css/statistics.css" rel="stylesheet">
   <link href="vendor/chart.js/Chart.min.css" rel='stylesheet'>
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-102734518-4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-102734518-4');
+  </script>
 </head>
 
 <body id="page-top">
@@ -125,12 +135,97 @@
           </div>
 
           <!-- Contents -->
-          <div>
-*********************************
-            장비별 가동시간 총합
+          
+          <div style='width: 100%; text-align: center'>
+            <div style='font-size: 15rem'>
+              <i class='fas fa-code-branch'></i>
+            </div>
+            <div style='font-size: 7rem'>
+              Page under construction.
+            </div><br><br>
+          </div>
+          
+          <div id='loading' style='width: 100%; text-align: center;'><div class="lds-ripple"><div></div><div></div></div><br><br><div id='workingText' style='font-size: 2rem'>데이터 로드 중...</div></div>
+          <div id='contents' style='display: none'>
+          <!-- Content Row -->
+          <div class="row">
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">오늘 사용자 수</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><span id='todayUserCount'></span> 명</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-user-astronaut fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">하루 평균 사용자 수</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><span id='avgUserCount'></span> 명</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-user-clock fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">전체 사용자 수</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800"><span id='totalUserCount'></span> 명</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">전체 매출 총액</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">￦<span id='totalSales'></span></div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+            
+            장비별 총 가동 시간
             장비별 1회 평균 가동 시간
             장비별 매출 총액
             장비별 1회 평균 매출액
+            사용자 분류별 총 매출액
+            장비별 무료 가동률
+            
+            장비별 현황
+            소속별 현황
+            사용자 구분 현황
+            
             
           </div>
 

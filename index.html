@@ -17,7 +17,15 @@
 
   <!-- Custom styles for this template-->
   <link href="css/sb-admin-2.css" rel="stylesheet">
-
+ 
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-102734518-4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-102734518-4');
+  </script>
 </head>
 
 <body id="page-top">
@@ -125,7 +133,7 @@
           </div>
 
           <!-- Contents -->
-          <div id='notice'></div>
+          <div id='notice'></div><br>
           <form id='DATA'>
             <div id='basicInfo' style='float:left; line-height: 1.3rem;'>
               <input placeholder="이름" id="name" class="form-control bg-white border-dark small" type="text" style='width:10rem!important; display: inline-block; margin-right: 1rem;' autofocus required/>

@@ -47,7 +47,7 @@ app.listen(3130, async function() {
     try {
       let query = 'SHOW TABLES;';
       let result = await db.query(query);
-      logger.info('DB connection check.', { ip: 'LOCALHOST', url: 'SERVER', query: query ? query : 'Query String Not generated.', result: JSON.stringify(result) });
+      //logger.info('DB connection check.', { ip: 'LOCALHOST', url: 'SERVER', query: query ? query : 'Query String Not generated.', result: JSON.stringify(result) });
     }
     catch(e) {
       db = await pool.getConnection();
