@@ -49,7 +49,7 @@
       </li>
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="history.html">
           <i class="fas fa-fw fa-history"></i>
           <span>사용 기록</span>
@@ -65,7 +65,7 @@
       </li>
       
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="settings.html">
           <i class="fas fa-fw fa-cog"></i>
           <span>설정</span>
@@ -122,55 +122,42 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">장비 사용 기록</h1>
-            <a id='export' class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm text-white"><i class="fas fa-download fa-sm text-white"></i> 엑셀 파일로 내보내기</a>
+            <h1 class="h3 mb-0 text-gray-800">설정</h1>
           </div>
 
           <!-- Contents -->
-          <div>
-            <div class='table-responsive'>
-              <table class="table table-bordered" id="history" width="100%" style='table-layout: fixed; text-align: center' cellspacing="0">
+          <div id='contents' style='display: none'>
+            <h5>담당자 목록</h5>
+            <div style='width:400px'>
+              <table class="table table-bordered" id="admins" style='table-layout: fixed; text-align: center' cellspacing="0">
                 <colgroup>
-                  <col width='220px' />
-                  <col width='120px' />
-                  <col width='160px' />
-                  <col width='160px' />
-                  <col width='200px' />
-                  <col width='150px' />
-                  <col width='200px' />
-                  <col width='150px' />
-                  <col width='120px' />
-                  <col width='130px' />
-                  <col width='150px' />
+                  <col width='100px' />
+                  <col width='100px' />
                 </colgroup>
                 <thead>
-                  <th>타임스탬프</th>
                   <th>이름</th>
-                  <th>소속</th>
-                  <th>연락처</th>
-                  <th>사용 목적</th>
-                  <th>사용 장비</th>
-                  <th>사용량</th>
-                  <th>사용자 구분</th>
-                  <th>매출액</th>
-                  <th>결제 구분</th>
-                  <th>인증 담당자</th>
+                  <th>코드</th>
                 </thead>
-                <tfoot>
-                  <th>타임스탬프</th>
-                  <th>이름</th>
-                  <th>소속</th>
-                  <th>연락처</th>
-                  <th>사용 목적</th>
-                  <th>사용 장비</th>
-                  <th>사용량</th>
-                  <th>사용자 구분</th>
-                  <th>매출액</th>
-                  <th>결제 구분</th>
-                  <th>인증 담당자</th>
-                </tfoot>
               </table>
             </div>
+            <br>
+            
+            <h6>담당자 등록</h6>
+            <p style='font-size: 0.8rem'>담당자 코드는 고유 값으로 중복될 수 없습니다.</p>
+            이름 : <input id='adminName' type='text' style='width:70px' />&nbsp;&nbsp;
+            코드 : <input id='adminCode' type='number' style='width:70px' />&nbsp;&nbsp;
+            <a id='addAdmin' class="d-sm-inline-block btn btn-sm btn-success shadow-sm text-white"><i class="fas fa-user-plus fa-sm text-white"></i> 등록</a>
+            <br><br>
+            
+            <h6>담당자 삭제</h6>
+            코드 : <input id='deleteAdminCode' type='number' style='width:70px' />&nbsp;&nbsp;
+            <a id='deleteAdmin' class="d-sm-inline-block btn btn-sm btn-danger shadow-sm text-white"><i class="fas fa-user-minus fa-sm text-white"></i> 삭제</a>
+            <br><br>
+            
+            <h5>공지사항</h5>
+            <p style='font-size: 0.8rem'>신청 페이지 상단에 표시되는 공지사항입니다.<br>HTML5 문법을 일부 지원합니다.</p>
+            <textarea id='notice' style='width: 300px; height: 80px'></textarea><br>
+            <a id='updateNotice' class="d-sm-inline-block btn btn-sm btn-secondary shadow-sm text-white"><i class="fas fa-cloud-upload-alt fa-sm text-white"></i> 변경</a>
           </div>
 
         </div>
@@ -199,7 +186,7 @@
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
-
+  
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -211,16 +198,11 @@
   <script src="js/sb-admin-2.min.js"></script>
 
   <!-- Page level plugins -->
-  <script src="js/history.js"></script>
-
+  <script src="js/settings.js"></script>
+  <script src="js/sweetalert2.min.js"></script>
   <script src="vendor/datatables/jquery.dataTables.min.js"></script>
   <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-	<script src="js/sweetalert2.min.js"></script>
- 
-  <!-- For excel export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
-  
+	
 </body>
 
 </html>

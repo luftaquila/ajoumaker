@@ -28,7 +28,42 @@ $(function() {
     }
   });
   
-  $('#set').click(function() {
+  $.ajax({
+    url: 'https://luftaquila.io/ajoumaker/api/requestSetting',
+    type: 'POST',
+    data: { key: 'notice' },
+    success: function(res) { $('#notice').html(res[0].value); }
+  });
+  
+  $("#DATA").submit(function(event) {
+    event.preventDefault();
+    // data validation
+    let data = {}
+    try {
+      if(!$('#name').val().trim()) throw { name : "dataValidationFailedError", message : "이름을 입력하세요." };
+      else if($('#name').val().trim().length > 10) throw { name : "dataValidationFailedError", message : "이름은 10글자를 초과할 수 없습니다." };
+      else data.name = $('#name').val().trim();
+      
+      if(!$('#contact').val().trim().match(/010-\d{4}-\d{4}/)) throw { name : "dataValidationFailedError", message : "전화번호가 올바르지 않습니다." };
+      else data.phone = $('#contact').val().trim();
+      
+      if(!$('#belonging').val().trim()) throw { name : "dataValidationFailedError", message : "소속을 입력하세요." };
+      else if($('#belonging').val().trim().length > 20) throw { name : "dataValidationFailedError", message : "소속은 20글자를 초과할 수 없습니다." };
+      else data.affiliation = $('#belonging').val().trim();
+      
+      if($('#purpose').val().length > 30) throw { name : "dataValidationFailedError", message : "사용 목적은 30자 이내로 입력하세요." };
+      else data.purpose = $('#purpose').val();
+      
+      data.machine = $('input:radio[name=machine]:checked').val() + machineNumReturn();
+      data.usage = machineUse($('input:radio[name=machine]:checked').attr('id'));
+      data.identity = $('input:radio[name=ppl]:checked').val();
+      data.cost = feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), Number($('input:checkbox[name=discount]:checked').length));
+      data.payment = $('input:radio[name=pay]:checked').val();
+    }
+    catch(e) { 
+      if(e.name == 'dataValidationFailedError') return Swal.fire(e.message, '', 'warning');
+      else console.error(e);
+    }
     
     Swal.fire({
       title: '관리자 인증이 필요합니다.',
@@ -40,53 +75,53 @@ $(function() {
       preConfirm: (code) => {
         return fetch('https://luftaquila.io/ajoumaker/api/adminVerification', {
           method: 'POST',
-          cache: 'no-cache',
-          redirect: 'follow',
-          body: code
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ code: code })
         })
         .then(response => {
-          console.log(response);
-          if (!response.ok) {
-            throw new Error(response.statusText);
-          }
+          if(response.status == 499) throw { name : "codeNotMatchError", message : "code does not match" };
+          else if (!response.ok) throw new Error(response.statusText);
           return response.json();
          })
         .catch(error => {
-          Swal.showValidationMessage(`Request failed: ${error}`);
+          if(error.name == 'codeNotMatchError')
+            Swal.showValidationMessage('인증에 실패하였습니다.');
+          else
+            Swal.showValidationMessage(`Request failed: ${error}`);
         })
       },
       allowOutsideClick: () => !Swal.isLoading()
     }).then((result) => {
-      console.log(result)
       if (result.isConfirmed) {
-        Swal.fire({
-          title: `${result.value.login}'s avatar`,
-          imageUrl: result.value.avatar_url
-        });
+        if(result.value.length) {
+          data.responsibility = result.value[0].name;
+          $.ajax({
+            url: 'https://luftaquila.io/ajoumaker/api/apply',
+            type: 'POST',
+            data: data,
+            success: function(res) {
+              Swal.fire('등록되었습니다.' , '', 'success');
+            },
+	          error: function(jqXHR, textStatus, errorThrown) {
+              Swal.fire('등록에 실패했습니다.' , jqXHR + textStatus + errorThrown, 'error');
+            },
+            complete: function() {
+              $('#DATA')[0].reset();
+              $('#machineSelect').css('display', 'none');
+              $('#belonging').replaceWith("<select placeholder='학과' id='belonging' class='form-control bg-white border-dark small' style='width:10rem!important; display: inline-block;' required><option value='' selected disabled>소속 2</option></select>");
+            }
+          });
+        }
       }
     });
-    
-    /*$.ajax({
-      url: 'https://script.google.com/macros/s/AKfycbyi2sn97OkkOFIfVt3BVH3ToEPBFvx4G_dQ_oS_jYxqcZNuB_c/exec',
-      type: 'POST',
-      data: encodeURI(serializedData),
-      success: function(res) {
-       
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        
-      },
-      complete: function() {
-        $('#DATA')[0].reset();
-        $('#machineSelect').css('display', 'none');
-      }
-    });**/
   });
   
   $('#manualFee').click(function() {
     $('input:checkbox[name=discount]').attr('checked', false);
     $('#discountWrap').css('display', 'none');
-    $('#feeInfo').html('<input type="radio" id="manualActivate" name="ppl" value="수동 입력" checked> 수동 입력</input><br>요금 : <input type="text" id="manualCost" style="width:70px"/> 원');
+    $('#feeInfo').html('<input type="radio" id="manualActivate" checked> 수동 입력</input><br>요금 : <input type="text" id="manualCost" style="width:70px"/> 원');
     $('#manualFee').attr('style', 'display: none!important');
     $('#manualCost').keyup(function(event) {
       event = event || window.event;
@@ -105,6 +140,7 @@ $(function() {
       $('#discountWrap').css('display', 'none');
     }
     $('#feeInfo').html('요금 : ' + addComma(feeCalc($('input:radio[name=machine]:checked').attr('id'), $('input:radio[name=ppl]:checked').val(), $('input:checkbox[name=discount]').prop('checked'))) + '원');
+    $('#manualFee').css('display', 'inline-block');
   });
   
   $('#normal').click(function() {
@@ -117,6 +153,7 @@ $(function() {
     $('#discountWrap').css('display', 'none');
     $('#submitWrapper').css('display', 'none');
     $('input:radio[name=machine]:checked').prop('checked', false);
+    $('#manualFee').css('display', 'inline-block');
   });
   
   $('#industrial').click(function() {
@@ -129,6 +166,7 @@ $(function() {
     $('#discountWrap').css('display', 'none');
     $('#submitWrapper').css('display', 'none');
     $('input:radio[name=machine]:checked').prop('checked', false);
+    $('#manualFee').css('display', 'inline-block');
   });
   
   $('#others').click(function() {
@@ -143,8 +181,8 @@ $(function() {
     $('input:radio[name=machine]:checked').prop('checked', false);
   });
   
-  payment_time_str = '사용 시간 : <input placeholder="시간" id="usehour" name="cost" type="number" required style="width:40px" min="0"/> : <input placeholder="분" id="usemin" name="cost" type="number" required style="width:30px" min="0" max="59"/>';
-  payment_area_str = '인쇄 면적 : <input placeholder="mm" id="xaxis" name="cost" type="number" required style="width:40px"/> * <input placeholder="mm" id="yaxis" name="cost" type="number" required style="width:40px"/>';
+  payment_time_str = '사용 시간 : <input id="usehour" name="cost" type="number" required style="width:40px" min="0"/>시간 <input id="usemin" name="cost" type="number" required style="width:40px" min="0" max="59"/>분';
+  payment_area_str = '인쇄 면적 : <input id="xaxis" name="cost" type="number" required style="width:40px"/>mm * <input id="yaxis" name="cost" type="number" required style="width:40px"/>mm';
   
   $('#cubicon').click(function() {
     clickReset();
@@ -239,13 +277,13 @@ $(function() {
   
   $('#x7').click(function() {
     clickReset();
-    $('#payment').html(payment_time_str + '<br>강화 재료 : <input placeholder="카본(cc)" id="mainMaterial" name="cost" type="number" required style="width:60px"/><br>');
+    $('#payment').html(payment_time_str + '<br>강화 재료 : 카본 <input id="mainMaterial" name="cost" type="number" required style="width:60px"/>cc<br>');
     keyupReset();
   });
   
   $('#objet350').click(function() {
     clickReset();
-    payment_str = '사용 재료<br><input placeholder="메인(g)" id="mainMaterial" name="cost" type="number" required style="width:60px"/>, <input placeholder="보조(g)" id="subMaterial" name="cost" type="number" required style="width:60px"/><br>';
+    payment_str = '사용 재료<br>메인 재료 <input id="mainMaterial" name="cost" type="number" required style="width:60px"/>g<br>보조 재료 <input id="subMaterial" name="cost" type="number" required style="width:60px"/>g<br>';
     $('#payment').html(payment_str);
     keyupReset();
   });
@@ -258,7 +296,7 @@ $(function() {
   
   $('#xfab').click(function() {
     clickReset();
-    payment_str = '사용 재료 : <input placeholder="메인(g)" id="mainMaterial" name="cost" type="number" required style="width:60px"/>';
+    payment_str = '사용 재료 : 메인 <input id="mainMaterial" name="cost" type="number" required style="width:60px"/>g';
     $('#payment').html(payment_str);
     keyupReset();
   });

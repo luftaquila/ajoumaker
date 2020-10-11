@@ -38,18 +38,10 @@
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
-
+      
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
         <a class="nav-link" href="index.html">
-          <i class="far fa-fw fa-chart-bar"></i>
-          <span>통계</span>
-        </a>
-      </li>
-      
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item">
-        <a class="nav-link" href="apply.html">
           <i class="fas fa-fw fa-clipboard-list"></i>
           <span>사용 신청</span>
         </a>
@@ -60,6 +52,22 @@
         <a class="nav-link" href="history.html">
           <i class="fas fa-fw fa-history"></i>
           <span>사용 기록</span>
+        </a>
+      </li>
+      
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item">
+        <a class="nav-link" href="statistics.html">
+          <i class="far fa-fw fa-chart-bar"></i>
+          <span>통계</span>
+        </a>
+      </li>      
+      
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item">
+        <a class="nav-link" href="settings.html">
+          <i class="fas fa-fw fa-cog"></i>
+          <span>설정</span>
         </a>
       </li>
       
@@ -113,297 +121,73 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">장비 사용 통계</h1>
-            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+            <h1 class="h3 mb-0 text-gray-800">장비 사용 신청</h1>
           </div>
 
-          <!-- Content Row -->
-          <div class="row">
+          <!-- Contents -->
+          <div id='notice'></div>
+          <form id='DATA'>
+            <div id='basicInfo' style='float:left; line-height: 1.3rem;'>
+              <input placeholder="이름" id="name" class="form-control bg-white border-dark small" type="text" style='width:10rem!important; display: inline-block; margin-right: 1rem;' autofocus required/>
+              <input placeholder="연락처" id="contact" class="form-control bg-white border-dark small" type="tel" maxlength="13" pattern="010-[0-9]{4}-[0-9]{4}" style='width:10rem!important; display: inline-block;' required/><br><br>
 
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Earnings (Monthly)</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
+              <select placeholder="소속" id="unit" class="form-control bg-white border-dark small" style='width:10rem!important; display: inline-block; margin-right: 1rem;'></select>
+              <select placeholder="학과" id="belonging" class="form-control bg-white border-dark small" style='width:10rem!important; display: inline-block;' required><option value='' selected disabled>소속 2</option></select><br><br>
+              <input placeholder="사용 목적" id="purpose" class="form-control bg-white border-dark small" type="text" style='width:10rem!important; display: inline-block;'/><br><br>
+
+              <label><input type='radio' id='prepay' name='pay' value="선불" checked required> 선불</label>&nbsp;&nbsp;
+              <label><input type='radio' id='afterpay' name='pay' value="후불"> 후불</label><br><br>
+              
+              <div style='margin-bottom: 0.5rem;'>사용자 구분</div>
+              <label><input type='radio' id='internal' name='ppl' value="교내구성원" required> 교내구성원</label><br>
+              <label><input type='radio' id='standard' name='ppl' value="일반인"> 일반인</label><br><br>
+              
+              <div style='margin-bottom: 0.5rem;'>사용 장비</div>
+              <label><input type='radio' id='normal' name='machineType' value="normal" required> 일반 장비</label><br>
+              <label><input type='radio' id='industrial' name='machineType' value="industrial"> 산업용 장비</label><br>
+              <label><input type='radio' id='others' name='machineType' value='others'> 기타</label><br><br>
+            </div>
+            <div style='width:100px; float:left'>&nbsp;</div>
+            <div id='machineSelect' style='float:left; text-align:center; display:none'>
+              <div id='machineContainer' style='text-align:left; width:auto; margin:auto; display:inline-block'>
+                <div id='normalWrapper' class='machineWrapper' style="display: none">
+                  <label><input type='radio' id='cubicon' name='machine' value="큐비콘" required> 큐비콘</label><br>
+                  <label><input type='radio' id='sindo' name='machine' value="신도"> 신도</label><br>
+                  <label><input type='radio' id='onyx' name='machine' value="Onyx"> Onyx One</label><br>
+                  <label><input type='radio' id='freeform' name='machine' value="Freeform"> Freeform</label><br>
+                  <label><input type='radio' id='zortrax' name='machine' value="Zortrax"> Zortrax</label><br>
+                  <label><input type='radio' id='laser' name='machine' value="레이저커터"> 레이저커터</label><br>
+                  <label><input type='radio' id='plotter' name='machine' value="플로터"> 플로터</label><br>
+                  <label><input type='radio' id='cutter' name='machine' value="커팅플로터"> 커팅플로터</label><br>
+                  <label><input type='radio' id='uv' name='machine' value="UV 프린터"> UV 프린터</label><br>
                 </div>
+                <div id='industrialWrapper' class='machineWrapper' style='display:none'>
+                  <label><input type='radio' id='x7' name='machine' value="X7" required> X7</label><br>
+                  <label><input type='radio' id='objet350' name='machine' value="Objet350"> Objet350</label><br>
+                  <label><input type='radio' id='f370' name='machine' value="F370"> F370</label><br>
+                  <label><input type='radio' id='xfab' name='machine' value="Xfab"> Xfab</label><br>
+                  <label><input type='radio' id='3d' name='machine' value="3D 스캐너"> 3D 스캐너</label><br>
+                </div>
+                <div id='othersWrapper' class='machineWrapper' style="display: none">
+                  <label><input type='radio' id='laptop' name='machine' value="노트북 사용" required> 노트북 사용</label><br>
+                  <label><input type='radio' id='room' name='machine' value="강의실 사용"> 강의실 사용</label>
+                </div>
+                <br>
+                <div id='payment' style='margin-bottom: 0.5rem'></div>
+                <span id='feeInfo' style="display:none">요금 : 0원</span>&nbsp;
+                <span id='discountWrap' style="display:none">
+                  <label><input type='checkbox' id='discount' name='discount' value='discount'/> 할인</label>
+                </span>
+                <br>
+                <div id='machineDetail' style='margin-top: 1rem;'></div>
+              </div><br><br>
+              <div id='submitWrapper' style="display:none; margin:0 0 0 5; text-align:left">
+                <a id='manualFee' class="d-sm-inline-block btn btn-sm btn-primary shadow-sm text-white"><i class="far fa-edit fa-sm text-white"></i> 요금 수동 입력</a><br><br>
+                <button type='submit' class="d-sm-inline-block btn btn-sm btn-success shadow-sm text-white"><i class="fas fa-cloud-upload-alt fa-sm text-white"></i> 제출</button>
               </div>
             </div>
 
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Earnings (Annual)</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Earnings (Monthly) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks</div>
-                      <div class="row no-gutters align-items-center">
-                        <div class="col-auto">
-                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                        </div>
-                        <div class="col">
-                          <div class="progress progress-sm mr-2">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Pending Requests Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Requests</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-comments fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Content Row -->
-
-          <div class="row">
-
-            <!-- Area Chart -->
-            <div class="col-xl-8 col-lg-7">
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Dropdown Header:</div>
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                  </div>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="chart-area">
-                    <canvas id="myAreaChart"></canvas>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Pie Chart -->
-            <div class="col-xl-4 col-lg-5">
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                  <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">Dropdown Header:</div>
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                  </div>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="chart-pie pt-4 pb-2">
-                    <canvas id="myPieChart"></canvas>
-                  </div>
-                  <div class="mt-4 text-center small">
-                    <span class="mr-2">
-                      <i class="fas fa-circle text-primary"></i> Direct
-                    </span>
-                    <span class="mr-2">
-                      <i class="fas fa-circle text-success"></i> Social
-                    </span>
-                    <span class="mr-2">
-                      <i class="fas fa-circle text-info"></i> Referral
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Content Row -->
-          <div class="row">
-
-            <!-- Content Column -->
-            <div class="col-lg-6 mb-4">
-
-              <!-- Project Card Example -->
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
-                </div>
-                <div class="card-body">
-                  <h4 class="small font-weight-bold">Server Migration <span class="float-right">20%</span></h4>
-                  <div class="progress mb-4">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <h4 class="small font-weight-bold">Sales Tracking <span class="float-right">40%</span></h4>
-                  <div class="progress mb-4">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <h4 class="small font-weight-bold">Customer Database <span class="float-right">60%</span></h4>
-                  <div class="progress mb-4">
-                    <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <h4 class="small font-weight-bold">Payout Details <span class="float-right">80%</span></h4>
-                  <div class="progress mb-4">
-                    <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <h4 class="small font-weight-bold">Account Setup <span class="float-right">Complete!</span></h4>
-                  <div class="progress">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Color System -->
-              <div class="row">
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-primary text-white shadow">
-                    <div class="card-body">
-                      Primary
-                      <div class="text-white-50 small">#4e73df</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-success text-white shadow">
-                    <div class="card-body">
-                      Success
-                      <div class="text-white-50 small">#1cc88a</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-info text-white shadow">
-                    <div class="card-body">
-                      Info
-                      <div class="text-white-50 small">#36b9cc</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-warning text-white shadow">
-                    <div class="card-body">
-                      Warning
-                      <div class="text-white-50 small">#f6c23e</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-danger text-white shadow">
-                    <div class="card-body">
-                      Danger
-                      <div class="text-white-50 small">#e74a3b</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-secondary text-white shadow">
-                    <div class="card-body">
-                      Secondary
-                      <div class="text-white-50 small">#858796</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                  <div class="card bg-light text-black shadow">
-                    <div class="card-body">
-                      Light
-                      <div class="text-black-50 small">#f8f9fc</div>
-                    </div>
-                  </div>
-              </div>
-              <div class="col-lg-6 mb-4">
-                <div class="card bg-dark text-white shadow">
-                  <div class="card-body">
-                      Dark
-                      <div class="text-white-50 small">#5a5c69</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            </div>
-
-            <div class="col-lg-6 mb-4">
-
-              <!-- Illustrations -->
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
-                </div>
-                <div class="card-body">
-                  <div class="text-center">
-                    <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="img/undraw_posting_photo.svg" alt="">
-                  </div>
-                  <p>Add some quality, svg illustrations to your project courtesy of <a target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a constantly updated collection of beautiful svg images that you can use completely free and without attribution!</p>
-                  <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on unDraw &rarr;</a>
-                </div>
-              </div>
-
-              <!-- Approach -->
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
-                </div>
-                <div class="card-body">
-                  <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce CSS bloat and poor page performance. Custom CSS classes are used to create custom components and custom utility classes.</p>
-                  <p class="mb-0">Before working with this theme, you should become familiar with the Bootstrap framework, especially the utility classes.</p>
-                </div>
-              </div>
-
-            </div>
-          </div>
+          </form>
 
         </div>
         <!-- /.container-fluid -->
@@ -431,9 +215,6 @@
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
-  
-  <script>(function () { var script = document.createElement('script'); script.src="//cdn.jsdelivr.net/npm/eruda"; document.body.appendChild(script); script.onload = function () { eruda.init() } })();</script>
-
 
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>
@@ -446,8 +227,8 @@
   <script src="js/sb-admin-2.min.js"></script>
 
   <!-- Page level plugins -->
-  <script src="js/statistics.js"></script>
-
+  <script src="js/apply.js"></script>
+	<script src="js/sweetalert2.min.js"></script>
 </body>
 
 </html>
