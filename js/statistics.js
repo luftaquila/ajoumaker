@@ -117,7 +117,21 @@ function statistics(data) {
       freeUsageCount: 0
     }
   ];
-      
+  let users = [
+    {
+      identity: '교내구성원',
+      usageCount: 0,
+      usageTime: 0,
+      usageCost: 0,
+      freeUsageCount: 0
+    }, {
+      identity: '일반인',
+      usageCount: 0,
+      usageTime: 0,
+      usageCost: 0,
+      freeUsageCount: 0
+    }
+  ]; 
   
   // Looping on whole datasets
   for(let obj of data) {
@@ -127,9 +141,28 @@ function statistics(data) {
     if(date != beforeDate) statistics.workingDays++;
     beforeDate = date;
     
+    let hrsPattern = /(\d+)시간/;
+    let minPattern = /(\d+)분/;
+    let hrs = hrsPattern.exec(obj.usage);
+    let min = minPattern.exec(obj.usage);
+    
     // Machines
-    //const found = array1.find(element => element > 10);
-
+    let targetMachine = machines.find(o => o.machine == obj.machine.replace(/ \d번/, ''));
+    if(targetMachine) {
+      targetMachine.usageCount++;
+      if(hrs && min) targetMachine.usageTime += hrs[1] * 60 + Number(min[1]);
+      if(obj.cost) targetMachine.usageCost += obj.cost;
+      else targetMachine.freeUsageCount++;
+    }
+    
+    // Users
+    let targetUser = users.find(o => o.identity == obj.identity);
+    if(targetUser) {
+      targetUser.usageCount++;
+      if(hrs && min) targetUser.usageTime += hrs[1] * 60 + Number(min[1]);
+      if(obj.cost) targetUser.usageCost += obj.cost;
+      else targetUser.freeUsageCount++;
+    }
     
     statistics.totalSales += obj.cost;
     statistics.totalUserCount++;
@@ -137,20 +170,18 @@ function statistics(data) {
   
   // data calculations after loop
   statistics.avgUserCount = Math.round(statistics.totalUserCount / statistics.workingDays * 100) / 100;
-  
-  setOnPage(statistics);
+  setOnPage(statistics, machines, users);
 }
 
-function setOnPage(data) {
-  console.log(data);
+function setOnPage(statistics, machine, user) {
+  console.log(statistics, machine, user);
   $('#loading').css('display', 'none');
   $('#contents').css('display', 'block');
-  $('#todayUserCount').text(data.todayUserCount);
-  $('#avgUserCount').text(data.avgUserCount);
-  $('#totalUserCount').text(addComma(data.totalUserCount));
-  $('#totalSales').text(addComma(data.totalSales));
+  $('#todayUserCount').text(statistics.todayUserCount);
+  $('#avgUserCount').text(statistics.avgUserCount);
+  $('#totalUserCount').text(addComma(statistics.totalUserCount));
+  $('#totalSales').text(addComma(statistics.totalSales));
 }
-
 
 function addComma(x) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 

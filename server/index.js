@@ -95,7 +95,7 @@ app.post('/addAdmin', async function(req, res) {
 });
 
 app.post('/deleteAdmin', async function(req, res) {
-  if(req.body['code'] == 3691) return res.send({ result: 'fail', msg: '시스템 관리자는 삭제할 수 없습니다.' });
+  if(req.body['code'] == 3691) return res.send({ result: 'fail', msg: '시스템 관리자니다.' });
   let query = 'DELETE FROM `admins` WHERE `code`=' + req.body['code'] + ";";
   let result = await db.query(query);
   res.send(result);  
