@@ -1,4 +1,5 @@
 $(function() {
+  let loadT = performance.now();
   $.ajax({
     url: "https://luftaquila.io/ajoumaker/api/requestHistory",
     type: 'POST',
@@ -10,10 +11,12 @@ $(function() {
 });
 
 function statistics(data) {
+  let calcT = performance.now();
   let statistics = {
     todayUserCount: 0, // 오늘 사용자 수
     avgUserCount: 0, // 평균 사용자 수
     totalUserCount:0, // 전체 사용자 수
+    todaySales: 0, // 오늘 매출액
     totalSales: 0, // 전체 매출액
     workingDays: 0, // 전체 영업일 수
   }
@@ -131,13 +134,24 @@ function statistics(data) {
       usageCost: 0,
       freeUsageCount: 0
     }
-  ]; 
+  ];
+  let belongings = [
+    {
+      affiliation: '기타',
+      usageCount: 0,
+      usageCost: 0,
+      freeUsageCount: 0
+    }
+  ];
   
   // Looping on whole datasets
   for(let obj of data) {
     // Date Calculations
     let date = new Date(obj.timestamp).format('yyyy-mm-dd');
-    if(date == new Date().format('yyyy-mm-dd')) statistics.todayUserCount++;
+    if(date == new Date().format('yyyy-mm-dd')) {
+      statistics.todayUserCount++;
+      statistics.todaySales =+ obj.cost;
+    }
     if(date != beforeDate) statistics.workingDays++;
     beforeDate = date;
     
@@ -164,24 +178,41 @@ function statistics(data) {
       else targetUser.freeUsageCount++;
     }
     
+    // Belongings
+    if(obj.affiliation.endsWith('학과')) {
+      let targetBelonging = belongings.find(o => o.affiliation == obj.affiliation);
+      if(targetBelonging) {
+        targetBelonging.usageCount++;
+        if(obj.cost) targetBelonging.usageCost += obj.cost
+        else targetBelonging.freeUsageCount++;
+      }
+      else {
+        belongings.push({
+          affiliation: obj.affiliation,
+          usageCount: 1,
+          usageCost: obj.cost ? obj.cost : 0,
+          freeUsageCount: obj.cost ? 0 : 1
+        });
+      }
+    }
+    else {
+      let targetBelonging = belongings.find(o => o.affiliation == '기타');
+      if(targetBelonging) {
+        targetBelonging.usageCount++;
+        if(obj.cost) targetBelonging.usageCost += obj.cost
+        else targetBelonging.freeUsageCount++;
+      }
+    }
+    
     statistics.totalSales += obj.cost;
     statistics.totalUserCount++;
   }
   
   // data calculations after loop
   statistics.avgUserCount = Math.round(statistics.totalUserCount / statistics.workingDays * 100) / 100;
-  setOnPage(statistics, machines, users);
+  setOnPage(statistics, machines, users, belongings);
 }
 
-function setOnPage(statistics, machine, user) {
-  console.log(statistics, machine, user);
-  $('#loading').css('display', 'none');
-  $('#contents').css('display', 'block');
-  $('#todayUserCount').text(statistics.todayUserCount);
-  $('#avgUserCount').text(statistics.avgUserCount);
-  $('#totalUserCount').text(addComma(statistics.totalUserCount));
-  $('#totalSales').text(addComma(statistics.totalSales));
-}
 
 function addComma(x) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 
