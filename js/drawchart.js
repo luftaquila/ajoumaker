@@ -625,7 +625,7 @@ function setOnPage(statistics, machine, user, belonging) {
         	  return ' ' + data['datasets'][0]['data'][tooltipItem['index']] + '%';
       	  },
     	    afterLabel: function(tooltipItem, data) {
-            return '(' + userFreeRatioChart[tooltipItem.index].usageCount + "건)";
+            return '(' + userFreeRatio[tooltipItem.index].usageCount + "건)";
 	        }
      	  }
       } 
