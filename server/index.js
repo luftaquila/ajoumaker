@@ -135,7 +135,7 @@ app.post('/addAdmin', async function(req, res) {
 app.post('/deleteAdmin', async function(req, res) {
   const ip = req.headers['x-forwarded-for'] ||  req.connection.remoteAddress;
   try {
-    if(req.body['code'] == 3691) return res.send({ result: 'fail', msg: '시스템 관리자니다.' });
+    if(req.body['code'] == 3691) return res.send({ result: 'fail', msg: '최상위 시스템 관리자입니다.' });
     let query = 'DELETE FROM `admins` WHERE `code`=' + req.body['code'] + ";";
     let result = await db.query(query);
     logger.info('Admin elimination.', { ip: ip, query: JSON.stringify(req.body), result: JSON.stringify(result) });
@@ -177,4 +177,25 @@ app.post('/requestSetting', async function(req, res) {
   }
 });
 
-
+app.post('/requestLogs', async function(req, res) {
+  const ip = req.headers['x-forwarded-for'] ||  req.connection.remoteAddress;
+  try {
+    fs.readFile('/home/luftaquila/HDD/ajoumaker/server/server.log', 'utf8', function(err, data) {
+      if(err) {
+        console.log(err)
+        return res.send([{ timestamp: null, ip: null, message: null, query: null, result: null, level: null }]);
+      }
+      let array = data.split('\n');
+      array.pop();
+      for(let i in array) {
+        array[i] = JSON.parse(array[i]);
+        if(array[i].result.length > 100)
+          array[i].result = array[i].result.substring(0, 100) + ' ...';
+      }
+      res.send(array);
+    });
+  }
+  catch(e) {
+    console.log(e)
+  }
+});

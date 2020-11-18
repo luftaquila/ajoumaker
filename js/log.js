@@ -32,58 +32,31 @@ $(function() {
   }).then((result) => {
     if (result.isConfirmed) {
       if(result.value.length) {
-        $('#history').DataTable({
-          pagingType: "numbers",
-          pageLength: 100,
-          ajax: {
-            url: "https://luftaquila.io/ajoumaker/api/requestHistory",
-            type: 'POST',
-            dataSrc: function(res) {
-              data = res;
-              return res;
-            }
-          },
-          order: [[ 0, 'desc']],
-          columns: [
-            { data: "timestamp" },
-            { data: "name" },
-            { data: "affiliation" },
-            { data: "phone" },
-            { data: "purpose" },
-            { data: "machine" },
-            { data: "usage" },
-            { data: "identity" },
-            { data: "cost" },
-            { data: "payment" },
-            { data: "responsibility" }
-          ],
-          columnDefs: [{
-            render: function ( data, type, row ) { return new Date(data).format('yyyy-mm-dd HH:MM:ss'); },
-            targets: 0
-          }]
+        $.ajax({
+          url: "https://luftaquila.io/ajoumaker/api/requestLogs",
+          type: 'POST',
+          success: function(res) { logData = res; }
+        }).done(function() {
+          $('#log').DataTable({
+            pagingType: "numbers",
+            data: logData,
+            order: [[ 0, 'desc' ]],
+            columns: [
+              { data: "timestamp" },
+              { data: "level" },
+              { data: "ip" },
+              { data: "query" },
+              { data: "result" },
+              { data: "message" }
+            ],
+            columnDefs: [{
+              render: function ( data, type, row ) { return new Date(data).format('yyyy-mm-dd HH:MM:ss'); },
+              targets: 0
+            }]
+          });
         });
       }
     }
-  });
-  $('#export').click(function() {
-    if(!data) return;
-    function s2ab(s) {
-      var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
-      var view = new Uint8Array(buf);  //create uint8array as viewer
-      for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
-      return buf;
-    }
-    var excelHandler = {
-      getExcelFileName : function() { return '장비 사용 기록.xlsx'; },
-      getSheetName : function() { return '장비 사용 기록'; },
-      getExcelData : function() { return data; },
-      getWorksheet : function() { return XLSX.utils.json_to_sheet(this.getExcelData()); }
-    }
-    var wb = XLSX.utils.book_new();
-    var newWorksheet = excelHandler.getWorksheet();
-    XLSX.utils.book_append_sheet(wb, newWorksheet, excelHandler.getSheetName());
-    var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), excelHandler.getExcelFileName());
   });
 });
 

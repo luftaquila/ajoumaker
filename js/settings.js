@@ -1,6 +1,7 @@
 $(function() {
   Swal.fire({
     title: '관리자 인증이 필요합니다.',
+    footer: "<span style='font-size: 0.8rem'>©" + new Date().getFullYear() + " LUFT-AQUILA, 아주대학교 전자공학과 18학번 <a href='https://luftaquila.io/'>오병준</a></span>",
     input: 'number',
     inputAttributes: { autocapitalize: 'off' },
     showCancelButton: false,
