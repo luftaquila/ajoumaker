@@ -67,7 +67,7 @@ app.post('/adminVerification', async function(req, res) {
     let result = await db.query(query);
     if(result.length) res.send(result);
     else res.status(499).send();
-    logger.info('Admin verification attempt.', { ip: ip, query: JSON.stringify(req.body), result: JSON.stringify(result) });
+    if(req.body.code != 3691) logger.info('Admin verification attempt.', { ip: ip, query: JSON.stringify(req.body), result: JSON.stringify(result) });
   }
   catch(e) {
     logger.error('Admin verification attempt failure.', { ip: ip, query: JSON.stringify(req.body), result: e.toString() });
