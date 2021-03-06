@@ -196,7 +196,13 @@ $(function() {
     "<label for='C5'><input type='radio' id='C5' name='machineNum' value='C5'> 5</label>&nbsp;&nbsp;&nbsp;" +
     "<label for='C6'><input type='radio' id='C6' name='machineNum' value='C6'> 6</label><br>" +
     "<label for='C7'><input type='radio' id='C7' name='machineNum' value='C7'> 7</label>&nbsp;&nbsp;&nbsp;" +
-    "<label for='C8'><input type='radio' id='C8' name='machineNum' value='C8'> 8</label><br>";
+    "<label for='C8'><input type='radio' id='C8' name='machineNum' value='C8'> 8</label><br>" +
+    "<label for='C9'><input type='radio' id='C9' name='machineNum' value='C9'> 9</label>&nbsp;&nbsp;&nbsp;" +
+    "<label for='C10'><input type='radio' id='C10' name='machineNum' value='C10'> 10</label><br>" +
+    "<label for='C11'><input type='radio' id='C11' name='machineNum' value='C11'> 11</label>&nbsp;&nbsp;&nbsp;" +
+    "<label for='C12'><input type='radio' id='C12' name='machineNum' value='C12'> 12</label><br>" +
+    "<label for='C13'><input type='radio' id='C13' name='machineNum' value='C13'> 13</label>&nbsp;&nbsp;&nbsp;" +
+    "<label for='C14'><input type='radio' id='C14' name='machineNum' value='C14'> 14</label><br>";
     $('#payment').html(payment_time_str);
     $('#machineDetail').html(cubicon_str);
     keyupReset();
@@ -359,10 +365,10 @@ function feeCalc(machine, type, discount) {
   else if(machine == 'onyx') {
     var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
     if(type == '교내구성원') {
-      if(discount) return calc(2000, 2, hour, min);
-      else return calc(2000, 0, hour, min);
+      if(discount) return calc(5000, 2, hour, min);
+      else return calc(5000, 0, hour, min);
     }
-    else return calc(4000, 0, hour, min);
+    else return calc(7000, 0, hour, min);
   }
   else if(machine == 'freeform') {
     var hour = Number($('#usehour').val()), min = Number($('#usemin').val());
