@@ -8,7 +8,7 @@ $(function() {
     confirmButtonText: '인증',
     showLoaderOnConfirm: true,
     preConfirm: (code) => {
-      return fetch('https://ajoumaker.luftaquila.io/adminVerification', {
+      return fetch('https://ajoumaker.luftaquila.io/api/adminVerification', {
         method: 'POST',
         headers:{
           'Content-Type': 'application/json'
