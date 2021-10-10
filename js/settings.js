@@ -8,7 +8,7 @@ $(function() {
     confirmButtonText: '인증',
     showLoaderOnConfirm: true,
     preConfirm: (code) => {
-      return fetch('https://luftaquila.io/ajoumaker/api/adminVerification', {
+      return fetch('https://ajoumaker.luftaquila.io/adminVerification', {
         method: 'POST',
         headers:{
           'Content-Type': 'application/json'
@@ -37,7 +37,7 @@ $(function() {
         admins = $('#admins').DataTable({
           pagingType: "simple",
           ajax: {
-            url: "https://luftaquila.io/ajoumaker/api/requestAdmins",
+            url: "https://ajoumaker.luftaquila.io/api/requestAdmins",
             type: 'POST',
             dataSrc: ''
           },
@@ -48,7 +48,7 @@ $(function() {
         });
         
         $.ajax({
-          url: 'https://luftaquila.io/ajoumaker/api/requestSetting',
+          url: 'https://ajoumaker.luftaquila.io/api/requestSetting',
           type: 'POST',
           data: { key: 'notice' },
           success: function(res) { $('#notice').val(res[0].value); }
@@ -72,7 +72,7 @@ $(function() {
       else console.error(e);
     }
     $.ajax({
-      url: 'https://luftaquila.io/ajoumaker/api/addAdmin',
+      url: 'https://ajoumaker.luftaquila.io/api/addAdmin',
       type: 'POST',
       data: data,
       success: function(res) {
@@ -89,7 +89,7 @@ $(function() {
   $('#deleteAdmin').click(function() {
     if(!$('#deleteAdminCode').val()) return Swal.fire('코드를 입력하세요.', '', 'warning');
     $.ajax({
-      url: 'https://luftaquila.io/ajoumaker/api/deleteAdmin',
+      url: 'https://ajoumaker.luftaquila.io/api/deleteAdmin',
       type: 'POST',
       data: { code: $('#deleteAdminCode').val() },
       success: function(res) {
@@ -108,7 +108,7 @@ $(function() {
   });
   $('#updateNotice').click(function() {
     $.ajax({
-      url: 'https://luftaquila.io/ajoumaker/api/updateNotice',
+      url: 'https://ajoumaker.luftaquila.io/api/updateNotice',
       type: 'POST',
       data: { notice: $('#notice').val().replace(/`/g, '"').replace(/\'/g, '"') },
       success: function(res) {

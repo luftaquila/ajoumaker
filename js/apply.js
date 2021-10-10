@@ -29,7 +29,7 @@ $(function() {
   });
   
   $.ajax({
-    url: 'https://luftaquila.io/ajoumaker/api/requestSetting',
+    url: 'https://ajoumaker.luftaquila.io/api/requestSetting',
     type: 'POST',
     data: { key: 'notice' },
     success: function(res) { $('#notice').html(res[0].value); }
@@ -74,7 +74,7 @@ $(function() {
       confirmButtonText: '인증',
       showLoaderOnConfirm: true,
       preConfirm: (code) => {
-        return fetch('https://luftaquila.io/ajoumaker/api/adminVerification', {
+        return fetch('https://ajoumaker.luftaquila.io/api/adminVerification', {
           method: 'POST',
           headers:{
             'Content-Type': 'application/json'
@@ -99,7 +99,7 @@ $(function() {
         if(result.value.length) {
           data.responsibility = result.value[0].name;
           $.ajax({
-            url: 'https://luftaquila.io/ajoumaker/api/apply',
+            url: 'https://ajoumaker.luftaquila.io/api/apply',
             type: 'POST',
             data: data,
             success: function(res) {

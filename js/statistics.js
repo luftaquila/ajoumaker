@@ -1,7 +1,54 @@
-$(function() {
+$(function () {
+  Swal.fire({
+    title: '관리자 인증이 필요합니다.',
+    footer: "<span style='font-size: 0.8rem'>©" + new Date().getFullYear() + " LUFT-AQUILA, 아주대학교 전자공학과 18학번 <a href='https://luftaquila.io/'>오병준</a></span>",
+    input: 'number',
+    inputAttributes: { autocapitalize: 'off' },
+    showCancelButton: false,
+    confirmButtonText: '인증',
+    showLoaderOnConfirm: true,
+    preConfirm: (code) => {
+      return fetch('https://ajoumaker.luftaquila.io/adminVerification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code: code })
+      })
+        .then(response => {
+          if (response.status == 499) throw { name: "codeNotMatchError", message: "code does not match" };
+          else if (!response.ok) throw new Error(response.statusText);
+          return response.json();
+        })
+        .catch(error => {
+          if (error.name == 'codeNotMatchError')
+            Swal.showValidationMessage('인증에 실패하였습니다.');
+          else
+            Swal.showValidationMessage(`Request failed: ${error}`);
+        })
+    },
+    allowOutsideClick: () => !Swal.isLoading()
+  }).then((result) => {
+    if (result.isConfirmed) {
+      if (result.value.length) {
+        // on verification successful
+        let loadT = performance.now();
+        $.ajax({
+          url: "https://ajoumaker.luftaquila.io/api/requestHistory",
+          type: 'POST',
+          success: function (res) {
+            $('#workingText').text('데이터 계산 중...');
+            statistics(res);
+          }
+        });
+      }
+    }
+  });
+
+  
   let loadT = performance.now();
   $.ajax({
-    url: "https://luftaquila.io/ajoumaker/api/requestHistory",
+    url: "https://ajoumaker.luftaquila.io/api/requestHistory",
     type: 'POST',
     success: function(res) {
       $('#workingText').text('데이터 계산 중...');

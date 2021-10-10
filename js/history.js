@@ -9,7 +9,7 @@ $(function() {
     confirmButtonText: '인증',
     showLoaderOnConfirm: true,
     preConfirm: (code) => {
-      return fetch('https://luftaquila.io/ajoumaker/api/adminVerification', {
+      return fetch('https://ajoumaker.luftaquila.io/api/adminVerification', {
         method: 'POST',
         headers:{
           'Content-Type': 'application/json'
@@ -36,7 +36,7 @@ $(function() {
           pagingType: "numbers",
           pageLength: 100,
           ajax: {
-            url: "https://luftaquila.io/ajoumaker/api/requestHistory",
+            url: "https://ajoumaker.luftaquila.io/api/requestHistory",
             type: 'POST',
             dataSrc: function(res) {
               data = res;
